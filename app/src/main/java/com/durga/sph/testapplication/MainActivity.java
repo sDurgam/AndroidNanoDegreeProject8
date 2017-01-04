@@ -16,32 +16,20 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    RecyclerView my_recyclerView;
-    MyRecyclerViewAdapter my_adapter;
-    List<Recipe> my_recipes;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        my_recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        my_recipes = new ArrayList<>();
-        String path = "https://lh3.googleusercontent.com/F_6IVSoAr53icqCyX2pfW-vqscgHpuf_y7TL13_SKZl86mO76ih4yw7vG5j0cRET2H4=w300";
-        my_recipes.add(new Recipe("a", path));
-        my_recipes.add(new Recipe("b", path));
-        my_recipes.add(new Recipe("c", path));
-        my_recipes.add(new Recipe("d", path));
-        my_recipes.add(new Recipe("e", path));
-        my_adapter = new MyRecyclerViewAdapter(this, my_recipes);
+        if(savedInstanceState == null){
+            LevelFragment fragment = new LevelFragment();
+            getFragmentManager().beginTransaction().replace(R.id.content_main, fragment).commit();
+        }
     }
 
     public void onResume(){
         super.onResume();
-        LinearLayoutManager lmanager = new LinearLayoutManager(this);
-        my_recyclerView.setLayoutManager(lmanager);
-        my_recyclerView.setAdapter(my_adapter);
     }
 
     @Override
