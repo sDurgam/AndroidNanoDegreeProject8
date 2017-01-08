@@ -17,6 +17,8 @@ import com.durga.sph.testapplication.retrofit.AndroidRecipeService;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,7 +29,7 @@ import retrofit2.Response;
 
 public class LevelFragment extends Fragment implements Callback<List<Object>>
 {
-    RecyclerView my_recyclerView;
+    @BindView(R.id.questionsView) RecyclerView my_recyclerView;
     MyRecyclerViewAdapter my_adapter;
     List<Recipe> my_recipes;
     public String TAG;
@@ -41,7 +43,7 @@ public class LevelFragment extends Fragment implements Callback<List<Object>>
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.level_fragment, container, false);
-        my_recyclerView = (RecyclerView) view.findViewById(R.id.questionsView);
+        ButterKnife.bind(this, view);
         my_recipes = new ArrayList<>();
         String path = "https://lh3.googleusercontent.com/F_6IVSoAr53icqCyX2pfW-vqscgHpuf_y7TL13_SKZl86mO76ih4yw7vG5j0cRET2H4=w300";
         my_recipes.add(new Recipe("a", path));
@@ -56,7 +58,7 @@ public class LevelFragment extends Fragment implements Callback<List<Object>>
     @Override
     public void onStart() {
         super.onStart();
-        AndroidRecipeService adapter = AndroidRecipeRetorfitAdapter.getRestService(this.getActivity());
+       // AndroidRecipeService adapter = AndroidRecipeRetorfitAdapter.getRestService(this.getActivity());
         //Call<List<Object>> call = adapter.listRepos("sDurgam");
         //call.enqueue(this);
     }
