@@ -1,8 +1,8 @@
-package com.durga.sph.testapplication.retrofit;
+package com.durga.sph.androidchallengetracker.retrofit;
 
 import android.content.Context;
 
-import com.durga.sph.testapplication.R;
+import com.durga.sph.androidchallengetracker.R;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

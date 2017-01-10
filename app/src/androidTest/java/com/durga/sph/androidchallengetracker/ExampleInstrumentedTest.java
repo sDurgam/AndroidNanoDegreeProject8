@@ -1,4 +1,4 @@
-package com.durga.sph.testapplication;
+package com.durga.sph.androidchallengetracker;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,18 +1,20 @@
-package com.durga.sph.testapplication;
+package com.durga.sph.androidchallengetracker;
 
-import android.animation.ObjectAnimator;
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ListFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.durga.sph.testapplication.retrofit.AndroidRecipeRetorfitAdapter;
-import com.durga.sph.testapplication.retrofit.AndroidRecipeService;
+import android.widget.SimpleCursorAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +29,11 @@ import retrofit2.Response;
  * Created by root on 1/2/17.
  */
 
-public class LevelFragment extends Fragment implements Callback<List<Object>>
+public class LevelFragment extends ListFragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>, Callback<List<Object>>
 {
-    @BindView(R.id.questionsView) RecyclerView my_recyclerView;
-    MyRecyclerViewAdapter my_adapter;
+   // @BindView(R.id.questionsView) RecyclerView my_recyclerView;
+   // MyRecyclerViewAdapter my_adapter;
+    SimpleCursorAdapter mAdapter;
     List<Recipe> my_recipes;
     public String TAG;
 
@@ -51,7 +54,11 @@ public class LevelFragment extends Fragment implements Callback<List<Object>>
         my_recipes.add(new Recipe("c", path));
         my_recipes.add(new Recipe("d", path));
         my_recipes.add(new Recipe("e", path));
-        my_adapter = new MyRecyclerViewAdapter(this.getActivity(), my_recipes);
+       // my_adapter = new MyRecyclerViewAdapter(this.getActivity(), my_recipes);
+        mAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, new String[]{"test1", "test2"},
+                new int[]{android.R.id.text1, android.R.id.text2}, 0);
+        setListAdapter(mAdapter);
+        getLoaderManager().initLoader(0, null, this);
         return view;
     }
 
@@ -67,8 +74,8 @@ public class LevelFragment extends Fragment implements Callback<List<Object>>
     public void onResume() {
         super.onResume();
         LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
-        my_recyclerView.setLayoutManager(lmanager);
-        my_recyclerView.setAdapter(my_adapter);
+        //my_recyclerView.setLayoutManager(lmanager);
+        //my_recyclerView.setAdapter(my_adapter);
     }
 
     @Override
@@ -89,5 +96,20 @@ public class LevelFragment extends Fragment implements Callback<List<Object>>
     @Override
     public void onFailure(Call<List<Object>> call, Throwable t) {
         Log.e(TAG, t.toString());
+    }
+
+    @Override
+    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
     }
 }

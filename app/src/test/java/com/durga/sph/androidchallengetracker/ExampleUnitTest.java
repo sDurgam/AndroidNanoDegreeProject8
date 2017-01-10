@@ -1,4 +1,4 @@
-package com.durga.sph.testapplication;
+package com.durga.sph.androidchallengetracker;
 
 import org.junit.Test;
 

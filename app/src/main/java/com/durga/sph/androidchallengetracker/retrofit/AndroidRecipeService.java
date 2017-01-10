@@ -1,10 +1,4 @@
-package com.durga.sph.testapplication.retrofit;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
+package com.durga.sph.androidchallengetracker.retrofit;
 
 /**
  * Created by root on 1/3/17.

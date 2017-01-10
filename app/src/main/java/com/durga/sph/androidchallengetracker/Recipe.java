@@ -1,4 +1,4 @@
-package com.durga.sph.testapplication;
+package com.durga.sph.androidchallengetracker;
 
 /**
  * Created by root on 12/28/16.
