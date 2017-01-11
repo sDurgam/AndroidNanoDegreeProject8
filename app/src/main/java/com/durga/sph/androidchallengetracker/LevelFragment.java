@@ -29,10 +29,10 @@ import retrofit2.Response;
  * Created by root on 1/2/17.
  */
 
-public class LevelFragment extends ListFragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>, Callback<List<Object>>
+public class LevelFragment extends Fragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>, Callback<List<Object>>
 {
-   // @BindView(R.id.questionsView) RecyclerView my_recyclerView;
-   // MyRecyclerViewAdapter my_adapter;
+    @BindView(R.id.questionsView) RecyclerView my_recyclerView;
+    MyRecyclerViewAdapter my_adapter;
     SimpleCursorAdapter mAdapter;
     List<Recipe> my_recipes;
     public String TAG;
@@ -54,11 +54,11 @@ public class LevelFragment extends ListFragment implements android.support.v4.ap
         my_recipes.add(new Recipe("c", path));
         my_recipes.add(new Recipe("d", path));
         my_recipes.add(new Recipe("e", path));
-       // my_adapter = new MyRecyclerViewAdapter(this.getActivity(), my_recipes);
+        my_adapter = new MyRecyclerViewAdapter(this.getActivity(), my_recipes);
         mAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, new String[]{"test1", "test2"},
                 new int[]{android.R.id.text1, android.R.id.text2}, 0);
-        setListAdapter(mAdapter);
-        getLoaderManager().initLoader(0, null, this);
+        //setListAdapter(mAdapter);
+        //getLoaderManager().initLoader(0, null, this);
         return view;
     }
 
@@ -74,8 +74,8 @@ public class LevelFragment extends ListFragment implements android.support.v4.ap
     public void onResume() {
         super.onResume();
         LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
-        //my_recyclerView.setLayoutManager(lmanager);
-        //my_recyclerView.setAdapter(my_adapter);
+        my_recyclerView.setLayoutManager(lmanager);
+        my_recyclerView.setAdapter(my_adapter);
     }
 
     @Override
