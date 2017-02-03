@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="@string/edit_question_name"
+        android:text="@string/review_question_name"
         android:gravity="center"/>
     <EditText
         android:layout_width="match_parent"
@@ -18,14 +18,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:id="@+id/editquestion_levelgroup">
+        android:id="@+id/reviewquestion_levelgroup">
     </include>
-    <Button
-        android:layout_gravity="bottom|center"
+    <CheckedTextView
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/submit_for_review"
-        android:id="@+id/editquesSubmitReviewBtn"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"/>
-
+        android:layout_width="wrap_content"
+        android:text="@string/approve_question"
+        android:textAlignment="center"
+        android:id="@+id/reviewquesApproveBtn"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
+        android:checked="true"
+        android:checkMarkTint="@color/colorAccent"/>
 </LinearLayout>
