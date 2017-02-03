@@ -6,4 +6,8 @@
     <string name="level2_name">Level 2</string>
     <string name="level3_name">Level 3</string>
     <string name="mypoints_name">My Points</string>
+    <string name="add_question_name">Add Question</string>
+    <string name="question">Question</string>
+    <string name="level">Level</string>
+    <string name="submit_for_review">submit for review</string>
 </resources>
