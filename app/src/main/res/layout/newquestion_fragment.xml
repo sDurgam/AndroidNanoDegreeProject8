@@ -41,28 +41,15 @@
         app:layout_heightPercent="20%"
         app:layout_widthPercent="30%"
         />
-    <RadioGroup
+    <include layout="@layout/level_radiobutton_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_alignRight="@id/levelLabel"
         app:layout_heightPercent="20%"
         app:layout_widthPercent="25%"
         android:layout_toRightOf="@id/levelLabel"
         android:layout_above="@id/addquesSubmitReviewBtn">
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/level1_name"
-            android:id="@+id/radiobutton_level1"/>
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/level2_name"
-            android:id="@+id/radiobutton_level2"/>
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/level3_name"
-            android:id="@+id/radiobutton_level3"/>
-    </RadioGroup>
+    </include>
 
 </android.support.percent.PercentRelativeLayout>

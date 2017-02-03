@@ -2,5 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/edit_question_name"
+        android:gravity="center"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"/>
+    <include layout="@layout/level_radiobutton_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/activity_horizontal_margin">
+    </include>
+    <Button
+        android:layout_gravity="bottom|center"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/submit_for_review"
+        android:id="@+id/editquesSubmitReviewBtn"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"/>
 
 </LinearLayout>
