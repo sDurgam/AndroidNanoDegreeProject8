@@ -62,10 +62,11 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public class loadBimapTask extends AsyncTask<String, Void, Bitmap>
     {
         ImageView imgView;
-        WeakReference<Context> contextRef;
+       // WeakReference<Context> contextRef;
+        Context context;
         public loadBimapTask(WeakReference<Context> contextRef, ImageView imageView){
             imgView = imageView;
-            this.contextRef = contextRef;
+            this.context = context;
         }
 
         @Override
@@ -88,7 +89,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
-            if(contextRef.get() != null && imgView != null && bitmap != null) {
+           // if(contextRef.get() != null && imgView != null && bitmap != null) {
+            if(context != null && imgView != null && bitmap != null) {
                 imgView.setImageBitmap(bitmap);
             }
         }

@@ -16,6 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,13 +32,17 @@ import retrofit2.Response;
  * Created by root on 1/2/17.
  */
 
-public class LevelFragment extends Fragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>, Callback<List<Object>>
+public class LevelFragment extends Fragment
+        //implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>, Callback<List<Object>>
 {
     @BindView(R.id.questionsView) RecyclerView my_recyclerView;
     MyRecyclerViewAdapter my_adapter;
     SimpleCursorAdapter mAdapter;
     List<Recipe> my_recipes;
     public String TAG;
+    //FirebaseDatabase mFirebaseDatabase;
+    //DatabaseReference mMessgaesDatabaseReference;
+    //https://android-challenge-tracker.firebaseio.com/
 
     public LevelFragment(){
         TAG = getClass().getName();
@@ -55,17 +62,19 @@ public class LevelFragment extends Fragment implements android.support.v4.app.Lo
         my_recipes.add(new Recipe("d", path));
         my_recipes.add(new Recipe("e", path));
         my_adapter = new MyRecyclerViewAdapter(this.getActivity(), my_recipes);
-        mAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, new String[]{"test1", "test2"},
-                new int[]{android.R.id.text1, android.R.id.text2}, 0);
+        //mAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, new String[]{"test1", "test2"},
+        //        new int[]{android.R.id.text1, android.R.id.text2}, 0);
         //setListAdapter(mAdapter);
         //getLoaderManager().initLoader(0, null, this);
+        //mFirebaseDatabase = FirebaseDatabase.getInstance();
+        //mMessgaesDatabaseReference = mFirebaseDatabase.getReference();
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-       // AndroidRecipeService adapter = AndroidRecipeRetorfitAdapter.getRestService(this.getActivity());
+        //AndroidRecipeService adapter = AndroidRecipeRetorfitAdapter.getRestService(this.getActivity());
         //Call<List<Object>> call = adapter.listRepos("sDurgam");
         //call.enqueue(this);
     }
@@ -88,28 +97,28 @@ public class LevelFragment extends Fragment implements android.support.v4.app.Lo
         super.onStop();
     }
 
-    @Override
-    public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
-        Log.d(TAG, response.toString());
-    }
-
-    @Override
-    public void onFailure(Call<List<Object>> call, Throwable t) {
-        Log.e(TAG, t.toString());
-    }
-
-    @Override
-    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
-        mAdapter.swapCursor(data);
-    }
-
-    @Override
-    public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-    }
+//    @Override
+//    public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
+//        Log.d(TAG, response.toString());
+//    }
+//
+//    @Override
+//    public void onFailure(Call<List<Object>> call, Throwable t) {
+//        Log.e(TAG, t.toString());
+//    }
+//
+//    @Override
+//    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+//        return null;
+//    }
+//
+//    @Override
+//    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
+//        mAdapter.swapCursor(data);
+//    }
+//
+//    @Override
+//    public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
+//        mAdapter.swapCursor(null);
+//    }
 }

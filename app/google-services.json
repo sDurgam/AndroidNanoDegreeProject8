@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "440111529228",
+    "firebase_url": "https://android-challenge-tracker.firebaseio.com",
+    "project_id": "android-challenge-tracker",
+    "storage_bucket": "android-challenge-tracker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440111529228:android:a77e5ed16f4eca50",
+        "android_client_info": {
+          "package_name": "com.durga.sph.androidchallengetracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440111529228-kajrm7c5squ777hojj2hbkc5geeno06f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACxIFujqc0Awa-FueSKqD_whGoHIV_ulk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
