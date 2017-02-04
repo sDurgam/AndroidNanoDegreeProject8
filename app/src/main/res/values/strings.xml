@@ -9,6 +9,9 @@
     <string name="add_question_name">Add Question</string>
     <string name="edit_question_name">Edit Question</string>
     <string name="review_question_name">Review Question</string>
+    <string name="review_questions_name">Review Questions</string>
+    <string name="added_questions_name">Added Questions</string>
+    <string name="reviewed_questions_name">Reviewed Questions</string>
     <string name="question">Question</string>
     <string name="level">Level</string>
     <string name="submit_for_review">submit for review</string>
