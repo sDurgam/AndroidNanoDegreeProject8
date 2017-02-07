@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.durga.sph.androidchallengetracker.MyRecyclerViewAdapter;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.Recipe;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +38,8 @@ public class LevelFragment extends BaseFragment
     List<Recipe> my_recipes;
     public String TAG;
     int mcurrentLevel = 1;
-    //FirebaseDatabase mFirebaseDatabase;
-    //DatabaseReference mMessgaesDatabaseReference;
+    FirebaseDatabase mFirebaseDatabase;
+    DatabaseReference mMessgaesDatabaseReference;
     //https://android-challenge-tracker.firebaseio.com/
 
     public LevelFragment(){
@@ -51,6 +53,9 @@ public class LevelFragment extends BaseFragment
         fragment.setArguments(args);
         return fragment;
     }
+
+    
+
 
     @Nullable
     @Override
