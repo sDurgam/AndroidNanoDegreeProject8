@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/level1_name"
-        android:id="@+id/radiobutton_level1"/>
+        android:id="@+id/radiobutton_level1" />
     <RadioButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

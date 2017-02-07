@@ -1,4 +1,4 @@
-package com.durga.sph.androidchallengetracker;
+package com.durga.sph.androidchallengetracker.ui.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -7,24 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.durga.sph.androidchallengetracker.ui.fragments.BaseFragment;
-
 /**
  * Created by root on 1/30/17.
  */
 
-public class MyAddedQuestionsFragment extends BaseFragment {
+public class MyReviewedQuestionsFragment extends Fragment {
 
-    public static MyAddedQuestionsFragment newInstance() {
+    public static MyReviewedQuestionsFragment newInstance() {
         Bundle args = new Bundle();
-        MyAddedQuestionsFragment fragment = new MyAddedQuestionsFragment();
+        MyReviewedQuestionsFragment fragment = new MyReviewedQuestionsFragment();
         fragment.setArguments(args);
         return fragment;
     }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
 }

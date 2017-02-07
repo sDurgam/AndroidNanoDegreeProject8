@@ -6,4 +6,9 @@ package com.durga.sph.androidchallengetracker.utils;
 
 public class Constants {
     public static String QUESTIONID = "questionId";
+    public static int TAB_ITEM_COUNT = 5;
+    public static String BLANKSTR = "\u0020";
+    public static String MYPOINTS = "mypoints";
+    public static String MYADDEDQUES = "myaddedques";
+    public static String MYREVIEWEDQUES = "myreviewedques";
 }

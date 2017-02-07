@@ -8,6 +8,11 @@
     android:layout_marginTop="?android:attr/actionBarSize"
     tools:showIn="@layout/activity_main"
     tools:openDrawer="start">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_frameLayout"></FrameLayout>
+
     <android.support.design.widget.NavigationView
         android:id="@+id/main_navigationView"
         android:layout_width="match_parent"

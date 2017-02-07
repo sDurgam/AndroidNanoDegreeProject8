@@ -5,8 +5,9 @@
     <string name="level1_name">Level 1</string>
     <string name="level2_name">Level 2</string>
     <string name="level3_name">Level 3</string>
+    <string name="level_current_name">Level %s</string>
     <string name="mypoints_name">My Points</string>
-    <string name="add_question_name">Add Question</string>
+    <string name="add_question_name">Add New Question</string>
     <string name="edit_question_name">Edit Question</string>
     <string name="review_question_name">Review Question</string>
     <string name="review_questions_name">Review Questions</string>
@@ -15,5 +16,9 @@
     <string name="question">Question</string>
     <string name="level">Level</string>
     <string name="submit_for_review">submit for review</string>
+    <string name="submitted_for_review">submitted question for review</string>
     <string name="approve_question">Approve</string>
+    <string name="question_empty_error">Please type a valid question</string>
+    <string name="level_empty_error">Please select the level for the question</string>
+    <string name="mysession_attr">mysessionattribute</string>
 </resources>
