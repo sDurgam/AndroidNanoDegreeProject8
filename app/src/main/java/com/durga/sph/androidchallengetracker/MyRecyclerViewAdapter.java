@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
+
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
@@ -25,9 +27,9 @@ import java.util.List;
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.MyViewHolder> {
 
     Context m_context;
-    List<Recipe> my_recipesList;
+    List<TrackerQuestion> my_recipesList;
 
-    public MyRecyclerViewAdapter(Context context, List<Recipe> recipesList){
+    public MyRecyclerViewAdapter(Context context, List<TrackerQuestion> recipesList){
         m_context = context;
         my_recipesList = recipesList;
     }
@@ -50,19 +52,24 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        final Recipe recipe = my_recipesList.get(position);
+        final TrackerQuestion recipe = my_recipesList.get(position);
         holder.m_textView.setText(recipe.title);
-        new loadBimapTask(new WeakReference<Context>(m_context), holder.m_imageView).execute("http://www.tomopop.com/ul/16769-550x-header.jpg");
+        //new loadBimapTask(new WeakReference<Context>(m_context), holder.m_imageView).execute("http://www.tomopop.com/ul/16769-550x-header.jpg");
     }
 
     public int getItemCount() {
         return my_recipesList != null ? my_recipesList.size() : 0;
     }
 
+    public void updateAdapter(List<TrackerQuestion> questions){
+        my_recipesList.addAll(questions);
+        notifyDataSetChanged();
+    }
+
     public class loadBimapTask extends AsyncTask<String, Void, Bitmap>
     {
         ImageView imgView;
-       // WeakReference<Context> contextRef;
+        // WeakReference<Context> contextRef;
         Context context;
         public loadBimapTask(WeakReference<Context> contextRef, ImageView imageView){
             imgView = imageView;
@@ -89,7 +96,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
-           // if(contextRef.get() != null && imgView != null && bitmap != null) {
+            // if(contextRef.get() != null && imgView != null && bitmap != null) {
             if(context != null && imgView != null && bitmap != null) {
                 imgView.setImageBitmap(bitmap);
             }

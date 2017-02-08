@@ -11,4 +11,7 @@ public class Constants {
     public static String MYPOINTS = "mypoints";
     public static String MYADDEDQUES = "myaddedques";
     public static String MYREVIEWEDQUES = "myreviewedques";
+    public static String TRACKER = "Tracker";
+    public static String QUESTIONS = "Questions";
+    public static String LEVEL = "level";
 }

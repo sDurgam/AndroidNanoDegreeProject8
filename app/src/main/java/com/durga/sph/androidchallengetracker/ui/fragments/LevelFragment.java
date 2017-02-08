@@ -15,9 +15,13 @@ import android.widget.TextView;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 
+import com.durga.sph.androidchallengetracker.FirebaseDatabaseInterface;
+import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.MyRecyclerViewAdapter;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.Recipe;
+import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
+import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -31,16 +35,17 @@ import butterknife.ButterKnife;
  * Created by root on 1/2/17.
  */
 
-public class LevelFragment extends BaseFragment
+public class LevelFragment extends BaseFragment implements IGetQuestionsInterface
         //implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>, Callback<List<Object>>
 {
     SimpleCursorAdapter mAdapter;
-    List<Recipe> my_recipes;
     public String TAG;
     int mcurrentLevel = 1;
-    FirebaseDatabase mFirebaseDatabase;
-    DatabaseReference mMessgaesDatabaseReference;
-    //https://android-challenge-tracker.firebaseio.com/
+    @BindView(R.id.levelNameTxt)
+    TextView mlevelNameTxt;
+    @BindView(R.id.questionsView)
+    RecyclerView m_recyclerView;
+    MyRecyclerViewAdapter m_adapter;
 
     public LevelFragment(){
         TAG = getClass().getName();
@@ -54,30 +59,23 @@ public class LevelFragment extends BaseFragment
         return fragment;
     }
 
-    
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        my_recipes = new ArrayList<>();
-        String path = "https://lh3.googleusercontent.com/F_6IVSoAr53icqCyX2pfW-vqscgHpuf_y7TL13_SKZl86mO76ih4yw7vG5j0cRET2H4=w300";
-        my_recipes.add(new Recipe("a", path));
-        my_recipes.add(new Recipe("b", path));
-        my_recipes.add(new Recipe("c", path));
-        my_recipes.add(new Recipe("d", path));
-        my_recipes.add(new Recipe("e", path));
-        m_adapter = new MyRecyclerViewAdapter(this.getActivity(), my_recipes);
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.level_fragment, container, false);
+        ButterKnife.bind(this, view);
+        m_adapter = new MyRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>());
         Object levelargs = getArguments().get(getResources().getString(R.string.level));
         if(levelargs != null)
             mcurrentLevel = (int)levelargs;
-        //mAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null, new String[]{"test1", "test2"},
-        //        new int[]{android.R.id.text1, android.R.id.text2}, 0);
-        //setListAdapter(mAdapter);
         //getLoaderManager().initLoader(0, null, this);
-        //mFirebaseDatabase = FirebaseDatabase.getInstance();
-        //mMessgaesDatabaseReference = mFirebaseDatabase.getReference();
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     @Override
@@ -89,6 +87,8 @@ public class LevelFragment extends BaseFragment
     public void onStart() {
         super.onStart();
         setScreenName();
+        mFirebaseDatabaseInterface.getQuestions(Constants.QUESTIONS, Constants.LEVEL, String.valueOf(mcurrentLevel), this);
+        mFirebaseDatabaseInterface.registerEventListener(Constants.QUESTIONS);
         //AndroidRecipeService adapter = AndroidRecipeRetorfitAdapter.getRestService(this.getActivity());
         //Call<List<Object>> call = adapter.listRepos("sDurgam");
         //call.enqueue(this);
@@ -104,11 +104,13 @@ public class LevelFragment extends BaseFragment
 
     @Override
     public void onPause() {
+        mFirebaseDatabaseInterface.unregisterEventListener(Constants.QUESTIONS);
         super.onPause();
     }
 
     @Override
     public void onStop() {
+
         super.onStop();
     }
 
@@ -126,6 +128,11 @@ public class LevelFragment extends BaseFragment
         else if(mcurrentLevel == 7){
            mlevelNameTxt.setText(getResources().getString(R.string.reviewed_questions_name));
        }
+    }
+
+    @Override
+    public void onQuestionsReady(List<TrackerQuestion> questionsList) {
+        m_adapter.updateAdapter(questionsList);
     }
 
 //    @Override

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
  * Created by root on 1/30/17.
  */
 
-public class MyReviewedQuestionsFragment extends Fragment {
+public class MyReviewedQuestionsFragment extends BaseFragment {
 
     public static MyReviewedQuestionsFragment newInstance() {
         Bundle args = new Bundle();

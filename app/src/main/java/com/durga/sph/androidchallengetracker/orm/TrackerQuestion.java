@@ -1,5 +1,7 @@
 package com.durga.sph.androidchallengetracker.orm;
 
+import java.util.HashMap;
+
 /**
  * Created by root on 1/30/17.
  */
@@ -9,12 +11,27 @@ public class TrackerQuestion {
     public String title;
     public String userId;
     public int level;
+    public String lastModified;
 
-    public TrackerQuestion(String questionId, String title, String userId, int level) {
+    public TrackerQuestion(String title, String userId, int level) {
         this.questionId = questionId;
         this.title = title;
         this.userId = userId;
         this.level = level;
+        lastModified = String.valueOf(System.currentTimeMillis());
+    }
+
+    public TrackerQuestion(HashMap<String, Object> map) {
+        if(map.containsKey("questionId"))
+        this.questionId = map.get("questionId").toString();
+        if(map.containsKey("title"))
+        this.title = map.get("title").toString();
+        if(map.containsKey("userId"))
+        this.userId = map.get("userId").toString();
+        if(map.containsKey("level"))
+        this.level = Integer.valueOf(map.get("level").toString());
+        if(map.containsKey("lastModified"))
+        lastModified = map.get("lastModified").toString();
     }
 
     public String getQuestionId() {
