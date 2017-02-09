@@ -23,4 +23,5 @@ public class Constants {
     public static String REVIEWER = "reviewers";
     //three reviewers
     public static int APPROVE_QUESTION_COUNT = 3;
+    public static int APPROVE_MAX_QUESTION_COUNT = 10;
 }

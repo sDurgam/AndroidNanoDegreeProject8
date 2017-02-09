@@ -17,7 +17,7 @@
         android:gravity="center"
         android:textSize="24sp"
         android:id="@+id/levelNameTxt"
-        android:text="@string/level1_name"
+        android:text=""
         android:layout_centerHorizontal="true"
         />
     <android.support.v7.widget.RecyclerView
@@ -25,7 +25,7 @@
         android:layout_height="match_parent"
         android:id="@+id/questionsView"
         android:layout_below="@id/levelNameTxt"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/imageview_maringtop"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         >
     </android.support.v7.widget.RecyclerView>

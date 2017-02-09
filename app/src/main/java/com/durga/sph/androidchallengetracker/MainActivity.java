@@ -133,7 +133,7 @@ public class MainActivity extends BaseActivity {
             mFragmentManager.beginTransaction().replace(R.id.main_frameLayout, NewQuestionFragment.newInstance()).commit();
 
         }else if(type == R.id.nav_reviewquestions_fragment){
-            mFragmentManager.beginTransaction().replace(R.id.main_frameLayout, LevelFragment.newInstance(mlevelargs, 5)).commit();
+            mFragmentManager.beginTransaction().replace(R.id.main_frameLayout, ReviewQuestionsFragment.newInstance()).commit();
 
         }else if(type == R.id.nav_myaddedquestions_fragment){
             mFragmentManager.beginTransaction().replace(R.id.main_frameLayout, MyAddedQuestionsFragment.newInstance()).commit();

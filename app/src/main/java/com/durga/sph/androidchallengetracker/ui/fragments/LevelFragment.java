@@ -15,7 +15,7 @@ import android.widget.TextView;
 //import com.google.firebase.database.FirebaseDatabase;
 
 import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
-import com.durga.sph.androidchallengetracker.MyRecyclerViewAdapter;
+import com.durga.sph.androidchallengetracker.ui.adapters.BaseRecyclerViewAdapter;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.utils.Constants;
@@ -36,11 +36,11 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
     SimpleCursorAdapter mAdapter;
     public String TAG;
     int mcurrentLevel = 1;
-    @BindView(R.id.levelNameTxt)
+    @Nullable @BindView(R.id.levelNameTxt)
     TextView mlevelNameTxt;
     @BindView(R.id.questionsView)
     RecyclerView m_recyclerView;
-    MyRecyclerViewAdapter m_adapter;
+    BaseRecyclerViewAdapter m_adapter;
 
     public LevelFragment(){
         TAG = getClass().getName();
@@ -63,9 +63,9 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.level_fragment, container, false);
+        View view = inflater.inflate(R.layout.listquestions_fragment, container, false);
         ButterKnife.bind(this, view);
-        m_adapter = new MyRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>());
+        m_adapter = new BaseRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>());
         Object levelargs = getArguments().get(getResources().getString(R.string.level));
         if(levelargs != null)
             mcurrentLevel = (int)levelargs;
@@ -111,18 +111,17 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
 
     //set the current level as screen name
     public void setScreenName(){
-       if(mcurrentLevel == 1 || mcurrentLevel == 2 || mcurrentLevel == 3) {
-           mlevelNameTxt.setText(String.format(getResources().getString(R.string.level_current_name), String.valueOf(mcurrentLevel)));
-       }
-       else if(mcurrentLevel == 5){
-           mlevelNameTxt.setText(getResources().getString(R.string.review_questions_name));
-       }
-        else if(mcurrentLevel == 6){
-           mlevelNameTxt.setText(getResources().getString(R.string.added_questions_name));
-       }
-        else if(mcurrentLevel == 7){
-           mlevelNameTxt.setText(getResources().getString(R.string.reviewed_questions_name));
-       }
+        if(mlevelNameTxt != null) {
+            if (mcurrentLevel == 1 || mcurrentLevel == 2 || mcurrentLevel == 3) {
+                mlevelNameTxt.setText(String.format(getResources().getString(R.string.level_current_name), String.valueOf(mcurrentLevel)));
+            } else if (mcurrentLevel == 5) {
+                mlevelNameTxt.setText(getResources().getString(R.string.review_questions_name));
+            } else if (mcurrentLevel == 6) {
+                mlevelNameTxt.setText(getResources().getString(R.string.added_questions_name));
+            } else if (mcurrentLevel == 7) {
+                mlevelNameTxt.setText(getResources().getString(R.string.reviewed_questions_name));
+            }
+        }
     }
 
     @Override
