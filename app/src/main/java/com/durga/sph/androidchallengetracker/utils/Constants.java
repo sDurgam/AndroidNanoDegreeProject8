@@ -5,7 +5,6 @@ package com.durga.sph.androidchallengetracker.utils;
  */
 
 public class Constants {
-    public static String QUESTIONID = "questionId";
     public static int TAB_ITEM_COUNT = 5;
     public static String BLANKSTR = "\u0020";
     public static String MYPOINTS = "mypoints";
@@ -14,4 +13,14 @@ public class Constants {
     public static String TRACKER = "Tracker";
     public static String QUESTIONS = "Questions";
     public static String LEVEL = "level";
+
+    //tracker question
+    public static String QUESTIONID = "questionId";
+    public static String ISSPAM = "isSpam";
+    public static String TITLE = "title";
+    public static String USERID = "userId";
+    public static String LASTMODIFIED = "lastModified";
+    public static String REVIEWER = "reviewers";
+    //three reviewers
+    public static int APPROVE_QUESTION_COUNT = 3;
 }

@@ -31,7 +31,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 public class MainActivity extends BaseActivity {
 
@@ -47,10 +46,13 @@ public class MainActivity extends BaseActivity {
     TabLayout mTabLayout;
     @BindString(R.string.level) String mlevelargs;
     FragmentManager mFragmentManager;
-    static boolean mTwoPane = false;
+    static boolean mTwoPane = true;
     String m_mySessionAttr;
     private FirebaseAuth mAuth;
-    int code=100;
+    private FirebaseUser mFirebaseUser;
+    int code=1;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,18 +67,24 @@ public class MainActivity extends BaseActivity {
             mFragmentManager.beginTransaction().add(R.id.main_frameLayout, fragment).commit();
         }
         mAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mAuth.getCurrentUser();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    Log.d(mTAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    // User is signed in
+                    onSignedInInitialize(user.getDisplayName());
                 } else {
-                    Log.d(mTAG, "onAuthStateChanged:signed_out");
+                    // User is signed out
+                    onSignedOutCleanup();
                     startActivityForResult(
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
-                                    .setProviders(AuthUI.GOOGLE_PROVIDER, AuthUI.EMAIL_PROVIDER).build(),
+                                    .setIsSmartLockEnabled(false)
+                                    .setProviders(
+                                            AuthUI.EMAIL_PROVIDER)
+                                    .build(),
                             code);
                 }
             }
@@ -170,4 +178,11 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private void onSignedInInitialize(String username) {
+
+    }
+
+    private void onSignedOutCleanup() {
+
+    }
 }

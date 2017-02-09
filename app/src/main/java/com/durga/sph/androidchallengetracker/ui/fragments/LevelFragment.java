@@ -1,6 +1,5 @@
 package com.durga.sph.androidchallengetracker.ui.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,15 +14,11 @@ import android.widget.TextView;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 
-import com.durga.sph.androidchallengetracker.FirebaseDatabaseInterface;
 import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.MyRecyclerViewAdapter;
 import com.durga.sph.androidchallengetracker.R;
-import com.durga.sph.androidchallengetracker.Recipe;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.utils.Constants;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +82,7 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
     public void onStart() {
         super.onStart();
         setScreenName();
-        mFirebaseDatabaseInterface.getQuestions(Constants.QUESTIONS, Constants.LEVEL, String.valueOf(mcurrentLevel), this);
+        mFirebaseDatabaseInterface.getNewQuestionsByLevel(Constants.QUESTIONS, Constants.LEVEL, String.valueOf(mcurrentLevel), this);
         mFirebaseDatabaseInterface.registerEventListener(Constants.QUESTIONS);
         //AndroidRecipeService adapter = AndroidRecipeRetorfitAdapter.getRestService(this.getActivity());
         //Call<List<Object>> call = adapter.listRepos("sDurgam");

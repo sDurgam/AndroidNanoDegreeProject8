@@ -79,27 +79,27 @@ public class FirebaseDatabaseInterface {
         mDatabaseReference.child(key).removeEventListener(mquestionChildEventListener);
     }
 
-    public void getQuestions(String key, final String filter1, final String filter2, final IGetQuestionsInterface callback){
+    public void getNewQuestionsByLevel(String key, final String filter1, final String filter2, final IGetQuestionsInterface callback){
         final Query queryRef = mDatabaseReference.child(key);
-        queryRef.addValueEventListener(new ValueEventListener() {
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final List<TrackerQuestion> questionsList = new ArrayList<>();
                 TrackerQuestion question= null;
                 for (DataSnapshot data : dataSnapshot.getChildren()){
-                    if(data.child(filter1).getValue().toString().equals(filter2)){
-                       question = new TrackerQuestion((HashMap<String, Object>) data.getValue());
-                       questionsList.add(question);
-                        Log.d("tag", data.getValue().toString());
+                    //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
+                    if(data.child(filter1).getValue().toString().equals(filter2) && data.child(Constants.ISSPAM).getValue().equals(false) && data.child(Constants.REVIEWER).getChildrenCount() >= Constants.APPROVE_QUESTION_COUNT){
+                        question = new TrackerQuestion((HashMap<String, Object>) data.getValue());
+                        questionsList.add(question);
                     }
                 }
                 callback.onQuestionsReady(questionsList);
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
     }
+
 }
