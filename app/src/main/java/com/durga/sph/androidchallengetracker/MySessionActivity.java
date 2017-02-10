@@ -3,15 +3,13 @@ package com.durga.sph.androidchallengetracker;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
+import com.durga.sph.androidchallengetracker.ui.fragments.MyAddedQuestionsFragment;
+import com.durga.sph.androidchallengetracker.ui.fragments.MyPointsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyReviewedQuestionsFragment;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Optional;
 
 /**
  * Created by root on 2/6/17.

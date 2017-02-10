@@ -21,4 +21,7 @@
     <string name="question_empty_error">Please type a valid question</string>
     <string name="level_empty_error">Please select the level for the question</string>
     <string name="mysession_attr">mysessionattribute</string>
+    <string name="mark_as_spam">Spam</string>
+    <string name="mark_as_solved">Done</string>
+    <string name="mark_as_reviewed">Approve</string>
 </resources>

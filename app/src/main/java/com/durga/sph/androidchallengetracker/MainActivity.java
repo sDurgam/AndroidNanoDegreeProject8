@@ -8,19 +8,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.durga.sph.androidchallengetracker.ui.TabletViewFragmentPagerAdapter;
+import com.durga.sph.androidchallengetracker.ui.adapters.TabletViewFragmentPagerAdapter;
 import com.durga.sph.androidchallengetracker.ui.fragments.LevelFragment;
+import com.durga.sph.androidchallengetracker.ui.fragments.MyAddedQuestionsFragment;
+import com.durga.sph.androidchallengetracker.ui.fragments.MyPointsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyReviewedQuestionsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.NewQuestionFragment;
+import com.durga.sph.androidchallengetracker.ui.fragments.ReviewQuestionsFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,11 +27,9 @@ import com.google.firebase.auth.FirebaseUser;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Optional;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity{
 
     @Nullable @BindView(R.id.toolbar)
     Toolbar mToolbar;

@@ -108,8 +108,8 @@ public class NewQuestionFragment extends BaseFragment {
         String userId  = mFirebaseAuth.getCurrentUser().getUid();
         int level = getLevel();
         // Generate a reference to a new location and add some data using push()
-        //questionId;
-        TrackerQuestion question = new TrackerQuestion(title, userId, level);
+        //id;
+        TrackerQuestion question = new TrackerQuestion(questionId, title, userId, level);
         mFirebaseDatabaseInterface.addNewItem(Constants.QUESTIONS, questionId, question);
     }
 

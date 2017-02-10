@@ -1,16 +1,16 @@
 package com.durga.sph.androidchallengetracker.ui.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
+import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
 
 import java.util.List;
 
@@ -22,17 +22,23 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<BaseRecyclerVi
 
     Context m_context;
     List<TrackerQuestion> my_recipesList;
+    final IOnItemClickListener itemClickListener;
 
-    public BaseRecyclerViewAdapter(Context context, List<TrackerQuestion> recipesList){
+    public BaseRecyclerViewAdapter(Context context, List<TrackerQuestion> recipesList, IOnItemClickListener listener){
         m_context = context;
         my_recipesList = recipesList;
+        itemClickListener = listener;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        CheckedTextView m_textView;
+        TextView descriptionView;
+        AppCompatCheckBox spamCheckedView;
+        AppCompatCheckBox solvedOrReviewedView;
         public MyViewHolder(View itemView) {
             super(itemView);
-            m_textView = (CheckedTextView) itemView.findViewById(R.id.textView);
+            descriptionView = (TextView) itemView.findViewById(R.id.textView);
+            spamCheckedView = (AppCompatCheckBox) itemView.findViewById(R.id.isspamView);
+            solvedOrReviewedView = (AppCompatCheckBox) itemView.findViewById(R.id.issolvedorReviewedView);
         }
     }
 
@@ -45,7 +51,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<BaseRecyclerVi
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final TrackerQuestion recipe = my_recipesList.get(position);
-        holder.m_textView.setText(recipe.title);
+        holder.descriptionView.setText(recipe.title);
     }
 
     public int getItemCount() {
@@ -56,4 +62,6 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<BaseRecyclerVi
         my_recipesList.addAll(questions);
         notifyDataSetChanged();
     }
+
+
 }

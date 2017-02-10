@@ -18,6 +18,7 @@ import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.ui.adapters.BaseRecyclerViewAdapter;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
+import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 
 import java.util.ArrayList;
@@ -65,7 +66,22 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.listquestions_fragment, container, false);
         ButterKnife.bind(this, view);
-        m_adapter = new BaseRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>());
+        m_adapter = new BaseRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), new IOnItemClickListener() {
+            @Override
+            public void onisSpamClick(TrackerQuestion question, int position) {
+                mFirebaseDatabaseInterface.markQuestionAsSpam(question.id, this);
+            }
+
+            @Override
+            public void onisReviewedClick(TrackerQuestion question, String user, int position) {
+
+            }
+
+            @Override
+            public void isSuccess(boolean success) {
+
+            }
+        });
         Object levelargs = getArguments().get(getResources().getString(R.string.level));
         if(levelargs != null)
             mcurrentLevel = (int)levelargs;
@@ -83,10 +99,7 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
         super.onStart();
         setScreenName();
         mFirebaseDatabaseInterface.getNewQuestionsByLevel(Constants.QUESTIONS, Constants.LEVEL, String.valueOf(mcurrentLevel), this);
-        mFirebaseDatabaseInterface.registerEventListener(Constants.QUESTIONS);
-        //AndroidRecipeService adapter = AndroidRecipeRetorfitAdapter.getRestService(this.getActivity());
-        //Call<List<Object>> call = adapter.listRepos("sDurgam");
-        //call.enqueue(this);
+        //mFirebaseDatabaseInterface.registerQuestionsByLevelEventListener(Constants.QUESTIONS);
     }
 
     @Override

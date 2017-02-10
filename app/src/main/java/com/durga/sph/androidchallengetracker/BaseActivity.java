@@ -2,27 +2,20 @@ package com.durga.sph.androidchallengetracker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.durga.sph.androidchallengetracker.ui.fragments.MyAddedQuestionsFragment;
+import com.durga.sph.androidchallengetracker.ui.fragments.MyPointsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyReviewedQuestionsFragment;
-import com.durga.sph.androidchallengetracker.ui.fragments.NewQuestionFragment;
 import com.durga.sph.androidchallengetracker.utils.Constants;
-import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.util.Arrays;
 
 import butterknife.BindString;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
-
-import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 
 /**

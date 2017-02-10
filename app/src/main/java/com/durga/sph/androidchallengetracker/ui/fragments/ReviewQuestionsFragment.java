@@ -1,4 +1,4 @@
-package com.durga.sph.androidchallengetracker;
+package com.durga.sph.androidchallengetracker.ui.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,11 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.IListener;
+import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
-import com.durga.sph.androidchallengetracker.ui.adapters.BaseRecyclerViewAdapter;
 import com.durga.sph.androidchallengetracker.ui.adapters.ReviewQuestionsAdapter;
-import com.durga.sph.androidchallengetracker.ui.fragments.BaseFragment;
+import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 
 import java.util.ArrayList;
@@ -25,7 +28,7 @@ import butterknife.ButterKnife;
  * Created by root on 1/30/17.
  */
 
-public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestionsInterface{
+public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestionsInterface, IListener {
 
     @Nullable @BindView(R.id.levelNameTxt)
     TextView screenTitle;
@@ -37,7 +40,6 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
     public static ReviewQuestionsFragment newInstance() {
         Bundle args = new Bundle();
         ReviewQuestionsFragment fragment = new ReviewQuestionsFragment();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -57,10 +59,34 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
     public void onResume() {
         super.onResume();
         LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
-        m_reviewquestionsAdapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName());
+        m_reviewquestionsAdapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new IOnItemClickListener() {
+            int pos;
+            @Override
+            public void onisSpamClick(TrackerQuestion question, int position) {
+                pos = position;
+                mFirebaseDatabaseInterface.markQuestionAsSpam(question.id, this);
+            }
+
+            @Override
+            public void onisReviewedClick(TrackerQuestion question, String user, int position) {
+                pos = position;
+                mFirebaseDatabaseInterface.updateReviewersForQuestion(user, question.id, this);
+            }
+
+            @Override
+            public void isSuccess(boolean success) {
+                if(success){
+                    m_reviewquestionsAdapter.removeItem(pos);
+                }
+                else{
+                       //display message
+                    Toast.makeText(getActivity(), "Action could not be performed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         reviewQuestionsView.setLayoutManager(lmanager);
         reviewQuestionsView.setAdapter(m_reviewquestionsAdapter);
-        mFirebaseDatabaseInterface.getQuestionsForReview(Constants.QUESTIONS,this);
+        mFirebaseDatabaseInterface.getQuestionsForReview(Constants.QUESTIONS, super.userName(), this);
     }
 
     //register for new questions
@@ -74,11 +100,16 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
     @Override
     public void onStart() {
         super.onStart();
-        mFirebaseDatabaseInterface.registerEventListener(Constants.QUESTIONS);
+        mFirebaseDatabaseInterface.registerQuestionsByLevelEventListener(Constants.QUESTIONS, this, 1);
     }
 
     @Override
     public void onQuestionsReady(List<TrackerQuestion> questionsList) {
         m_reviewquestionsAdapter.updateAdapter(questionsList);
+    }
+
+    @Override
+    public void add(TrackerQuestion question) {
+        m_reviewquestionsAdapter.addItem(question);
     }
 }

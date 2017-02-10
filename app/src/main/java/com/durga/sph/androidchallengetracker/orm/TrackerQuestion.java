@@ -1,49 +1,49 @@
 package com.durga.sph.androidchallengetracker.orm;
 
 import com.durga.sph.androidchallengetracker.utils.Constants;
+import com.google.firebase.FirebaseApp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by root on 1/30/17.
  */
 
 public class TrackerQuestion {
-    public String questionId;
+    public String id;
     public String title;
     public String userId;
     public int level;
     public String lastModified;
-    public Set<String> reviewers;
+    public List<String> reviewers;
 
     public boolean isSpam() {
-        return isSpam;
+        return spam;
     }
 
     public void setSpam(boolean spam) {
-        isSpam = spam;
+        this.spam = spam;
     }
 
-    public boolean isSpam;
+    public boolean spam;
 
-    public TrackerQuestion(String title, String userId, int level) {
-        this.questionId = questionId;
+    public TrackerQuestion(){}
+
+    public TrackerQuestion(String questionId, String title, String userId, int level) {
+        this.id = questionId;
         this.title = title;
         this.userId = userId;
         this.level = level;
         lastModified = String.valueOf(System.currentTimeMillis());
-        reviewers = new HashSet<>();
+        reviewers = new ArrayList<>();
         reviewers.add(userId);
-        isSpam = true;
     }
 
     public TrackerQuestion(HashMap<String, Object> map) {
         if (map.containsKey(Constants.QUESTIONID))
-            this.questionId = map.get(Constants.QUESTIONID).toString();
+            this.id = map.get(Constants.QUESTIONID).toString();
         if (map.containsKey(Constants.TITLE))
             this.title = map.get(Constants.TITLE).toString();
         if (map.containsKey(Constants.USERID))
@@ -57,7 +57,7 @@ public class TrackerQuestion {
 
     public TrackerQuestion(HashMap<String, Object> map, boolean isReviewer) {
         if (map.containsKey(Constants.QUESTIONID))
-            this.questionId = map.get(Constants.QUESTIONID).toString();
+            this.id = map.get(Constants.QUESTIONID).toString();
         if (map.containsKey(Constants.TITLE))
             this.title = map.get(Constants.TITLE).toString();
         if (map.containsKey(Constants.USERID))
@@ -66,18 +66,18 @@ public class TrackerQuestion {
             this.level = Integer.valueOf(map.get(Constants.LEVEL).toString());
         if (map.containsKey(Constants.LASTMODIFIED))
             lastModified = map.get(Constants.LASTMODIFIED).toString();
-        reviewers = new HashSet<>();
+        reviewers = new ArrayList<>();
         if(isReviewer && map.get(Constants.REVIEWER) != null){
             reviewers.addAll((ArrayList<String>)(map.get(Constants.REVIEWER)));
         }
     }
 
-    public String getQuestionId() {
-        return questionId;
+    public String getId() {
+        return id;
     }
 
-    public void setQuestionId(String questionId) {
-        this.questionId = questionId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -112,11 +112,11 @@ public class TrackerQuestion {
         this.lastModified = lastModified;
     }
 
-    public Set<String> getReviewers() {
+    public List<String> getReviewers() {
         return reviewers;
     }
 
-    public void setReviewers(Set<String> reviewers) {
+    public void setReviewers(List<String> reviewers) {
         this.reviewers = reviewers;
     }
 }

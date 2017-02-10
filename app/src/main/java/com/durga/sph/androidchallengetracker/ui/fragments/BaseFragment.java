@@ -1,6 +1,8 @@
 package com.durga.sph.androidchallengetracker.ui.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -25,6 +27,16 @@ public class BaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFirebaseDatabaseInterface = new FirebaseDatabaseInterface();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Override
@@ -61,11 +73,11 @@ public class BaseFragment extends Fragment {
         super.onPause();
     }
 
-    public void registerFirebaseChildListener(String key){
-        mFirebaseDatabaseInterface.registerEventListener(key);
-    }
-
-    public void unregisterFirebaseChildListener(String key){
-        mFirebaseDatabaseInterface.unregisterEventListener(key);
-    }
+//    public void registerFirebaseChildListener(String key){
+//        mFirebaseDatabaseInterface.registerQuestionsByLevelEventListener(key, );
+//    }
+//
+//    public void unregisterFirebaseChildListener(String key){
+//        mFirebaseDatabaseInterface.unregisterEventListener(key);
+//    }
 }

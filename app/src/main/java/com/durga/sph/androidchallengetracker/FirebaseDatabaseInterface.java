@@ -4,6 +4,8 @@ import android.util.Log;
 import android.webkit.HttpAuthHandler;
 
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
+import com.durga.sph.androidchallengetracker.ui.adapters.BaseRecyclerViewAdapter;
+import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -11,13 +13,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by root on 2/8/17.
@@ -45,41 +50,48 @@ public class FirebaseDatabaseInterface {
         mDatabaseReference.child(key).child(newId).setValue(value);
     }
 
-    public void registerEventListener(String key){
+    public void registerQuestionsByLevelEventListener(String key, final IListener listener, final int level){
         mquestionChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+                Log.d("tag", "added");
+                TrackerQuestion question = dataSnapshot.getValue(TrackerQuestion.class);
+                if(!question.isSpam() && question.level == level && (question.reviewers == null || question.reviewers.size() <= 3)){
+                        question.setId(String .valueOf(System.currentTimeMillis()));
+                        //listener.add(question);
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                Log.d("tag", "changed");
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                Log.d("tag", dataSnapshot.getValue().toString());
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+                Log.d("tag", "moved");
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.d("tag", databaseError.toString());
             }
         };
         mDatabaseReference.child(key).addChildEventListener(mquestionChildEventListener);
     }
 
     public void unregisterEventListener(String key){
-        mDatabaseReference.child(key).removeEventListener(mquestionChildEventListener);
+        if(mquestionChildEventListener != null) {
+            mDatabaseReference.child(key).removeEventListener(mquestionChildEventListener);
+        }
     }
 
-    public void getQuestionsForReview(String key, final  IGetQuestionsInterface callback){
+    public void getQuestionsIReviewed(String key, final String user, final  IGetQuestionsInterface callback){
         final Query queryRef = mDatabaseReference.child(key);
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -88,7 +100,32 @@ public class FirebaseDatabaseInterface {
                 TrackerQuestion question= null;
                 for (DataSnapshot data : dataSnapshot.getChildren()){
                     //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
-                    if(data.child(Constants.ISSPAM).getValue().equals(false) && data.child(Constants.REVIEWER).getChildrenCount() <= Constants.APPROVE_MAX_QUESTION_COUNT){
+                    if(data.child(Constants.ISSPAM).getValue().equals(false) &&  ((Set<String>)data.child(Constants.REVIEWER).getValue()).contains(user)){
+                        question = new TrackerQuestion((HashMap<String, Object>) data.getValue(), true);
+                        questionsList.add(question);
+                    }
+                }
+                callback.onQuestionsReady(questionsList);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    public void getQuestionsForReview(String key, final String user, final  IGetQuestionsInterface callback){
+        final Query queryRef = mDatabaseReference.child(key);
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final List<TrackerQuestion> questionsList = new ArrayList<>();
+                TrackerQuestion question= null;
+                for (DataSnapshot data : dataSnapshot.getChildren()){
+                    //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
+                    if(data.child(Constants.ISSPAM).getValue().equals(false) &&  (data.child(Constants.REVIEWER).getValue() == null || !((List<String>)data.child(Constants.REVIEWER).getValue()).contains(user)) && data.child(Constants.REVIEWER).getChildrenCount() <= Constants.APPROVE_MAX_QUESTION_COUNT){
+                        //if(data.child(Constants.ISSPAM).getValue().equals(false)  && data.child(Constants.REVIEWER).getChildrenCount() <= Constants.APPROVE_MAX_QUESTION_COUNT){
                         question = new TrackerQuestion((HashMap<String, Object>) data.getValue(), true);
                         questionsList.add(question);
                     }
@@ -125,4 +162,72 @@ public class FirebaseDatabaseInterface {
         });
     }
 
+    public void markQuestionAsSpam(String questionId, final IOnItemClickListener listener) {
+        mDatabaseReference.child(Constants.QUESTIONS).child(questionId).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                // Set value and report transaction success
+                TrackerQuestion question = mutableData.getValue(TrackerQuestion.class);
+                if(question != null) {
+                    question.setSpam(true);
+                    mutableData.setValue(question);
+                    return Transaction.success(mutableData);
+                }
+                else {
+                    return Transaction.abort();
+                }
+            }
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                // Transaction completed
+                listener.isSuccess(databaseError == null);
+                Log.d(getClass().getName(), "saved review question:" + databaseError);
+            }
+        });
+    }
+
+    public void updateReviewersForQuestion(final String user, String questionId, final IOnItemClickListener listener) {
+        DatabaseReference reviewerRef = mDatabaseReference.child(Constants.QUESTIONS).child(questionId);
+        reviewerRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                TrackerQuestion question = mutableData.getValue(TrackerQuestion.class);
+                List<String> reviewersList;
+
+                if (question == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                if (question.reviewers == null) {
+                    reviewersList = new ArrayList<>();
+                    reviewersList.add(user);
+                } else {
+                    if(!question.reviewers.contains(user)) {
+                        question.reviewers.add(user);
+                    }
+                }
+                // Set value and report transaction success
+                mutableData.setValue(question);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                // Transaction completed
+                listener.isSuccess(databaseError == null);
+                Log.d(getClass().getName(), "saved review question:" + databaseError);
+            }
+
+
+        });
+
+
+
+
+
+
+
+    }
 }

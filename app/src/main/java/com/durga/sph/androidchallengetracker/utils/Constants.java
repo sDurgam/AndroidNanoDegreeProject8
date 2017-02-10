@@ -10,13 +10,14 @@ public class Constants {
     public static String MYPOINTS = "mypoints";
     public static String MYADDEDQUES = "myaddedques";
     public static String MYREVIEWEDQUES = "myreviewedques";
+    public static String REVIEWEQUES = "revieweques";
     public static String TRACKER = "Tracker";
     public static String QUESTIONS = "Questions";
     public static String LEVEL = "level";
 
     //tracker question
-    public static String QUESTIONID = "questionId";
-    public static String ISSPAM = "isSpam";
+    public static String QUESTIONID = "id";
+    public static String ISSPAM = "spam";
     public static String TITLE = "title";
     public static String USERID = "userId";
     public static String LASTMODIFIED = "lastModified";

@@ -1,15 +1,11 @@
-package com.durga.sph.androidchallengetracker.ui;
+package com.durga.sph.androidchallengetracker.ui.adapters;
 
 
 import android.app.Fragment;
 import android.app.FragmentManager;
 
-import com.durga.sph.androidchallengetracker.MyAddedQuestionsFragment;
-import com.durga.sph.androidchallengetracker.MyPointsFragment;
-import com.durga.sph.androidchallengetracker.R;
-import com.durga.sph.androidchallengetracker.ReviewQuestionsFragment;
+import com.durga.sph.androidchallengetracker.ui.fragments.ReviewQuestionsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.LevelFragment;
-import com.durga.sph.androidchallengetracker.ui.fragments.MyReviewedQuestionsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.NewQuestionFragment;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 
