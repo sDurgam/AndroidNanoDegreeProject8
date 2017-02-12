@@ -1,4 +1,4 @@
-package com.durga.sph.androidchallengetracker;
+package com.durga.sph.androidchallengetracker.activites;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyAddedQuestionsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyPointsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyReviewedQuestionsFragment;

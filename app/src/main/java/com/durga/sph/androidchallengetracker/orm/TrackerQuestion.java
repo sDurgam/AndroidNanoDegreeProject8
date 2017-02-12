@@ -32,6 +32,16 @@ public class TrackerQuestion {
 
     public TrackerQuestion(){}
 
+    public TrackerQuestion(String title, String userId, int level) {
+        this.title = title;
+        this.userId = userId;
+        this.level = level;
+        lastModified = String.valueOf(System.currentTimeMillis());
+        reviewers = new ArrayList<>();
+        userId = "-DTi4gpDnEHWjelfGSbDxCyhsv8z3";
+        upvote = 0l;
+    }
+
     public TrackerQuestion(String questionId, String title, String userId, int level) {
         this.id = questionId;
         this.title = title;
@@ -39,6 +49,7 @@ public class TrackerQuestion {
         this.level = level;
         lastModified = String.valueOf(System.currentTimeMillis());
         reviewers = new ArrayList<>();
+        userId = "-DTi4gpDnEHWjelfGSbDxCyhsv8z3";
         upvote = 0l;
     }
 

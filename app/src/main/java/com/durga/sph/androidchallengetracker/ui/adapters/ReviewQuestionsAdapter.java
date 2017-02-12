@@ -114,8 +114,14 @@ public class ReviewQuestionsAdapter extends RecyclerView.Adapter<ReviewQuestions
         return position;
     }
 
-    public void updateAdapter(List<TrackerQuestion> questions){
-        m_reviewQuestionsList.addAll(questions);
+    public void updateAdapter(List<TrackerQuestion> questions, int start, int end){
+        for(int i =start; i < end && start >= 0 && end < questions.size(); i++) {
+            m_reviewQuestionsList.add(questions.get(i));
+        }
         notifyDataSetChanged();
+    }
+
+    public String getQuestionIdByPosition(int position){
+        return position <= m_reviewQuestionsList.size() ? m_reviewQuestionsList.get(position).id : null;
     }
 }

@@ -27,4 +27,5 @@ public class Constants {
     public static int APPROVE_QUESTION_COUNT = 3;
     public static int APPROVE_MAX_QUESTION_COUNT = 10;
     public static int APPROVE_MIN_QUESTION_COUNT = -3;
+    public static int MAX_QUESTIONS_API_COUNT = 20;
 }

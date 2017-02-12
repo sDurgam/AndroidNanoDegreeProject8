@@ -1,9 +1,11 @@
 package com.durga.sph.androidchallengetracker.ui;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.LinearLayout;
+
+import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
 
 /**
  * Created by root on 1/10/17.
@@ -11,37 +13,53 @@ import android.support.v7.widget.RecyclerView;
 
 public abstract class RecylclerViewEndlessScrollListener extends RecyclerView.OnScrollListener {
 
-    Context mContext;
-    int m_totalCount;
-    int m_prevItemCount;
-    int m_visibleThreshold = 5;
-    boolean m_isLoading = false;
-    int currentPage = 1;
-    public RecylclerViewEndlessScrollListener(Context context){
-        mContext = context;
+    IGetQuestionsInterface m_callback;
+    LinearLayoutManager mlayoutManager;
+    int mvisibleTreshold = 5;
+    int mpreviousItemCount;
+    int mcurrentPage;
+    boolean misLoading = true;
+
+
+    public RecylclerViewEndlessScrollListener(IGetQuestionsInterface callback, LinearLayoutManager layoutManager)
+    {
+        super();
+        mlayoutManager = layoutManager;
+        m_callback = callback;
     }
+
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
-        if(recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
-            LinearLayoutManager manager = ((LinearLayoutManager) recyclerView.getLayoutManager());
-            m_totalCount =manager.findLastVisibleItemPosition();
-            if(m_totalCount < m_prevItemCount + m_visibleThreshold){  //load everything
-                m_prevItemCount = m_totalCount;
-                if(m_totalCount == 0){
-                    m_isLoading = true;
-                }
-            }
-            else if(m_isLoading && m_totalCount > m_prevItemCount){
-                m_prevItemCount = m_totalCount;
-                m_isLoading = false;
-            }
-            else if(!m_isLoading && m_totalCount > m_prevItemCount + m_visibleThreshold){
-                m_isLoading = true;
-                onLoadMore(currentPage);
-                currentPage++;
+        int lastVisisblePosition = 0;
+        int currentPage = 0;
+        int totalCount = mlayoutManager.getItemCount();
+        if(mlayoutManager instanceof LinearLayoutManager)
+        {
+            lastVisisblePosition = ((LinearLayoutManager)mlayoutManager).findLastVisibleItemPosition();
+        }
+        if(totalCount < mpreviousItemCount) //totalcount is less than existing items count
+        {
+            mcurrentPage = 0;
+            mpreviousItemCount = totalCount;
+            if(totalCount == 0)
+            {
+                misLoading = true;
             }
         }
+        if(misLoading && totalCount > mpreviousItemCount)   //update previouscount to totalcount as new items are loaded as user scrolls the list
+        {
+            mpreviousItemCount = totalCount;
+            misLoading = false;
+        }
+        if(!misLoading && (lastVisisblePosition + mvisibleTreshold) > totalCount)   //get more items via api request
+        {
+            misLoading = true;
+            mcurrentPage ++;
+            onLoadMore(m_callback);
+        }
     }
-    public abstract void onLoadMore(int currentPage);
+    //any subclass needs to implement its functionality to load more items in recyclerview
+    public abstract void onLoadMore(IGetQuestionsInterface callback);
+
 }

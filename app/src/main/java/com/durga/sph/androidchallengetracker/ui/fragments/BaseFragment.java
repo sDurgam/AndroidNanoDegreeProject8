@@ -6,10 +6,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.durga.sph.androidchallengetracker.FirebaseDatabaseInterface;
+import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by root on 2/3/17.
@@ -26,7 +27,6 @@ public class BaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseDatabaseInterface = new FirebaseDatabaseInterface();
     }
 
     @Override

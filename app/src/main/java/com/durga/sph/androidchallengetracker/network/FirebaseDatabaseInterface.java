@@ -1,7 +1,9 @@
-package com.durga.sph.androidchallengetracker;
+package com.durga.sph.androidchallengetracker.network;
 
 import android.util.Log;
 
+import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.IListener;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnReviewerItemClickListerner;
@@ -25,7 +27,7 @@ import java.util.Set;
  * Created by root on 2/8/17.
  */
 
-public class FirebaseDatabaseInterface {
+public abstract class FirebaseDatabaseInterface {
 
     //Firebase variables
     FirebaseDatabase mFireBaseDatabase;
@@ -43,8 +45,18 @@ public class FirebaseDatabaseInterface {
         return pushedQuestionRef.getKey();
     }
 
-    public void addNewItem(String key, String newId, Object value){
-        mDatabaseReference.child(key).child(newId).setValue(value);
+    public void addNewQuestion(String key, final TrackerQuestion value){
+        DatabaseReference reviewerRef = mDatabaseReference.child(Constants.QUESTIONS);
+        final String Id = reviewerRef.push().getKey();
+        value.setId(Id);
+        reviewerRef.child(Id).setValue(value, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null){
+
+                }
+            }
+        });
     }
 
     public void registerQuestionsByLevelEventListener(String key, final IListener listener, final int level){
@@ -90,78 +102,6 @@ public class FirebaseDatabaseInterface {
         }
     }
 
-    public void getMyReviewedQuestions(String key, final String user, final  IGetQuestionsInterface callback){
-        final Query queryRef = mDatabaseReference.child(key);
-        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                final List<TrackerQuestion> questionsList = new ArrayList<>();
-                TrackerQuestion question= null;
-                for (DataSnapshot data : dataSnapshot.getChildren()){
-                    //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
-                    if(data.child(Constants.ISSPAM).getValue().equals(false) &&  ((Set<String>)data.child(Constants.REVIEWER).getValue()).contains(user)){
-                        question = new TrackerQuestion((HashMap<String, Object>) data.getValue(), true);
-                        questionsList.add(question);
-                    }
-                }
-                callback.onQuestionsReady(questionsList);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
-    public void getQuestionsForReview(String key, final String user, final  IGetQuestionsInterface callback){
-        final Query queryRef = mDatabaseReference.child(key);
-        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                final List<TrackerQuestion> questionsList = new ArrayList<>();
-                TrackerQuestion question= null;
-                for (DataSnapshot data : dataSnapshot.getChildren()){
-                    //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
-                    if(data.child(Constants.ISSPAM).getValue().equals(false) && !data.child(Constants.USERID).getValue().equals(user) && (data.child(Constants.REVIEWER).getValue() == null || !((List<String>)data.child(Constants.REVIEWER).getValue()).contains(user)) && data.child(Constants.REVIEWER).getChildrenCount() >= Constants.APPROVE_MIN_QUESTION_COUNT && data.child(Constants.REVIEWER).getChildrenCount() <= Constants.APPROVE_MAX_QUESTION_COUNT){
-                        //if(data.child(Constants.ISSPAM).getValue().equals(false)  && data.child(Constants.REVIEWER).getChildrenCount() <= Constants.APPROVE_MAX_QUESTION_COUNT){
-                        question = new TrackerQuestion((HashMap<String, Object>) data.getValue(), true);
-                        questionsList.add(question);
-                    }
-                }
-                isInitialValueLoaded = false;
-                callback.onQuestionsReady(questionsList);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void getNewQuestionsByLevel(String key, final String filter1, final String filter2, final IGetQuestionsInterface callback){
-        final Query queryRef = mDatabaseReference.child(key);
-        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                final List<TrackerQuestion> questionsList = new ArrayList<>();
-                TrackerQuestion question= null;
-                for (DataSnapshot data : dataSnapshot.getChildren()){
-                    //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
-                    if(data.child(filter1).getValue().toString().equals(filter2) && data.child(Constants.ISSPAM).getValue().equals(false) && data.child(Constants.UPVOTE).getChildrenCount() >= Constants.APPROVE_QUESTION_COUNT){
-                        question = new TrackerQuestion((HashMap<String, Object>) data.getValue());
-                        questionsList.add(question);
-                    }
-                }
-                isInitialValueLoaded = true;
-                callback.onQuestionsReady(questionsList);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     public void markQuestionAsSpam(String questionId, final IOnItemClickListener listener) {
         mDatabaseReference.child(Constants.QUESTIONS).child(questionId).runTransaction(new Transaction.Handler() {
@@ -231,4 +171,20 @@ public class FirebaseDatabaseInterface {
         });
 
     }
+    //Fetch questions for review, myadded and myreviewed questions
+    public void  getMoreQuestions(String key, String user, IGetQuestionsInterface callback, String start, String lastkey, int length){
+    }
+
+    //Fetch questions for review, myadded and myreviewed questions
+    public void getQuestions(final String key, final String user, final IGetQuestionsInterface callback, int length){
+
+    }
+
+
+    //Fetch questions by level
+    public void getQuestions(String key, final String filter1, final String filter2, final IGetQuestionsInterface callback, String start, int length){
+
+    }
+
+    public void addQuestion(){};
 }

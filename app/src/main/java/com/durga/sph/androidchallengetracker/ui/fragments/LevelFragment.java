@@ -15,6 +15,7 @@ import android.widget.TextView;
 //import com.google.firebase.database.FirebaseDatabase;
 
 import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.network.LevelQuestionsInterface;
 import com.durga.sph.androidchallengetracker.ui.adapters.LevelRecyclerViewAdapter;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
@@ -58,6 +59,7 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseDatabaseInterface = new LevelQuestionsInterface();
     }
 
     @Nullable
@@ -92,7 +94,7 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
     public void onStart() {
         super.onStart();
         setScreenName();
-        mFirebaseDatabaseInterface.getNewQuestionsByLevel(Constants.QUESTIONS, Constants.LEVEL, String.valueOf(mcurrentLevel), this);
+       // mFirebaseDatabaseInterface.getQuestions(Constants.QUESTIONS, Constants.LEVEL, String.valueOf(mcurrentLevel), 0, this);
         //mFirebaseDatabaseInterface.registerQuestionsByLevelEventListener(Constants.QUESTIONS);
     }
 

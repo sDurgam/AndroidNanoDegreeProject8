@@ -1,4 +1,4 @@
-package com.durga.sph.androidchallengetracker;
+package com.durga.sph.androidchallengetracker.activites;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,9 +1,7 @@
 package com.durga.sph.androidchallengetracker.ui.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,19 +9,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.durga.sph.androidchallengetracker.FirebaseDatabaseInterface;
 import com.durga.sph.androidchallengetracker.R;
+import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
+import com.durga.sph.androidchallengetracker.network.MyAddedQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.utils.Constants;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -46,6 +37,7 @@ public class NewQuestionFragment extends BaseFragment {
     @BindString(R.string.question_empty_error) String quesEmptyError;
     @BindString(R.string.level_empty_error) String levelEmptyError;
     String mUsername;
+    String questionId;
 
     public NewQuestionFragment(){
 
@@ -55,6 +47,13 @@ public class NewQuestionFragment extends BaseFragment {
         NewQuestionFragment fragment = new NewQuestionFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFirebaseDatabaseInterface = new FirebaseDatabaseInterface() {
+        };
     }
 
     @Override
@@ -103,14 +102,13 @@ public class NewQuestionFragment extends BaseFragment {
     }
 
     private void saveQuestioninDB(){
-        String questionId = mFirebaseDatabaseInterface.getNewId(Constants.QUESTIONS);
         String title = newQuestionEditTxt.getText().toString();
         String userId  = mFirebaseAuth.getCurrentUser().getUid();
         int level = getLevel();
         // Generate a reference to a new location and add some data using push()
         //id;
-        TrackerQuestion question = new TrackerQuestion(questionId, title, userId, level);
-        mFirebaseDatabaseInterface.addNewItem(Constants.QUESTIONS, questionId, question);
+        TrackerQuestion question = new TrackerQuestion(title, userId, level);
+        mFirebaseDatabaseInterface.addNewQuestion(Constants.QUESTIONS, question);
     }
 
     private int getLevel(){

@@ -13,7 +13,10 @@ import android.widget.Toast;
 import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.IListener;
 import com.durga.sph.androidchallengetracker.R;
+import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
+import com.durga.sph.androidchallengetracker.network.ReviewQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
+import com.durga.sph.androidchallengetracker.ui.RecylclerViewEndlessScrollListener;
 import com.durga.sph.androidchallengetracker.ui.adapters.ReviewQuestionsAdapter;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnReviewerItemClickListerner;
@@ -36,7 +39,9 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
     @BindView(R.id.questionsView)
     RecyclerView reviewQuestionsView;
     ReviewQuestionsAdapter m_reviewquestionsAdapter;
-
+    String m_lastQuestionId = null;
+    String m_lasttimeStamp = null;
+    String m_username;
 
     public static ReviewQuestionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -54,6 +59,12 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
             screenTitle.setText(getResources().getString(R.string.review_questions_name));
         }
         return view;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFirebaseDatabaseInterface = new ReviewQuestionsInterface();
     }
 
     @Override
@@ -93,7 +104,15 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
         });
         reviewQuestionsView.setLayoutManager(lmanager);
         reviewQuestionsView.setAdapter(m_reviewquestionsAdapter);
-        mFirebaseDatabaseInterface.getQuestionsForReview(Constants.QUESTIONS, super.userName(), this);
+        reviewQuestionsView.addOnScrollListener(new RecylclerViewEndlessScrollListener(this, lmanager){
+            @Override
+            public void onLoadMore(IGetQuestionsInterface callback) {
+                if(m_lastQuestionId == null) return;
+                mFirebaseDatabaseInterface.getMoreQuestions(Constants.QUESTIONS, m_username, callback, m_lasttimeStamp, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1);
+            }
+        });
+        m_username = mFirebaseAuth.getCurrentUser().getUid();
+        mFirebaseDatabaseInterface.getQuestions(Constants.QUESTIONS, super.userName(), this,Constants.MAX_QUESTIONS_API_COUNT+1);
     }
 
     //register for new questions
@@ -112,7 +131,15 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
 
     @Override
     public void onQuestionsReady(List<TrackerQuestion> questionsList) {
-        m_reviewquestionsAdapter.updateAdapter(questionsList);
+        if(questionsList != null && questionsList.size() > 0) {
+            TrackerQuestion question = questionsList.get(questionsList.size() - 1);
+            m_lastQuestionId = question.id;
+            m_lasttimeStamp = question.lastModified;
+            m_reviewquestionsAdapter.updateAdapter(questionsList, 0, questionsList.size()-1);
+        }
+        else{
+            //log it
+        }
     }
 
     @Override

@@ -1,9 +1,10 @@
-package com.durga.sph.androidchallengetracker;
+package com.durga.sph.androidchallengetracker.activites;
 
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyAddedQuestionsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyPointsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyReviewedQuestionsFragment;
