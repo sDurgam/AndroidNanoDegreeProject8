@@ -14,6 +14,7 @@ public class Constants {
     public static String TRACKER = "Tracker";
     public static String QUESTIONS = "Questions";
     public static String LEVEL = "level";
+    public static String UPVOTE = "upvote";
 
     //tracker question
     public static String QUESTIONID = "id";
@@ -25,4 +26,5 @@ public class Constants {
     //three reviewers
     public static int APPROVE_QUESTION_COUNT = 3;
     public static int APPROVE_MAX_QUESTION_COUNT = 10;
+    public static int APPROVE_MIN_QUESTION_COUNT = -3;
 }

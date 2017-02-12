@@ -23,5 +23,6 @@
     <string name="mysession_attr">mysessionattribute</string>
     <string name="mark_as_spam">Spam</string>
     <string name="mark_as_solved">Done</string>
-    <string name="mark_as_reviewed">Approve</string>
+    <string name="mark_as_approved">Approve</string>
+    <string name="mark_as_notapproved">Not Approve</string>
 </resources>

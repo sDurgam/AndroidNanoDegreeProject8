@@ -51,7 +51,6 @@ public class BaseActivity extends AppCompatActivity {
     @Optional
     @OnClick(R.id.mysession_addedquestions)
     protected void MySessionAddedQuestionsClick(View view){
-        Log.d("abc", "abc");
         if(this instanceof MySessionActivity)
         {
             getFragmentManager().beginTransaction().replace(R.id.mysessionfragment, MyAddedQuestionsFragment.newInstance()).commit();
@@ -65,7 +64,6 @@ public class BaseActivity extends AppCompatActivity {
 
     @Optional @OnClick(R.id.mysession_reviewedquestions)
     protected void MySessionReviewedQuestionsClick(View view){
-        Log.d("abc", "abc");
         if(this instanceof MySessionActivity)
         {
             getFragmentManager().beginTransaction().replace(R.id.mysessionfragment, MyReviewedQuestionsFragment.newInstance()).commit();

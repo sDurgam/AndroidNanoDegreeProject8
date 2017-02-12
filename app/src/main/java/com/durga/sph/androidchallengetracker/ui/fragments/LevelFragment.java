@@ -15,7 +15,7 @@ import android.widget.TextView;
 //import com.google.firebase.database.FirebaseDatabase;
 
 import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
-import com.durga.sph.androidchallengetracker.ui.adapters.BaseRecyclerViewAdapter;
+import com.durga.sph.androidchallengetracker.ui.adapters.LevelRecyclerViewAdapter;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
@@ -41,7 +41,7 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
     TextView mlevelNameTxt;
     @BindView(R.id.questionsView)
     RecyclerView m_recyclerView;
-    BaseRecyclerViewAdapter m_adapter;
+    LevelRecyclerViewAdapter m_adapter;
 
     public LevelFragment(){
         TAG = getClass().getName();
@@ -66,17 +66,11 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.listquestions_fragment, container, false);
         ButterKnife.bind(this, view);
-        m_adapter = new BaseRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), new IOnItemClickListener() {
+        m_adapter = new LevelRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), new IOnItemClickListener() {
             @Override
             public void onisSpamClick(TrackerQuestion question, int position) {
                 mFirebaseDatabaseInterface.markQuestionAsSpam(question.id, this);
             }
-
-            @Override
-            public void onisReviewedClick(TrackerQuestion question, String user, int position) {
-
-            }
-
             @Override
             public void isSuccess(boolean success) {
 

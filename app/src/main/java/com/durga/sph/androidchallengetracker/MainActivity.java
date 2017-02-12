@@ -142,9 +142,11 @@ public class MainActivity extends BaseActivity{
     }
 
     private void setupViewPager(){
-        TabletViewFragmentPagerAdapter pagerAdapter = new TabletViewFragmentPagerAdapter(mFragmentManager, mlevelargs);
-        mViewPager.setAdapter(pagerAdapter);
-        mTabLayout.setupWithViewPager(mViewPager);
+        if(mViewPager != null) {
+            TabletViewFragmentPagerAdapter pagerAdapter = new TabletViewFragmentPagerAdapter(mFragmentManager, mlevelargs);
+            mViewPager.setAdapter(pagerAdapter);
+            mTabLayout.setupWithViewPager(mViewPager);
+        }
     }
 
     public void onResume(){

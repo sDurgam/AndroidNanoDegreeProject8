@@ -18,13 +18,13 @@ import java.util.List;
  * Created by root on 12/28/16.
  */
 
-public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<BaseRecyclerViewAdapter.MyViewHolder> {
+public class LevelRecyclerViewAdapter extends RecyclerView.Adapter<LevelRecyclerViewAdapter.MyViewHolder> {
 
     Context m_context;
     List<TrackerQuestion> my_recipesList;
     final IOnItemClickListener itemClickListener;
 
-    public BaseRecyclerViewAdapter(Context context, List<TrackerQuestion> recipesList, IOnItemClickListener listener){
+    public LevelRecyclerViewAdapter(Context context, List<TrackerQuestion> recipesList, IOnItemClickListener listener){
         m_context = context;
         my_recipesList = recipesList;
         itemClickListener = listener;
@@ -44,7 +44,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<BaseRecyclerVi
 
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int type)
     {
-        View view = LayoutInflater.from(m_context).inflate(R.layout.cell_view, parent, false);
+        View view = LayoutInflater.from(m_context).inflate(R.layout.level_cell_view, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -52,6 +52,9 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<BaseRecyclerVi
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final TrackerQuestion recipe = my_recipesList.get(position);
         holder.descriptionView.setText(recipe.title);
+        if(holder.solvedOrReviewedView.isChecked()){
+            holder.solvedOrReviewedView.setChecked(false);
+        }
     }
 
     public int getItemCount() {

@@ -18,6 +18,7 @@ public class TrackerQuestion {
     public int level;
     public String lastModified;
     public List<String> reviewers;
+    public long upvote;
 
     public boolean isSpam() {
         return spam;
@@ -38,7 +39,7 @@ public class TrackerQuestion {
         this.level = level;
         lastModified = String.valueOf(System.currentTimeMillis());
         reviewers = new ArrayList<>();
-        reviewers.add(userId);
+        upvote = 0l;
     }
 
     public TrackerQuestion(HashMap<String, Object> map) {

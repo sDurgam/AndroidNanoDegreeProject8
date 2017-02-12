@@ -8,6 +8,5 @@ import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 
 public interface IOnItemClickListener {
     void onisSpamClick(TrackerQuestion question, int position);
-    void onisReviewedClick(TrackerQuestion question, String user, int position);
     void isSuccess(boolean success);
 }

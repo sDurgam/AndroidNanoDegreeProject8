@@ -1,13 +1,11 @@
 package com.durga.sph.androidchallengetracker;
 
 import android.util.Log;
-import android.webkit.HttpAuthHandler;
 
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
-import com.durga.sph.androidchallengetracker.ui.adapters.BaseRecyclerViewAdapter;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.IOnReviewerItemClickListerner;
 import com.durga.sph.androidchallengetracker.utils.Constants;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,7 +19,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -34,7 +31,7 @@ public class FirebaseDatabaseInterface {
     FirebaseDatabase mFireBaseDatabase;
     DatabaseReference mDatabaseReference;
     ChildEventListener mquestionChildEventListener;
-
+    boolean isInitialValueLoaded = true;
     public FirebaseDatabaseInterface(){
         mFireBaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFireBaseDatabase.getReference().child(Constants.TRACKER);
@@ -55,10 +52,12 @@ public class FirebaseDatabaseInterface {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d("tag", "added");
+                if(isInitialValueLoaded) return;
+
                 TrackerQuestion question = dataSnapshot.getValue(TrackerQuestion.class);
                 if(!question.isSpam() && question.level == level && (question.reviewers == null || question.reviewers.size() <= 3)){
-                        question.setId(String .valueOf(System.currentTimeMillis()));
-                        //listener.add(question);
+                    question.setId(String .valueOf(System.currentTimeMillis()));
+                    //listener.add(question);
                 }
             }
 
@@ -91,7 +90,7 @@ public class FirebaseDatabaseInterface {
         }
     }
 
-    public void getQuestionsIReviewed(String key, final String user, final  IGetQuestionsInterface callback){
+    public void getMyReviewedQuestions(String key, final String user, final  IGetQuestionsInterface callback){
         final Query queryRef = mDatabaseReference.child(key);
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -124,12 +123,13 @@ public class FirebaseDatabaseInterface {
                 TrackerQuestion question= null;
                 for (DataSnapshot data : dataSnapshot.getChildren()){
                     //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
-                    if(data.child(Constants.ISSPAM).getValue().equals(false) &&  (data.child(Constants.REVIEWER).getValue() == null || !((List<String>)data.child(Constants.REVIEWER).getValue()).contains(user)) && data.child(Constants.REVIEWER).getChildrenCount() <= Constants.APPROVE_MAX_QUESTION_COUNT){
+                    if(data.child(Constants.ISSPAM).getValue().equals(false) && !data.child(Constants.USERID).getValue().equals(user) && (data.child(Constants.REVIEWER).getValue() == null || !((List<String>)data.child(Constants.REVIEWER).getValue()).contains(user)) && data.child(Constants.REVIEWER).getChildrenCount() >= Constants.APPROVE_MIN_QUESTION_COUNT && data.child(Constants.REVIEWER).getChildrenCount() <= Constants.APPROVE_MAX_QUESTION_COUNT){
                         //if(data.child(Constants.ISSPAM).getValue().equals(false)  && data.child(Constants.REVIEWER).getChildrenCount() <= Constants.APPROVE_MAX_QUESTION_COUNT){
                         question = new TrackerQuestion((HashMap<String, Object>) data.getValue(), true);
                         questionsList.add(question);
                     }
                 }
+                isInitialValueLoaded = false;
                 callback.onQuestionsReady(questionsList);
             }
             @Override
@@ -148,11 +148,12 @@ public class FirebaseDatabaseInterface {
                 TrackerQuestion question= null;
                 for (DataSnapshot data : dataSnapshot.getChildren()){
                     //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
-                    if(data.child(filter1).getValue().toString().equals(filter2) && data.child(Constants.ISSPAM).getValue().equals(false) && data.child(Constants.REVIEWER).getChildrenCount() >= Constants.APPROVE_QUESTION_COUNT){
+                    if(data.child(filter1).getValue().toString().equals(filter2) && data.child(Constants.ISSPAM).getValue().equals(false) && data.child(Constants.UPVOTE).getChildrenCount() >= Constants.APPROVE_QUESTION_COUNT){
                         question = new TrackerQuestion((HashMap<String, Object>) data.getValue());
                         questionsList.add(question);
                     }
                 }
+                isInitialValueLoaded = true;
                 callback.onQuestionsReady(questionsList);
             }
             @Override
@@ -187,7 +188,7 @@ public class FirebaseDatabaseInterface {
         });
     }
 
-    public void updateReviewersForQuestion(final String user, String questionId, final IOnItemClickListener listener) {
+    public void updateReviewersForQuestion(final String user, String questionId, final boolean isApproved, final IOnReviewerItemClickListerner listener) {
         DatabaseReference reviewerRef = mDatabaseReference.child(Constants.QUESTIONS).child(questionId);
         reviewerRef.runTransaction(new Transaction.Handler() {
             @Override
@@ -202,10 +203,17 @@ public class FirebaseDatabaseInterface {
                 if (question.reviewers == null) {
                     reviewersList = new ArrayList<>();
                     reviewersList.add(user);
+                    question.reviewers = reviewersList;
                 } else {
                     if(!question.reviewers.contains(user)) {
                         question.reviewers.add(user);
                     }
+                }
+                if(isApproved){
+                    question.upvote++;
+                }
+                else {
+                    question.upvote--;
                 }
                 // Set value and report transaction success
                 mutableData.setValue(question);
@@ -220,14 +228,7 @@ public class FirebaseDatabaseInterface {
                 Log.d(getClass().getName(), "saved review question:" + databaseError);
             }
 
-
         });
-
-
-
-
-
-
 
     }
 }

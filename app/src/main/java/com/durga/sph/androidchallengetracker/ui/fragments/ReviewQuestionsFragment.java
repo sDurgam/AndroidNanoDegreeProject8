@@ -16,6 +16,7 @@ import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.ui.adapters.ReviewQuestionsAdapter;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.IOnReviewerItemClickListerner;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
     public void onResume() {
         super.onResume();
         LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
-        m_reviewquestionsAdapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new IOnItemClickListener() {
+        m_reviewquestionsAdapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new IOnReviewerItemClickListerner() {
             int pos;
             @Override
             public void onisSpamClick(TrackerQuestion question, int position) {
@@ -68,9 +69,15 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
             }
 
             @Override
-            public void onisReviewedClick(TrackerQuestion question, String user, int position) {
+            public void onisApprovedClick(TrackerQuestion question, String user, int position) {
                 pos = position;
-                mFirebaseDatabaseInterface.updateReviewersForQuestion(user, question.id, this);
+                mFirebaseDatabaseInterface.updateReviewersForQuestion(user, question.id, true, this);
+            }
+
+            @Override
+            public void onisNotApprovedClick(TrackerQuestion question, String user, int position) {
+                pos = position;
+                mFirebaseDatabaseInterface.updateReviewersForQuestion(user, question.id, false, this);
             }
 
             @Override
