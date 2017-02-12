@@ -10,15 +10,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
-import com.durga.sph.androidchallengetracker.IListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.ui.listeners.IListener;
 import com.durga.sph.androidchallengetracker.R;
-import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
 import com.durga.sph.androidchallengetracker.network.ReviewQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.ui.RecylclerViewEndlessScrollListener;
 import com.durga.sph.androidchallengetracker.ui.adapters.ReviewQuestionsAdapter;
-import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnReviewerItemClickListerner;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 
@@ -32,16 +30,12 @@ import butterknife.ButterKnife;
  * Created by root on 1/30/17.
  */
 
-public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestionsInterface, IListener {
+public class ReviewQuestionsFragment extends BaseFragment implements IListener {
 
     @Nullable @BindView(R.id.levelNameTxt)
     TextView screenTitle;
     @BindView(R.id.questionsView)
     RecyclerView reviewQuestionsView;
-    ReviewQuestionsAdapter m_reviewquestionsAdapter;
-    String m_lastQuestionId = null;
-    String m_lasttimeStamp = null;
-    String m_username;
 
     public static ReviewQuestionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -71,7 +65,7 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
     public void onResume() {
         super.onResume();
         LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
-        m_reviewquestionsAdapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new IOnReviewerItemClickListerner() {
+        m_adapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new IOnReviewerItemClickListerner() {
             int pos;
             @Override
             public void onisSpamClick(TrackerQuestion question, int position) {
@@ -94,7 +88,7 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
             @Override
             public void isSuccess(boolean success) {
                 if(success){
-                    m_reviewquestionsAdapter.removeItem(pos);
+                    m_adapter.removeItem(pos);
                 }
                 else{
                        //display message
@@ -103,7 +97,7 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
             }
         });
         reviewQuestionsView.setLayoutManager(lmanager);
-        reviewQuestionsView.setAdapter(m_reviewquestionsAdapter);
+        reviewQuestionsView.setAdapter(m_adapter);
         reviewQuestionsView.addOnScrollListener(new RecylclerViewEndlessScrollListener(this, lmanager){
             @Override
             public void onLoadMore(IGetQuestionsInterface callback) {
@@ -130,20 +124,7 @@ public class ReviewQuestionsFragment extends BaseFragment implements IGetQuestio
     }
 
     @Override
-    public void onQuestionsReady(List<TrackerQuestion> questionsList) {
-        if(questionsList != null && questionsList.size() > 0) {
-            TrackerQuestion question = questionsList.get(questionsList.size() - 1);
-            m_lastQuestionId = question.id;
-            m_lasttimeStamp = question.lastModified;
-            m_reviewquestionsAdapter.updateAdapter(questionsList, 0, questionsList.size()-1);
-        }
-        else{
-            //log it
-        }
-    }
-
-    @Override
     public void add(TrackerQuestion question) {
-        m_reviewquestionsAdapter.addItem(question);
+        m_adapter.addItem(question);
     }
 }

@@ -7,22 +7,30 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
+import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
+import com.durga.sph.androidchallengetracker.ui.adapters.BaseRecylerViewAdapter;
+import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
 
 /**
  * Created by root on 2/3/17.
  */
 
-public class BaseFragment extends Fragment {
+public class BaseFragment extends Fragment implements IGetQuestionsInterface{
 
     //Firebase variables
     FirebaseAuth mFirebaseAuth;
     FirebaseAuth.AuthStateListener mAuthStateListener;
     ChildEventListener mChildEventListener;
     protected FirebaseDatabaseInterface mFirebaseDatabaseInterface;
+    String m_lastQuestionId = null;
+    String m_lasttimeStamp = null;
+    String m_username;
+    BaseRecylerViewAdapter m_adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +56,7 @@ public class BaseFragment extends Fragment {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user != null){
-
+                    m_username = user.getUid();
                 }
                 else{
 
@@ -80,4 +88,17 @@ public class BaseFragment extends Fragment {
 //    public void unregisterFirebaseChildListener(String key){
 //        mFirebaseDatabaseInterface.unregisterEventListener(key);
 //    }
+
+    @Override
+    public void onQuestionsReady(List<TrackerQuestion> questionsList) {
+        if(questionsList != null && questionsList.size() > 0) {
+            TrackerQuestion question = questionsList.get(questionsList.size() - 1);
+            m_lastQuestionId = question.id;
+            m_lasttimeStamp = question.lastModified;
+            m_adapter.updateAdapter(questionsList, 0, questionsList.size()-1);
+        }
+        else{
+            //log it
+        }
+    }
 }

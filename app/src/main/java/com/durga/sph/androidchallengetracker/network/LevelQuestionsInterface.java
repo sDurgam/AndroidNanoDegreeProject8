@@ -1,6 +1,6 @@
 package com.durga.sph.androidchallengetracker.network;
 
-import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.google.firebase.database.DataSnapshot;
@@ -18,12 +18,19 @@ import java.util.List;
 
 public class LevelQuestionsInterface extends FirebaseDatabaseInterface {
     @Override
-    public void getQuestions(String key, String filter1, String filter2, IGetQuestionsInterface callback, String start, int length) {
-        super.getQuestions(key, filter1, filter2, callback, start, length);
+    public void getQuestions(String key, final String filter1, final String filter2, final IGetQuestionsInterface callback, int length){
+        final Query queryRef = mDatabaseReference.child(key).orderByChild(Constants.LASTMODIFIED).limitToFirst(length);
+        getQuestions(queryRef, key, filter1, filter2, callback, length);
     }
 
-    public void getQuestions(final String key, final String filter1, final String filter2, final IGetQuestionsInterface callback) {
-        final Query queryRef = mDatabaseReference.child(key);
+    @Override
+    public void getMoreQuestions(String key, final String filter1, final String filter2, final IGetQuestionsInterface callback, String start, String lastkey, int length){
+        final Query queryRef = mDatabaseReference.child(key).orderByChild(Constants.LASTMODIFIED).startAt(start, lastkey).limitToFirst(length);
+        getQuestions(queryRef, key, filter1, filter2, callback, length);
+    }
+
+
+    public void getQuestions(Query queryRef, final String key, final String filter1, final String filter2, final IGetQuestionsInterface callback, final int length) {
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -38,6 +45,10 @@ public class LevelQuestionsInterface extends FirebaseDatabaseInterface {
                 }
                 isInitialValueLoaded = true;
                 callback.onQuestionsReady(questionsList);
+                if(questionsList.size() > 0 && questionsList.size() < length){
+                    TrackerQuestion lastQuestion = questionsList.get(questionsList.size()-1);
+                    getMoreQuestions(key,filter1, filter2, callback, lastQuestion.getLastModified(), lastQuestion.getId(),length-questionsList.size());
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

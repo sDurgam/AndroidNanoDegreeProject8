@@ -2,8 +2,8 @@ package com.durga.sph.androidchallengetracker.network;
 
 import android.util.Log;
 
-import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
-import com.durga.sph.androidchallengetracker.IListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.ui.listeners.IListener;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnReviewerItemClickListerner;
@@ -14,14 +14,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by root on 2/8/17.
@@ -182,7 +178,12 @@ public abstract class FirebaseDatabaseInterface {
 
 
     //Fetch questions by level
-    public void getQuestions(String key, final String filter1, final String filter2, final IGetQuestionsInterface callback, String start, int length){
+    public void getQuestions(String key, final String filter1, final String filter2, final IGetQuestionsInterface callback, int length){
+
+    }
+
+    //Fetch questions by level
+    public void getMoreQuestions(String key, final String filter1, final String filter2, final IGetQuestionsInterface callback, String start, String lastkey, int length){
 
     }
 

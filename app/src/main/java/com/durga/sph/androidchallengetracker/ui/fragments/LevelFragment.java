@@ -14,8 +14,9 @@ import android.widget.TextView;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 
-import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.network.LevelQuestionsInterface;
+import com.durga.sph.androidchallengetracker.ui.RecylclerViewEndlessScrollListener;
 import com.durga.sph.androidchallengetracker.ui.adapters.LevelRecyclerViewAdapter;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
@@ -32,8 +33,7 @@ import butterknife.ButterKnife;
  * Created by root on 1/2/17.
  */
 
-public class LevelFragment extends BaseFragment implements IGetQuestionsInterface
-        //implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>, Callback<List<Object>>
+public class LevelFragment extends BaseFragment
 {
     SimpleCursorAdapter mAdapter;
     public String TAG;
@@ -42,7 +42,6 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
     TextView mlevelNameTxt;
     @BindView(R.id.questionsView)
     RecyclerView m_recyclerView;
-    LevelRecyclerViewAdapter m_adapter;
 
     public LevelFragment(){
         TAG = getClass().getName();
@@ -104,6 +103,15 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
         LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
         m_recyclerView.setLayoutManager(lmanager);
         m_recyclerView.setAdapter(m_adapter);
+        m_recyclerView.addOnScrollListener(new RecylclerViewEndlessScrollListener(this, lmanager) {
+            @Override
+            public void onLoadMore(IGetQuestionsInterface callback) {
+                if(m_lastQuestionId == null) return;
+                mFirebaseDatabaseInterface.getMoreQuestions(Constants.QUESTIONS, m_username, callback, m_lasttimeStamp, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1);
+            }
+        });
+        m_username = mFirebaseAuth.getCurrentUser().getUid();
+        mFirebaseDatabaseInterface.getQuestions(Constants.QUESTIONS, m_username, this,Constants.MAX_QUESTIONS_API_COUNT+1);
     }
 
     @Override
@@ -132,34 +140,4 @@ public class LevelFragment extends BaseFragment implements IGetQuestionsInterfac
             }
         }
     }
-
-    @Override
-    public void onQuestionsReady(List<TrackerQuestion> questionsList) {
-        m_adapter.updateAdapter(questionsList);
-    }
-
-//    @Override
-//    public void onResponse(Call<List<Object>> call, Response<List<Object>> response) {
-//        Log.d(TAG, response.toString());
-//    }
-//
-//    @Override
-//    public void onFailure(Call<List<Object>> call, Throwable t) {
-//        Log.e(TAG, t.toString());
-//    }
-//
-//    @Override
-//    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-//        return null;
-//    }
-//
-//    @Override
-//    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
-//        mAdapter.swapCursor(data);
-//    }
-//
-//    @Override
-//    public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
-//        mAdapter.swapCursor(null);
-//    }
 }

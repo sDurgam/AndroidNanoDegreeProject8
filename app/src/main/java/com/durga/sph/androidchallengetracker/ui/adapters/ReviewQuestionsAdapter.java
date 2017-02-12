@@ -2,7 +2,6 @@ package com.durga.sph.androidchallengetracker.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,21 +17,17 @@ import java.util.List;
  * Created by root on 12/28/16.
  */
 
-public class ReviewQuestionsAdapter extends RecyclerView.Adapter<ReviewQuestionsAdapter.MyViewHolder> {
-    Context m_context;
+public class ReviewQuestionsAdapter extends BaseRecylerViewAdapter {
     String m_user;
-    List<TrackerQuestion> m_reviewQuestionsList;
-    final IOnReviewerItemClickListerner m_itemClickListener;
+    IOnReviewerItemClickListerner m_itemClickListener;
 
     public ReviewQuestionsAdapter(Context context, List<TrackerQuestion> recipesList, String user, IOnReviewerItemClickListerner listener){
-        m_context = context;
-        m_user = user;
-        m_itemClickListener = listener;
-        m_reviewQuestionsList = recipesList;
+        super(context, recipesList);
+        this.m_itemClickListener = listener;
+        this.m_user = user;
     }
 
-
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends BaseRecylerViewAdapter.MyViewHolder{
         TextView descriptionView;
         AppCompatCheckBox spamCheckedView;
         AppCompatCheckBox approvedView;
@@ -46,82 +41,40 @@ public class ReviewQuestionsAdapter extends RecyclerView.Adapter<ReviewQuestions
         }
     }
 
-    public ReviewQuestionsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int type)
+    @Override
+    public BaseRecylerViewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int type)
     {
         View view = LayoutInflater.from(m_context).inflate(R.layout.reviewer_cell_view, parent, false);
         return new ReviewQuestionsAdapter.MyViewHolder(view);
     }
 
-
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        final TrackerQuestion recipe = m_reviewQuestionsList.get(position);
-        holder.descriptionView.setText(recipe.getTitle());
-        if(holder.spamCheckedView.isChecked()){
-            holder.spamCheckedView.setChecked(false);
+    public void onBindViewHolder(final BaseRecylerViewAdapter.MyViewHolder holder, final int position) {
+        final TrackerQuestion recipe = m_trackerQuestionsList.get(position);
+        ReviewQuestionsAdapter.MyViewHolder h = (ReviewQuestionsAdapter.MyViewHolder)holder;
+        h.descriptionView.setText(recipe.getTitle());
+        if(h.spamCheckedView.isChecked()){
+            h.spamCheckedView.setChecked(false);
         }
-        holder.spamCheckedView.setOnClickListener(new View.OnClickListener() {
+        h.spamCheckedView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //display review question fragment
-                m_itemClickListener.onisSpamClick(m_reviewQuestionsList.get(position), position);
+                m_itemClickListener.onisSpamClick(m_trackerQuestionsList.get(position), position);
             }
         });
-        holder.approvedView.setOnClickListener(new View.OnClickListener() {
+        h.approvedView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                m_itemClickListener.onisApprovedClick(m_reviewQuestionsList.get(position), m_user, position);
+                m_itemClickListener.onisApprovedClick(m_trackerQuestionsList.get(position), m_user, position);
             }
         });
-        holder.unapprovedView.setOnClickListener(new View.OnClickListener() {
+        h.unapprovedView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                m_itemClickListener.onisNotApprovedClick(m_reviewQuestionsList.get(position), m_user, position);
+                m_itemClickListener.onisNotApprovedClick(m_trackerQuestionsList.get(position), m_user, position);
             }
         });
     }
 
-    public void addItem(TrackerQuestion question){
-        m_reviewQuestionsList.add(question);
-        notifyItemInserted(m_reviewQuestionsList.size()-1);
-        notifyItemRangeChanged(m_reviewQuestionsList.size()-1, getItemCount());
-    }
-
-    public void removeItem(int position){
-        m_reviewQuestionsList.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, getItemCount());
-    }
-
-    public int getItemCount() {
-        return m_reviewQuestionsList != null ? m_reviewQuestionsList.size() : 0;
-    }
-
-
-    public int getItemById(String id) {
-        boolean isfound = false;
-        int position = 0;
-        for(TrackerQuestion question : m_reviewQuestionsList){
-            if(question.getId().equals(id)){
-                isfound =true;
-                break;
-            }
-            position++;
-        }
-        if(!isfound) {
-            position = -1;
-        }
-        return position;
-    }
-
-    public void updateAdapter(List<TrackerQuestion> questions, int start, int end){
-        for(int i =start; i < end && start >= 0 && end < questions.size(); i++) {
-            m_reviewQuestionsList.add(questions.get(i));
-        }
-        notifyDataSetChanged();
-    }
-
-    public String getQuestionIdByPosition(int position){
-        return position <= m_reviewQuestionsList.size() ? m_reviewQuestionsList.get(position).id : null;
-    }
 }

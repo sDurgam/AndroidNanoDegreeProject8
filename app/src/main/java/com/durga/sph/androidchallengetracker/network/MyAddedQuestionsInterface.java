@@ -1,6 +1,6 @@
 package com.durga.sph.androidchallengetracker.network;
 
-import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.google.firebase.database.DataSnapshot;
@@ -11,7 +11,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by root on 2/11/17.

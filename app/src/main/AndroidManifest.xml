@@ -9,7 +9,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.durga.sph.androidchallengetracker.activites.MainActivity"
+            android:name=".ui.activites.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -18,7 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activites.MySessionActivity"></activity>
+        <activity android:name=".ui.activites.MySessionActivity"></activity>
         <provider
             android:authorities="com.durga.sph.androidchallengetracker.challengeprovider"
             android:name=".challengeprovider.AndroidChallengeTrackerProvider"></provider>

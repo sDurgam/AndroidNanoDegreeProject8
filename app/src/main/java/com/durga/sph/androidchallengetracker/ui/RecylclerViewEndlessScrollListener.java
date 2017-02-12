@@ -1,11 +1,9 @@
 package com.durga.sph.androidchallengetracker.ui;
 
-import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.LinearLayout;
 
-import com.durga.sph.androidchallengetracker.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
 
 /**
  * Created by root on 1/10/17.
