@@ -50,8 +50,6 @@ public class MainActivity extends BaseActivity{
     private FirebaseUser mFirebaseUser;
     int code=1;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +58,9 @@ public class MainActivity extends BaseActivity{
         mTAG = this.getClass().getName();
         setSupportActionBar(mToolbar);
         mFragmentManager = getFragmentManager();
+        if(mViewPager == null){
+            mTwoPane = false;
+        }
         if(savedInstanceState == null){
             LevelFragment fragment = LevelFragment.newInstance(mlevelargs, 1);
             mFragmentManager.beginTransaction().add(R.id.main_frameLayout, fragment).commit();

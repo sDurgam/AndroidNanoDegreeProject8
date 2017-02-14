@@ -1,11 +1,9 @@
 package com.durga.sph.androidchallengetracker.orm;
 
 import com.durga.sph.androidchallengetracker.utils.Constants;
-import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.ServerValue;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by root on 1/30/17.
@@ -13,75 +11,40 @@ import java.util.List;
 
 public class TrackerQuestion {
     public String id;
-    public String title;
+    public String description;
     public String userId;
-    public int level;
-    public String lastModified;
-    public List<String> reviewers;
+    public HashMap<String, Object> dateCreated;
+    public HashMap<String, Object> dateLastChanged;
     public long upvote;
-
-    public boolean isSpam() {
-        return spam;
-    }
-
-    public void setSpam(boolean spam) {
-        this.spam = spam;
-    }
-
     public boolean spam;
+    public int level;
 
     public TrackerQuestion(){}
 
-    public TrackerQuestion(String title, String userId, int level) {
-        this.title = title;
+    public TrackerQuestion(String description, String userId, int level) {
+        this.description = description;
         this.userId = userId;
+        dateCreated = new HashMap<>();
+        Object timestamp = ServerValue.TIMESTAMP;
+        dateCreated.put(Constants.TIME,timestamp);
+        dateLastChanged = new HashMap<>();
+        dateLastChanged.put(Constants.TIME,timestamp);
+        upvote = 0;
         this.level = level;
-        lastModified = String.valueOf(System.currentTimeMillis());
-        reviewers = new ArrayList<>();
-        userId = "-DTi4gpDnEHWjelfGSbDxCyhsv8z3";
-        upvote = 0l;
-    }
-
-    public TrackerQuestion(String questionId, String title, String userId, int level) {
-        this.id = questionId;
-        this.title = title;
-        this.userId = userId;
-        this.level = level;
-        lastModified = String.valueOf(System.currentTimeMillis());
-        reviewers = new ArrayList<>();
-        userId = "-DTi4gpDnEHWjelfGSbDxCyhsv8z3";
-        upvote = 0l;
     }
 
     public TrackerQuestion(HashMap<String, Object> map) {
         if (map.containsKey(Constants.QUESTIONID))
             this.id = map.get(Constants.QUESTIONID).toString();
         if (map.containsKey(Constants.TITLE))
-            this.title = map.get(Constants.TITLE).toString();
+            this.description = map.get(Constants.TITLE).toString();
         if (map.containsKey(Constants.USERID))
             this.userId = map.get(Constants.USERID).toString();
-        if (map.containsKey(Constants.LEVEL))
-            this.level = Integer.valueOf(map.get(Constants.LEVEL).toString());
-        if (map.containsKey(Constants.LASTMODIFIED))
-            lastModified = map.get(Constants.LASTMODIFIED).toString();
-    }
-
-
-    public TrackerQuestion(HashMap<String, Object> map, boolean isReviewer) {
-        if (map.containsKey(Constants.QUESTIONID))
-            this.id = map.get(Constants.QUESTIONID).toString();
-        if (map.containsKey(Constants.TITLE))
-            this.title = map.get(Constants.TITLE).toString();
-        if (map.containsKey(Constants.USERID))
-            this.userId = map.get(Constants.USERID).toString();
-        if (map.containsKey(Constants.LEVEL))
-            this.level = Integer.valueOf(map.get(Constants.LEVEL).toString());
-        if (map.containsKey(Constants.LASTMODIFIED))
-            lastModified = map.get(Constants.LASTMODIFIED).toString();
-        reviewers = new ArrayList<>();
-        if(isReviewer && map.get(Constants.REVIEWER) != null){
-            reviewers.addAll((ArrayList<String>)(map.get(Constants.REVIEWER)));
-        }
+        if (map.containsKey(Constants.DATECREATEDAT))
+            dateCreated = (HashMap<String, Object>) map.get(Constants.DATECREATEDAT);
+        if (map.containsKey(Constants.DATELASTCHANGED))
+            dateLastChanged = (HashMap<String, Object>) map.get(Constants.DATELASTCHANGED);
+        level = Integer.valueOf(map.get(Constants.LEVEL).toString());
     }
 
     public String getId() {
@@ -92,12 +55,12 @@ public class TrackerQuestion {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getDescription() {
+        return description;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getUserId() {
@@ -108,27 +71,35 @@ public class TrackerQuestion {
         this.userId = userId;
     }
 
-    public int getLevel() {
-        return level;
+    public long getUpvote() {
+        return upvote;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
+    public void setUpvote(long upvote) {
+        this.upvote = upvote;
     }
 
-    public String getLastModified() {
-        return lastModified;
+    public boolean isSpam() {
+        return spam;
     }
 
-    public void setLastModified(String lastModified) {
-        this.lastModified = lastModified;
+    public void setSpam(boolean spam) {
+        this.spam = spam;
     }
 
-    public List<String> getReviewers() {
-        return reviewers;
+    public HashMap<String, Object> getDateCreated() {
+        return dateCreated;
     }
 
-    public void setReviewers(List<String> reviewers) {
-        this.reviewers = reviewers;
+    public void setDateCreated(HashMap<String, Object> dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public HashMap<String, Object> getDateLastChanged() {
+        return dateLastChanged;
+    }
+
+    public void setDateLastChanged(HashMap<String, Object> dateLastChanged) {
+        this.dateLastChanged = dateLastChanged;
     }
 }

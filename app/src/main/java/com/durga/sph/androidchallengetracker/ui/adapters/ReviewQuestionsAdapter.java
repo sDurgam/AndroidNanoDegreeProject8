@@ -18,13 +18,11 @@ import java.util.List;
  */
 
 public class ReviewQuestionsAdapter extends BaseRecylerViewAdapter {
-    String m_user;
     IOnReviewerItemClickListerner m_itemClickListener;
 
     public ReviewQuestionsAdapter(Context context, List<TrackerQuestion> recipesList, String user, IOnReviewerItemClickListerner listener){
-        super(context, recipesList);
+        super(context, user, recipesList);
         this.m_itemClickListener = listener;
-        this.m_user = user;
     }
 
     public class MyViewHolder extends BaseRecylerViewAdapter.MyViewHolder{
@@ -49,30 +47,37 @@ public class ReviewQuestionsAdapter extends BaseRecylerViewAdapter {
     }
 
     @Override
-    public void onBindViewHolder(final BaseRecylerViewAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final BaseRecylerViewAdapter.MyViewHolder holder, int position) {
         final TrackerQuestion recipe = m_trackerQuestionsList.get(position);
+        final int pos = position;
         ReviewQuestionsAdapter.MyViewHolder h = (ReviewQuestionsAdapter.MyViewHolder)holder;
-        h.descriptionView.setText(recipe.getTitle());
+        h.descriptionView.setText(recipe.getDescription());
         if(h.spamCheckedView.isChecked()){
             h.spamCheckedView.setChecked(false);
+        }
+        if(h.unapprovedView.isChecked()){
+            h.unapprovedView.setChecked(false);
+        }
+        if(h.approvedView.isChecked()){
+            h.approvedView.setChecked(false);
         }
         h.spamCheckedView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //display review question fragment
-                m_itemClickListener.onisSpamClick(m_trackerQuestionsList.get(position), position);
+                m_itemClickListener.onisSpamClick(m_trackerQuestionsList.get(pos), pos);
             }
         });
         h.approvedView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                m_itemClickListener.onisApprovedClick(m_trackerQuestionsList.get(position), m_user, position);
+                m_itemClickListener.onisApprovedClick(m_trackerQuestionsList.get(pos), m_user, pos);
             }
         });
         h.unapprovedView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                m_itemClickListener.onisNotApprovedClick(m_trackerQuestionsList.get(position), m_user, position);
+                m_itemClickListener.onisNotApprovedClick(m_trackerQuestionsList.get(pos), m_user, pos);
             }
         });
     }

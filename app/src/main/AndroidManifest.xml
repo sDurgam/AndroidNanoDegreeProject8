@@ -19,9 +19,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activites.MySessionActivity"></activity>
-        <provider
-            android:authorities="com.durga.sph.androidchallengetracker.challengeprovider"
-            android:name=".challengeprovider.AndroidChallengeTrackerProvider"></provider>
+        <!--  <provider
+              android:authorities="com.durga.sph.androidchallengetracker.challengeprovider"
+              android:name=".challengeprovider.AndroidChallengeTrackerProvider"></provider>
+          <receiver android:name=".widget.MyProgressAppWidgetProvider">
+              <intent-filter>
+                  <action android:name="android.appwidget.action.APPWIDGET_UPDATE"></action>
+              </intent-filter>
+              <meta-data android:name="" android:resource="@xml/myprogress_appwidget_info"></meta-data>
+          </receiver>-->
     </application>
 
 </manifest>

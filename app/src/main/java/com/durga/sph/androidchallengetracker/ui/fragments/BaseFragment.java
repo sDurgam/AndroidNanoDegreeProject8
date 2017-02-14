@@ -5,11 +5,14 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
+import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.ui.adapters.BaseRecylerViewAdapter;
 import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -92,13 +95,27 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
     @Override
     public void onQuestionsReady(List<TrackerQuestion> questionsList) {
         if(questionsList != null && questionsList.size() > 0) {
-            TrackerQuestion question = questionsList.get(questionsList.size() - 1);
-            m_lastQuestionId = question.id;
-            m_lasttimeStamp = question.lastModified;
-            m_adapter.updateAdapter(questionsList, 0, questionsList.size()-1);
+            int index = 0;
+            TrackerQuestion question = questionsList.get(0);
+            if(m_adapter.isExistsQuestion(question.id))
+            {
+                index= 1;
+            }
+            if(questionsList.size() >= index+1){
+                m_lastQuestionId = questionsList.get(questionsList.size()-1).id;
+            }
+            else{
+                m_lastQuestionId = null;
+            }
+           // m_lasttimeStamp = question.lastModified.get(Constants.LASTMODIFIED);
+            m_adapter.updateAdapter(questionsList, index, questionsList.size());
         }
         else{
             //log it
         }
+    }
+
+    protected void displayToastMessage(String message){
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

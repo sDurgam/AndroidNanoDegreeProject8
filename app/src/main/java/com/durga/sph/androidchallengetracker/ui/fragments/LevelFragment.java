@@ -3,6 +3,7 @@ package com.durga.sph.androidchallengetracker.ui.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,10 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 
+import com.durga.sph.androidchallengetracker.orm.MyProgressQuestion;
 import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.network.LevelQuestionsInterface;
 import com.durga.sph.androidchallengetracker.ui.RecylclerViewEndlessScrollListener;
@@ -21,6 +24,7 @@ import com.durga.sph.androidchallengetracker.ui.adapters.LevelRecyclerViewAdapte
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.IOnLevelItemClickListerner;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 
 import java.util.ArrayList;
@@ -58,7 +62,6 @@ public class LevelFragment extends BaseFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseDatabaseInterface = new LevelQuestionsInterface();
     }
 
     @Nullable
@@ -67,20 +70,30 @@ public class LevelFragment extends BaseFragment
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.listquestions_fragment, container, false);
         ButterKnife.bind(this, view);
-        m_adapter = new LevelRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), new IOnItemClickListener() {
+        m_adapter = new LevelRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), m_username, new IOnLevelItemClickListerner() {
+            int pos;
             @Override
-            public void onisSpamClick(TrackerQuestion question, int position) {
-                mFirebaseDatabaseInterface.markQuestionAsSpam(question.id, this);
+            public void onisSolvedClick(String questionId, String user, int position) {
+                pos = position;
+                MyProgressQuestion question = new MyProgressQuestion(questionId);
+                question.setSolved(true);
+               // mFirebaseDatabaseInterface.markQuestionAsSolved(question, user, this);
             }
             @Override
             public void isSuccess(boolean success) {
-
+                if(success){
+                    m_adapter.removeItem(pos);
+                }
+                else{
+                    //display message
+                  displayToastMessage(getResources().getString(R.string.action_failed));
+                }
             }
         });
         Object levelargs = getArguments().get(getResources().getString(R.string.level));
         if(levelargs != null)
             mcurrentLevel = (int)levelargs;
-        //getLoaderManager().initLoader(0, null, this);
+        mFirebaseDatabaseInterface = new LevelQuestionsInterface(String.format(Constants.LEVELFORMATTER,mcurrentLevel));
         return view;
     }
 
@@ -93,8 +106,6 @@ public class LevelFragment extends BaseFragment
     public void onStart() {
         super.onStart();
         setScreenName();
-       // mFirebaseDatabaseInterface.getQuestions(Constants.QUESTIONS, Constants.LEVEL, String.valueOf(mcurrentLevel), 0, this);
-        //mFirebaseDatabaseInterface.registerQuestionsByLevelEventListener(Constants.QUESTIONS);
     }
 
     @Override
@@ -107,16 +118,18 @@ public class LevelFragment extends BaseFragment
             @Override
             public void onLoadMore(IGetQuestionsInterface callback) {
                 if(m_lastQuestionId == null) return;
-                mFirebaseDatabaseInterface.getMoreQuestions(Constants.QUESTIONS, m_username, callback, m_lasttimeStamp, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1);
+                mFirebaseDatabaseInterface.getMoreQuestions(null, callback, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1);
             }
         });
-        m_username = mFirebaseAuth.getCurrentUser().getUid();
-        mFirebaseDatabaseInterface.getQuestions(Constants.QUESTIONS, m_username, this,Constants.MAX_QUESTIONS_API_COUNT+1);
+        if(mFirebaseAuth.getCurrentUser() != null) {
+            m_username = mFirebaseAuth.getCurrentUser().getUid();
+            mFirebaseDatabaseInterface.getQuestions(null, this, Constants.MAX_QUESTIONS_API_COUNT + 1);
+        }
     }
 
     @Override
     public void onPause() {
-        mFirebaseDatabaseInterface.unregisterEventListener(Constants.QUESTIONS);
+        //mFirebaseDatabaseInterface.unregisterEventListener(Constants.QUESTIONS);
         super.onPause();
     }
 

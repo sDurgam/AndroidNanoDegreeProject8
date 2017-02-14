@@ -14,6 +14,8 @@ import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
 import com.durga.sph.androidchallengetracker.network.MyAddedQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
+import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.IOnQuestionAddedListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 
 import butterknife.BindString;
@@ -25,7 +27,7 @@ import butterknife.OnClick;
  * Created by root on 1/30/17.
  */
 
-public class NewQuestionFragment extends BaseFragment {
+public class NewQuestionFragment extends BaseFragment implements IOnQuestionAddedListener {
 
     @BindView(R.id.newQuestionEditTxt)
     EditText newQuestionEditTxt;
@@ -36,8 +38,9 @@ public class NewQuestionFragment extends BaseFragment {
     @BindString(R.string.submitted_for_review) String submittedForReview;
     @BindString(R.string.question_empty_error) String quesEmptyError;
     @BindString(R.string.level_empty_error) String levelEmptyError;
-    String mUsername;
-    String questionId;
+    String m_Username;
+    TrackerQuestion m_newQuestion;
+    String m_level;
 
     public NewQuestionFragment(){
 
@@ -104,11 +107,11 @@ public class NewQuestionFragment extends BaseFragment {
     private void saveQuestioninDB(){
         String title = newQuestionEditTxt.getText().toString();
         String userId  = mFirebaseAuth.getCurrentUser().getUid();
-        int level = getLevel();
+        m_level = String.format(Constants.LEVELFORMATTER, getLevel());
         // Generate a reference to a new location and add some data using push()
         //id;
-        TrackerQuestion question = new TrackerQuestion(title, userId, level);
-        mFirebaseDatabaseInterface.addNewQuestion(Constants.QUESTIONS, question);
+        m_newQuestion = new TrackerQuestion(title, userId, getLevel());
+        mFirebaseDatabaseInterface.addNewQuestion(m_newQuestion,this);
     }
 
     private int getLevel(){
@@ -143,5 +146,13 @@ public class NewQuestionFragment extends BaseFragment {
 
     private void resetErrorMessage(){
         addQuesSummaryLabel.setText(Constants.BLANKSTR);
+    }
+
+    //Add under 'MyAdded' questions in the local database
+    @Override
+    public void issuccess(boolean success, String questionId) {
+        if(success && questionId != null){
+            //add this new question in 'MyAdded Questions' in database
+        }
     }
 }

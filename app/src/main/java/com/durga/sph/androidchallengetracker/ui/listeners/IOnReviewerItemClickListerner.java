@@ -9,4 +9,6 @@ import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 public interface IOnReviewerItemClickListerner extends IOnItemClickListener {
     void onisApprovedClick(TrackerQuestion question, String user, int position);
     void onisNotApprovedClick(TrackerQuestion question, String user, int position);
+    void onisSpamClick(TrackerQuestion question, int position);
+    void success(boolean success);
 }

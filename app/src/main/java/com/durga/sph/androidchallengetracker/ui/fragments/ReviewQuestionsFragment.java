@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
  * Created by root on 1/30/17.
  */
 
-public class ReviewQuestionsFragment extends BaseFragment implements IListener {
+public class ReviewQuestionsFragment extends BaseFragment {
 
     @Nullable @BindView(R.id.levelNameTxt)
     TextView screenTitle;
@@ -74,15 +74,24 @@ public class ReviewQuestionsFragment extends BaseFragment implements IListener {
             }
 
             @Override
+            public void success(boolean success) {
+                if(success){
+                    //mark this question as reviewed in db
+                }else{
+                    //show message that action could not be performed
+                }
+            }
+
+            @Override
             public void onisApprovedClick(TrackerQuestion question, String user, int position) {
                 pos = position;
-                mFirebaseDatabaseInterface.updateReviewersForQuestion(user, question.id, true, this);
+               mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, true, this);
             }
 
             @Override
             public void onisNotApprovedClick(TrackerQuestion question, String user, int position) {
                 pos = position;
-                mFirebaseDatabaseInterface.updateReviewersForQuestion(user, question.id, false, this);
+                mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, false, this);
             }
 
             @Override
@@ -92,39 +101,21 @@ public class ReviewQuestionsFragment extends BaseFragment implements IListener {
                 }
                 else{
                        //display message
-                    Toast.makeText(getActivity(), "Action could not be performed", Toast.LENGTH_SHORT).show();
+                    displayToastMessage(getResources().getString(R.string.action_failed));
                 }
             }
         });
+        final String key = String.format(Constants.LEVELFORMATTER, 1);
         reviewQuestionsView.setLayoutManager(lmanager);
         reviewQuestionsView.setAdapter(m_adapter);
         reviewQuestionsView.addOnScrollListener(new RecylclerViewEndlessScrollListener(this, lmanager){
             @Override
             public void onLoadMore(IGetQuestionsInterface callback) {
                 if(m_lastQuestionId == null) return;
-                mFirebaseDatabaseInterface.getMoreQuestions(Constants.QUESTIONS, m_username, callback, m_lasttimeStamp, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1);
+                mFirebaseDatabaseInterface.getMoreQuestions(m_username, callback, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1);
             }
         });
         m_username = mFirebaseAuth.getCurrentUser().getUid();
-        mFirebaseDatabaseInterface.getQuestions(Constants.QUESTIONS, super.userName(), this,Constants.MAX_QUESTIONS_API_COUNT+1);
-    }
-
-    //register for new questions
-    @Override
-    public void onPause() {
-        mFirebaseDatabaseInterface.unregisterEventListener(Constants.QUESTIONS);
-        super.onPause();
-    }
-
-    //register for new questions
-    @Override
-    public void onStart() {
-        super.onStart();
-        mFirebaseDatabaseInterface.registerQuestionsByLevelEventListener(Constants.QUESTIONS, this, 1);
-    }
-
-    @Override
-    public void add(TrackerQuestion question) {
-        m_adapter.addItem(question);
+        mFirebaseDatabaseInterface.getQuestions(m_username, this,Constants.MAX_QUESTIONS_API_COUNT+1);
     }
 }

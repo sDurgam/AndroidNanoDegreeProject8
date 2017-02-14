@@ -17,10 +17,12 @@ import java.util.List;
 public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRecylerViewAdapter.MyViewHolder> {
     Context m_context;
     List<TrackerQuestion> m_trackerQuestionsList;
+    String m_user;
 
-    public BaseRecylerViewAdapter(Context context, List<TrackerQuestion> my_trackerQuestionsList){
+    public BaseRecylerViewAdapter(Context context, String user, List<TrackerQuestion> my_trackerQuestionsList){
         this.m_context = context;
         this.m_trackerQuestionsList = my_trackerQuestionsList;
+        this.m_user = user;
     }
 
     @Override
@@ -68,13 +70,21 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
     }
 
     public void updateAdapter(List<TrackerQuestion> questions, int start, int end){
-        for(int i =start; i < end && start >= 0 && end < questions.size(); i++) {
+        int i = start;
+        for(;i < end && start >= 0 && end <= questions.size(); i++) {
             m_trackerQuestionsList.add(questions.get(i));
         }
-        notifyDataSetChanged();
+        if(i > start) {
+            notifyDataSetChanged();
+        }
     }
 
     public String getQuestionIdByPosition(int position){
         return position <= m_trackerQuestionsList.size() ? m_trackerQuestionsList.get(position).id : null;
+    }
+
+    public boolean isExistsQuestion(String id){
+        if(m_trackerQuestionsList == null || m_trackerQuestionsList.size() <= 0) return false;
+        return m_trackerQuestionsList.get(getItemCount()-1).id.equals(id);
     }
 }

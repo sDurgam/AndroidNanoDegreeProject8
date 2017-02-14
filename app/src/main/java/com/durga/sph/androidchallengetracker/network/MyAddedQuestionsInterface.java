@@ -28,8 +28,8 @@ public class MyAddedQuestionsInterface extends FirebaseDatabaseInterface {
                 for (DataSnapshot data : dataSnapshot.getChildren()){
                     //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
                     if(data.child(Constants.ISSPAM).getValue().equals(false) &&  data.child(Constants.USERID).getValue().equals(user)){
-                        question = new TrackerQuestion((HashMap<String, Object>) data.getValue(), true);
-                        questionsList.add(question);
+                       // question = new TrackerQuestion((HashMap<String, Object>) data.getValue(), true);
+                       // questionsList.add(question);
                     }
                 }
                 callback.onQuestionsReady(questionsList);
