@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
+
 /**
  * Created by root on 1/30/17.
  */
 
-public class MyReviewedQuestionsFragment extends BaseFragment {
+public class MyReviewedQuestionsFragment extends MyFragment {
 
     public static MyReviewedQuestionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -19,10 +21,13 @@ public class MyReviewedQuestionsFragment extends BaseFragment {
         fragment.setArguments(args);
         return fragment;
     }
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+
+    public MyReviewedQuestionsFragment(){
+        uri = MyProgressContract.MyProgressEntry.buildUriReviewed();
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
 }

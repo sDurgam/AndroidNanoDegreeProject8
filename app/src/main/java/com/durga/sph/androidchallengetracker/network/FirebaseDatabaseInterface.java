@@ -75,7 +75,7 @@ public abstract class FirebaseDatabaseInterface {
                 if(databaseError != null){
                     Log.e(TAG, databaseError.getMessage());
                 }
-                listener.success(databaseError == null);
+                listener.isSuccess(databaseError == null);
             }
         });
     }
@@ -98,7 +98,8 @@ public abstract class FirebaseDatabaseInterface {
             @Override
             public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
                 if(databaseError == null){
-                    if((long)dataSnapshot.getValue() >= Constants.APPROVE_QUESTION_COUNT){
+                    listener.isSuccess(true);
+                    if(dataSnapshot.getValue () != null && (long)dataSnapshot.getValue() >= Constants.APPROVE_QUESTION_COUNT){
                         moveFirebaseRecord(Constants.REVIEWEQUES+"/"+questionId);
                     }
                 }
@@ -126,6 +127,7 @@ public abstract class FirebaseDatabaseInterface {
                         }
                     }
                 });
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -177,11 +179,11 @@ public abstract class FirebaseDatabaseInterface {
     }*/
 
     //Fetch questions for review, myadded and myreviewed questions
-    public void  getMoreQuestions(String user, IGetQuestionsInterface callback, String lastkey, int length){
+    public void  getMoreQuestions(String user, IGetQuestionsInterface callback, String lastkey, int length, List<String> myquestions){
     }
 
     //Fetch questions for review, myadded and myreviewed questions
-    public void getQuestions(String user, final IGetQuestionsInterface callback, int length){
+    public void getQuestions(String user, final IGetQuestionsInterface callback, int length, List<String> myquestions){
 
     }
 

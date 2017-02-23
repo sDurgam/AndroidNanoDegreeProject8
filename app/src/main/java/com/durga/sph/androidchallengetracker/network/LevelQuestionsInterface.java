@@ -24,19 +24,19 @@ public class LevelQuestionsInterface extends FirebaseDatabaseInterface {
     }
 
     @Override
-    public void getQuestions(String user, final IGetQuestionsInterface callback, int length){
+    public void getQuestions(String user, final IGetQuestionsInterface callback, int length, List<String> myquestions){
         final Query queryRef = mDatabaseReference.orderByKey().limitToFirst(length);
-        getLevelQuestions(user, queryRef, callback, length);
+        getLevelQuestions(user, queryRef, callback, length, myquestions);
     }
 
     @Override
-    public void getMoreQuestions(String user, final IGetQuestionsInterface callback, String start, int length){
+    public void getMoreQuestions(String user, final IGetQuestionsInterface callback, String start, int length, List<String> myquestions){
         final Query queryRef = mDatabaseReference.orderByKey().startAt(start).limitToFirst(length);
-        getLevelQuestions(user, queryRef, callback, length);
+        getLevelQuestions(user, queryRef, callback, length, myquestions);
     }
 
 
-    public void getLevelQuestions(final String user, Query queryRef, final IGetQuestionsInterface callback, final int length) {
+    public void getLevelQuestions(final String user, Query queryRef, final IGetQuestionsInterface callback, final int length, final List<String> myquestions) {
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -45,14 +45,18 @@ public class LevelQuestionsInterface extends FirebaseDatabaseInterface {
                 TrackerQuestion question= null;
                 for (DataSnapshot data : dataSnapshot.getChildren()){
                     //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
-                    question = new TrackerQuestion((HashMap<String, Object>) data.getValue());
-                    questionsList.add(question);
+                    //if not already solved by the user
+                    if(!myquestions.contains(data.getKey()))
+                    {
+                        question = new TrackerQuestion((HashMap<String, Object>) data.getValue());
+                        questionsList.add(question);
+                    }
                 }
                 isInitialValueLoaded = true;
                 callback.onQuestionsReady(questionsList);
                 if (questionsList.size() > 0 && questionsList.size() < length && count >= length) {
                     TrackerQuestion lastQuestion = questionsList.get(questionsList.size()-1);
-                    getMoreQuestions(user, callback, lastQuestion.getId(),length-questionsList.size());
+                    getMoreQuestions(user, callback, lastQuestion.getId(),length-questionsList.size(), myquestions);
                 }
             }
             @Override

@@ -27,4 +27,7 @@
     <string name="mark_as_notapproved">Not Approve</string>
     <string name="action_failed">Action could not be performed</string>
     <string name="plus_name">+10</string>
+    <string name="insert_error">Insert could not be performed. Not a valid URI</string>
+    <string name="update_error">Update could not be performed. Not a valid URI</string>
+    <string name="delete_error">Delete could not be performed. Not a valid URI</string>
 </resources>

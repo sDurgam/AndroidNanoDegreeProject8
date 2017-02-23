@@ -1,5 +1,7 @@
 package com.durga.sph.androidchallengetracker.ui.fragments;
 
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.ui.listeners.IListener;
 import com.durga.sph.androidchallengetracker.R;
@@ -32,10 +35,12 @@ import butterknife.ButterKnife;
 
 public class ReviewQuestionsFragment extends BaseFragment {
 
-    @Nullable @BindView(R.id.levelNameTxt)
+    @Nullable
+    @BindView(R.id.levelNameTxt)
     TextView screenTitle;
     @BindView(R.id.questionsView)
     RecyclerView reviewQuestionsView;
+    List<String> myreviewedQuestions;
 
     public static ReviewQuestionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -47,9 +52,9 @@ public class ReviewQuestionsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View  view = inflater.inflate(R.layout.listquestions_fragment, container, false);
+        View view = inflater.inflate(R.layout.listquestions_fragment, container, false);
         ButterKnife.bind(this, view);
-        if(screenTitle != null){
+        if (screenTitle != null) {
             screenTitle.setText(getResources().getString(R.string.review_questions_name));
         }
         return view;
@@ -64,7 +69,32 @@ public class ReviewQuestionsFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
+        new AsyncTask<Void, Void, List<String>>() {
+            @Override
+            protected List<String> doInBackground(Void... params) {
+                //get questions which are reviewed
+                List<String> myquestions = new ArrayList<>();
+                String[] projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID};
+                String selection = MyProgressContract.MyProgressEntry.COLUMN_ISREVIEWED + "=?";
+                Cursor c = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, projectionFields, selection, new String[]{"1"}, null);
+                c.moveToFirst();
+                while (c.moveToNext()) {
+                    myquestions.add(c.getString(0));
+                }
+                c.close();
+                return myquestions;
+            }
+
+            @Override
+            protected void onPostExecute(List<String> myquestions) {
+                super.onPostExecute(myquestions);
+                myreviewedQuestions = myquestions;
+                setUpAdapter();
+            }
+        }.execute();
+    }
+
+    private void setUpAdapter(){
         m_adapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new IOnReviewerItemClickListerner() {
             int pos;
             @Override
@@ -74,18 +104,9 @@ public class ReviewQuestionsFragment extends BaseFragment {
             }
 
             @Override
-            public void success(boolean success) {
-                if(success){
-                    //mark this question as reviewed in db
-                }else{
-                    //show message that action could not be performed
-                }
-            }
-
-            @Override
             public void onisApprovedClick(TrackerQuestion question, String user, int position) {
                 pos = position;
-               mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, true, this);
+                mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, true, this);
             }
 
             @Override
@@ -97,25 +118,28 @@ public class ReviewQuestionsFragment extends BaseFragment {
             @Override
             public void isSuccess(boolean success) {
                 if(success){
+                    //mark this question as reviewed in db
+                    addToDatabase(m_adapter.getQuestionByPosition(pos), MyProgressContract.MyProgressEntry.COLUMN_ISREVIEWED);
                     m_adapter.removeItem(pos);
                 }
                 else{
-                       //display message
+                    //show message that action could not be performed
                     displayToastMessage(getResources().getString(R.string.action_failed));
                 }
             }
         });
         final String key = String.format(Constants.LEVELFORMATTER, 1);
+        LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
         reviewQuestionsView.setLayoutManager(lmanager);
         reviewQuestionsView.setAdapter(m_adapter);
         reviewQuestionsView.addOnScrollListener(new RecylclerViewEndlessScrollListener(this, lmanager){
             @Override
             public void onLoadMore(IGetQuestionsInterface callback) {
                 if(m_lastQuestionId == null) return;
-                mFirebaseDatabaseInterface.getMoreQuestions(m_username, callback, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1);
+                mFirebaseDatabaseInterface.getMoreQuestions(m_username, callback, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1, myreviewedQuestions);
             }
         });
         m_username = mFirebaseAuth.getCurrentUser().getUid();
-        mFirebaseDatabaseInterface.getQuestions(m_username, this,Constants.MAX_QUESTIONS_API_COUNT+1);
+        mFirebaseDatabaseInterface.getQuestions(m_username, this,Constants.MAX_QUESTIONS_API_COUNT+1, myreviewedQuestions);
     }
 }

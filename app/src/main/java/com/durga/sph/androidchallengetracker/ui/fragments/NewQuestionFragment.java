@@ -1,5 +1,7 @@
 package com.durga.sph.androidchallengetracker.ui.fragments;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -14,6 +16,7 @@ import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
 import com.durga.sph.androidchallengetracker.network.MyAddedQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
+import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnQuestionAddedListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
@@ -153,6 +156,8 @@ public class NewQuestionFragment extends BaseFragment implements IOnQuestionAdde
     public void issuccess(boolean success, String questionId) {
         if(success && questionId != null){
             //add this new question in 'MyAdded Questions' in database
+            m_newQuestion.id = questionId;
+            addToDatabase(m_newQuestion, MyProgressContract.MyProgressEntry.COLUMN_ISADDED);
         }
     }
 }

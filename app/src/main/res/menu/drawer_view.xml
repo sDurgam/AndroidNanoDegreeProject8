@@ -26,6 +26,10 @@
             android:title="Review Questions">
         </item>
         <item
+            android:id="@+id/nav_solvedquestions_fragment"
+            android:title="My Solved Questions">
+        </item>
+        <item
             android:id="@+id/nav_myaddedquestions_fragment"
             android:title="My Added Questions">
         </item>

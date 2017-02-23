@@ -24,6 +24,7 @@ public class Constants {
     public static String UPVOTE = "upvote";
     public static String ID = "id";
     public static String TIME = "time";
+    public static String UNKNOWN_URL = "unknown uri:";
 
     //move records path
     public static String LEVELIDFORMATTER = "level%s/%s";
@@ -41,9 +42,9 @@ public class Constants {
     public static int APPROVE_MAX_QUESTION_COUNT = 10;
     public static int APPROVE_MIN_QUESTION_COUNT = -3;
     public static int MAX_QUESTIONS_API_COUNT = 20;
-    public static String FIREBASEURL = "https://android-challenge-tracker.firebaseio.com/";
 
-    //tracker user progress
+    //my progress table columns
+
 
     public static HashMap<String, Object> updateMapForAllWithValue
             (final String questionId,

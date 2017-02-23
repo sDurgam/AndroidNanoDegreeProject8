@@ -19,6 +19,7 @@ import com.durga.sph.androidchallengetracker.ui.fragments.LevelFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyAddedQuestionsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyPointsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyReviewedQuestionsFragment;
+import com.durga.sph.androidchallengetracker.ui.fragments.MySolvedQuestionsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.NewQuestionFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.ReviewQuestionsFragment;
 import com.firebase.ui.auth.AuthUI;
@@ -133,6 +134,10 @@ public class MainActivity extends BaseActivity{
 
         }else if(type == R.id.nav_reviewquestions_fragment){
             mFragmentManager.beginTransaction().replace(R.id.main_frameLayout, ReviewQuestionsFragment.newInstance()).commit();
+
+        }
+        else if(type == R.id.nav_solvedquestions_fragment){
+            mFragmentManager.beginTransaction().replace(R.id.main_frameLayout, MySolvedQuestionsFragment.newInstance()).commit();
 
         }else if(type == R.id.nav_myaddedquestions_fragment){
             mFragmentManager.beginTransaction().replace(R.id.main_frameLayout, MyAddedQuestionsFragment.newInstance()).commit();

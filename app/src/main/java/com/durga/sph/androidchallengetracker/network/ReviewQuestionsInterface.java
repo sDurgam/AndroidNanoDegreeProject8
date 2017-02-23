@@ -27,21 +27,21 @@ public class ReviewQuestionsInterface extends FirebaseDatabaseInterface {
     }
 
     @Override
-    public void getMoreQuestions(String user, IGetQuestionsInterface callback, String lastkey, int length) {
+    public void getMoreQuestions(String user, IGetQuestionsInterface callback, String lastkey, int length, List<String> myquestions) {
         if(lastkey != null) {
             final Query queryRef = mDatabaseReference.orderByKey().startAt(lastkey).limitToFirst(length);
-            getReviewQuestions(queryRef, user, callback, length);
+            getReviewQuestions(queryRef, user, callback, length, myquestions);
         }
     }
 
     @Override
-    public void getQuestions(final String user, final IGetQuestionsInterface callback, int length) {
+    public void getQuestions(final String user, final IGetQuestionsInterface callback, int length, List<String> myquestions) {
         final Query queryRef = mDatabaseReference.orderByKey().limitToFirst(length);
-        getReviewQuestions(queryRef,user, callback, length);
+        getReviewQuestions(queryRef,user, callback, length, myquestions);
 
     }
 
-    private void getReviewQuestions(final Query queryRef, final String user, final IGetQuestionsInterface callback, final int length){
+    private void getReviewQuestions(final Query queryRef, final String user, final IGetQuestionsInterface callback, final int length, final List<String> myquestions){
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -50,7 +50,7 @@ public class ReviewQuestionsInterface extends FirebaseDatabaseInterface {
                 long count = dataSnapshot.getChildrenCount();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
-                    if (data.child(Constants.ISSPAM).getValue().equals(false) && !data.child(Constants.USERID).getValue().equals(user) &&  (long)data.child(Constants.UPVOTE).getValue()>= Constants.APPROVE_MIN_QUESTION_COUNT && (long)data.child(Constants.UPVOTE).getValue()<= Constants.APPROVE_MAX_QUESTION_COUNT) {
+                    if (!myquestions.contains(data.getKey()) && data.child(Constants.ISSPAM).getValue().equals(false) && !data.child(Constants.USERID).getValue().equals(user) &&  (long)data.child(Constants.UPVOTE).getValue()>= Constants.APPROVE_MIN_QUESTION_COUNT && (long)data.child(Constants.UPVOTE).getValue()<= Constants.APPROVE_MAX_QUESTION_COUNT) {
                             question = new TrackerQuestion((HashMap<String, Object>) data.getValue());
                             questionsList.add(question);
                     }
@@ -58,7 +58,7 @@ public class ReviewQuestionsInterface extends FirebaseDatabaseInterface {
                     callback.onQuestionsReady(questionsList);
                     if (questionsList.size() > 0 && questionsList.size() < length && count >= length) {
                         TrackerQuestion lastQuestion = questionsList.get(questionsList.size() - 1);
-                        getMoreQuestions(user, callback, lastQuestion.getId(), length - questionsList.size());
+                        getMoreQuestions(user, callback, lastQuestion.getId(), length - questionsList.size(), myquestions);
                     }
                 }
             }

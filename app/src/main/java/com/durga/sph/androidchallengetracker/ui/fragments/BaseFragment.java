@@ -2,14 +2,17 @@ package com.durga.sph.androidchallengetracker.ui.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
+import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 import com.durga.sph.androidchallengetracker.ui.adapters.BaseRecylerViewAdapter;
 import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.utils.Constants;
@@ -117,5 +120,26 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
 
     protected void displayToastMessage(String message){
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    protected void addToDatabase(TrackerQuestion newQuestion, String param) {
+        ContentValues values = new ContentValues();
+        values.put(MyProgressContract.MyProgressEntry._ID, newQuestion.id);
+        values.put(MyProgressContract.MyProgressEntry.COLUMN_LEVEL, newQuestion.level);
+        values.put(MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, newQuestion.description);
+        values.put(MyProgressContract.MyProgressEntry.COLUMN_CREATEDATE, String.valueOf(newQuestion.dateCreated));
+        values.put(param, 1);
+        getActivity().getContentResolver().insert(MyProgressContract.MyProgressEntry.CONTENT_URI, values);
+    }
+
+    protected void updateDatabase(String id, String param) {
+        if(id != null) {
+            ContentValues values = new ContentValues();
+            values.put(param, 1);
+            getActivity().getContentResolver().update(MyProgressContract.MyProgressEntry.buildUriByID(id), values, null, null);
+        }else{
+            Log.e(getClass().getName(), getResources().getString(R.string.action_failed));
+            displayToastMessage(getResources().getString(R.string.action_failed));
+        }
     }
 }

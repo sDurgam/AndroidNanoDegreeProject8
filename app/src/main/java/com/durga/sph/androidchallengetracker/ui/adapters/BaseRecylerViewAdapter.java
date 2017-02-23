@@ -83,6 +83,10 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
         return position <= m_trackerQuestionsList.size() ? m_trackerQuestionsList.get(position).id : null;
     }
 
+    public TrackerQuestion getQuestionByPosition(int position){
+        return position <= m_trackerQuestionsList.size() ? m_trackerQuestionsList.get(position) : null;
+    }
+
     public boolean isExistsQuestion(String id){
         if(m_trackerQuestionsList == null || m_trackerQuestionsList.size() <= 0) return false;
         return m_trackerQuestionsList.get(getItemCount()-1).id.equals(id);

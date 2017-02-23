@@ -1,6 +1,8 @@
 package com.durga.sph.androidchallengetracker.ui.fragments;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 //import com.google.firebase.database.FirebaseDatabase;
 
 import com.durga.sph.androidchallengetracker.orm.MyProgressQuestion;
+import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.network.LevelQuestionsInterface;
 import com.durga.sph.androidchallengetracker.ui.RecylclerViewEndlessScrollListener;
@@ -46,6 +49,7 @@ public class LevelFragment extends BaseFragment
     TextView mlevelNameTxt;
     @BindView(R.id.questionsView)
     RecyclerView m_recyclerView;
+    List<String> mysolvedQuestions;
 
     public LevelFragment(){
         TAG = getClass().getName();
@@ -74,20 +78,8 @@ public class LevelFragment extends BaseFragment
             int pos;
             @Override
             public void onisSolvedClick(String questionId, String user, int position) {
-                pos = position;
-                MyProgressQuestion question = new MyProgressQuestion(questionId);
-                question.setSolved(true);
-               // mFirebaseDatabaseInterface.markQuestionAsSolved(question, user, this);
-            }
-            @Override
-            public void isSuccess(boolean success) {
-                if(success){
-                    m_adapter.removeItem(pos);
-                }
-                else{
-                    //display message
-                  displayToastMessage(getResources().getString(R.string.action_failed));
-                }
+                addToDatabase(m_adapter.getQuestionByPosition(position), MyProgressContract.MyProgressEntry.COLUMN_ISSOLVED);
+                m_adapter.removeItem(position);
             }
         });
         Object levelargs = getArguments().get(getResources().getString(R.string.level));
@@ -111,6 +103,33 @@ public class LevelFragment extends BaseFragment
     @Override
     public void onResume() {
         super.onResume();
+        new AsyncTask<Void, Void, List<String>>() {
+            @Override
+            protected List<String> doInBackground(Void... params) {
+                //get questions of matching level which are not solved
+                List<String> myquestions = new ArrayList<>();
+                String[] projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID};
+                String selection = MyProgressContract.MyProgressEntry.COLUMN_ISSOLVED + "=?";
+                Cursor c = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, projectionFields, selection, new String[]{"1"}, null);
+                c.moveToFirst();
+                do {
+                    myquestions.add(c.getString(0));
+                }while (c.moveToNext());
+                c.close();
+                return myquestions;
+            }
+
+            @Override
+            protected void onPostExecute(List<String> myquestions) {
+                super.onPostExecute(myquestions);
+                mysolvedQuestions = myquestions;
+                setUpAdapter();
+            }
+        }.execute();
+    }
+
+    private void setUpAdapter(){
+
         LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
         m_recyclerView.setLayoutManager(lmanager);
         m_recyclerView.setAdapter(m_adapter);
@@ -118,12 +137,12 @@ public class LevelFragment extends BaseFragment
             @Override
             public void onLoadMore(IGetQuestionsInterface callback) {
                 if(m_lastQuestionId == null) return;
-                mFirebaseDatabaseInterface.getMoreQuestions(null, callback, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1);
+                mFirebaseDatabaseInterface.getMoreQuestions(null, callback, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1, mysolvedQuestions);
             }
         });
         if(mFirebaseAuth.getCurrentUser() != null) {
             m_username = mFirebaseAuth.getCurrentUser().getUid();
-            mFirebaseDatabaseInterface.getQuestions(null, this, Constants.MAX_QUESTIONS_API_COUNT + 1);
+            mFirebaseDatabaseInterface.getQuestions(null, this, Constants.MAX_QUESTIONS_API_COUNT + 1, mysolvedQuestions);
         }
     }
 
