@@ -3,7 +3,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_points_fragment"
-            android:title="Points">
+            android:title="My Points">
         </item>
         <item
             android:id="@+id/nav_level01_fragment"

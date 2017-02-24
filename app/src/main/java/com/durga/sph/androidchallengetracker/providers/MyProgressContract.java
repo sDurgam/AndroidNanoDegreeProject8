@@ -38,6 +38,9 @@ public class MyProgressContract {
             return CONTENT_URI.buildUpon().appendPath(id).build();
         }
 
+        public static Uri buildUriApproved() {
+            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_ISAPPROVED, "1").build();
+        }
 
         public static Uri buildUriSolved() {
             return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_ISSOLVED,"1").build();

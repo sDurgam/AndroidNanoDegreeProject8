@@ -31,20 +31,7 @@ import java.util.List;
  * Created by root on 2/8/17.
  */
 
-public abstract class FirebaseDatabaseInterface {
-
-    //Firebase variables
-    FirebaseDatabase mFireBaseDatabase;
-    DatabaseReference mDatabaseReference;
-    ChildEventListener mquestionChildEventListener;
-    boolean isInitialValueLoaded = true;
-    String TAG;
-
-    public FirebaseDatabaseInterface(){
-        mFireBaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFireBaseDatabase.getReference();
-        TAG = this.getClass().getName();
-    }
+public abstract class FirebaseDatabaseInterface extends FirebaseMainDatabaseInterface{
 
     public String getNewId(String key){
         DatabaseReference pushedQuestionRef = mDatabaseReference.child(key).push();
@@ -65,7 +52,27 @@ public abstract class FirebaseDatabaseInterface {
                 callback.issuccess(databaseError== null, key);
             }
         });
-    }
+        //update progress reviewquestions count
+
+        mFireBaseDatabase.getReference(Constants.PROGRESS+"/"+Constants.REVIEWEQUES).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Long count = null;
+                count = mutableData.getValue(Long.class);
+                if(count == null) count = 0l;
+                count ++;
+                mutableData.setValue(count);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                if(databaseError != null){
+                    Log.e(TAG, databaseError.getMessage());
+                }
+            }
+        });
+}
 
     public void markQuestionAsSpam(String questionId, final IOnReviewerItemClickListerner listener) {
         mFireBaseDatabase.getReference(Constants.REVIEWEQUES+"/"+questionId+"/"+Constants.ISSPAM).setValue(true, new DatabaseReference.CompletionListener() {
@@ -80,7 +87,7 @@ public abstract class FirebaseDatabaseInterface {
         });
     }
 
-    public void markQuestionAsApproved(final String questionId, final boolean isApproved, final IOnReviewerItemClickListerner listener){
+    public void markQuestionAsApproved(final String questionId, final String mlevel, final boolean isApproved, final IOnReviewerItemClickListerner listener){
         Query queryRef = mFireBaseDatabase.getReference(Constants.REVIEWEQUES+"/"+questionId+"/"+Constants.UPVOTE);
         long vote = 0l;
         queryRef.getRef().runTransaction(new Transaction.Handler() {
@@ -100,14 +107,14 @@ public abstract class FirebaseDatabaseInterface {
                 if(databaseError == null){
                     listener.isSuccess(true);
                     if(dataSnapshot.getValue () != null && (long)dataSnapshot.getValue() >= Constants.APPROVE_QUESTION_COUNT){
-                        moveFirebaseRecord(Constants.REVIEWEQUES+"/"+questionId);
+                        moveFirebaseRecord(Constants.REVIEWEQUES+"/"+questionId, mlevel);
                     }
                 }
             }
         });
     }
 
-    public void moveFirebaseRecord(final String fromPathString)
+    public void moveFirebaseRecord(final String fromPathString, final String level)
     {
         final DatabaseReference fromPath = mFireBaseDatabase.getReference(fromPathString);
         fromPath.addListenerForSingleValueEvent(new ValueEventListener()
@@ -124,6 +131,45 @@ public abstract class FirebaseDatabaseInterface {
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         if(databaseError == null){
                             fromPath.removeValue();
+                            //update progress review questions count
+                            mFireBaseDatabase.getReference(Constants.PROGRESS+"/"+Constants.REVIEWEQUES).runTransaction(new Transaction.Handler() {
+                                @Override
+                                public Transaction.Result doTransaction(MutableData mutableData) {
+                                    Long count = null;
+                                    count = mutableData.getValue(Long.class);
+                                    if(count != null) {
+                                        count--;
+                                        mutableData.setValue(count);
+                                    }
+                                    return Transaction.success(mutableData);
+                                }
+
+                                @Override
+                                public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                                    if(databaseError != null){
+                                        Log.e(TAG, databaseError.getMessage());
+                                    }
+                                }
+                            });
+                            //update progress respective level count
+                            mFireBaseDatabase.getReference(Constants.PROGRESS+"/"+level).runTransaction(new Transaction.Handler() {
+                                @Override
+                                public Transaction.Result doTransaction(MutableData mutableData) {
+                                    Long count = null;
+                                    count = mutableData.getValue(Long.class);
+                                    if(count == null) count = 0l;
+                                    count ++;
+                                    mutableData.setValue(count);
+                                    return Transaction.success(mutableData);
+                                }
+
+                                @Override
+                                public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                                    if(databaseError != null){
+                                        Log.e(TAG, databaseError.getMessage());
+                                    }
+                                }
+                            });
                         }
                     }
                 });
@@ -136,48 +182,6 @@ public abstract class FirebaseDatabaseInterface {
         });
     }
 
-//    public void updateReviewersForQuestion(final String user, String mlevel, String questionId, final boolean isApproved, final IOnReviewerItemClickListerner listener) {
-//        //In Reviewers table, add to question reviewers list
-//        HashMap<String, Object> updateMap = new HashMap<>();
-//        updateMap.put(Constants.ID, user);
-//        HashMap<String , Object> map = new HashMap<>();
-//        map.put(Constants.TRACKER +  "/" + Constants.REVIEWER + "/" + mlevel + "/" + questionId, updateMap);
-//        mFireBaseDatabase.getReference().updateChildren(map);
-//        //Change upvote of the question
-//        DatabaseReference reviewerRef = mDatabaseReference.child(mlevel).child(questionId).child(Constants.UPVOTE);
-//        reviewerRef.runTransaction(new Transaction.Handler() {
-//            @Override
-//            public Transaction.Result doTransaction(MutableData mutableData) {
-//                long upvote = mutableData.getValue(Long.class);
-//                if(isApproved){
-//                    upvote ++;
-//                }
-//                else {
-//                    upvote--;
-//                }
-//                // Set value and report transaction success
-//                mutableData.setValue(upvote);
-//                return Transaction.success(mutableData);
-//            }
-//            @Override
-//            public void onComplete(DatabaseError databaseError, boolean b,
-//                                   DataSnapshot dataSnapshot) {
-//                // Transaction completed
-//                listener.isSuccess(databaseError == null);
-//                Log.d(TAG, "saved review question:" + databaseError);
-//            }
-//        });
-//    }
-
-    //Fetch questions for review, myadded and myreviewed questions
-/*    public void  getMoreQuestions(String user, IGetQuestionsInterface callback, String lastkey, int length){
-    }
-
-    //Fetch questions for review, myadded and myreviewed questions
-    public void getQuestions(final String user, final IGetQuestionsInterface callback, int length){
-
-    }*/
-
     //Fetch questions for review, myadded and myreviewed questions
     public void  getMoreQuestions(String user, IGetQuestionsInterface callback, String lastkey, int length, List<String> myquestions){
     }
@@ -188,4 +192,12 @@ public abstract class FirebaseDatabaseInterface {
     }
 
     public void addQuestion(){};
-}
+
+public void registerEventListener(ChildEventListener listener) {
+        mDatabaseReference.addChildEventListener(listener);
+        }
+
+public void unregisterEventListener(ChildEventListener listener) {
+        mDatabaseReference.removeEventListener(listener);
+        }
+        }

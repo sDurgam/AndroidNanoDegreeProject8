@@ -13,6 +13,7 @@ public class Constants {
     public static String MYADDEDQUES = "myaddedques";
     public static String MYREVIEWEDQUES = "myreviewedques";
     public static String REVIEWEQUES = "revieweques";
+    public static String PROGRESS = "progress";
     public static String REVIEWQUESPATH = "revieweques/";
     public static String TRACKER = "Tracker";
     public static String QUESTIONS = "Questions";
@@ -25,6 +26,7 @@ public class Constants {
     public static String ID = "id";
     public static String TIME = "time";
     public static String UNKNOWN_URL = "unknown uri:";
+    public static String FROMWIDGET = "fromwidget";
 
     //move records path
     public static String LEVELIDFORMATTER = "level%s/%s";

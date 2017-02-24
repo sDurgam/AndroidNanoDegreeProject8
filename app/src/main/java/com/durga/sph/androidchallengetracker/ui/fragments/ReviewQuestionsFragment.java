@@ -22,6 +22,9 @@ import com.durga.sph.androidchallengetracker.ui.RecylclerViewEndlessScrollListen
 import com.durga.sph.androidchallengetracker.ui.adapters.ReviewQuestionsAdapter;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnReviewerItemClickListerner;
 import com.durga.sph.androidchallengetracker.utils.Constants;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,7 @@ public class ReviewQuestionsFragment extends BaseFragment {
     @BindView(R.id.questionsView)
     RecyclerView reviewQuestionsView;
     List<String> myreviewedQuestions;
+    ChildEventListener m_reviewQuestionsListener;
 
     public static ReviewQuestionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -64,11 +68,38 @@ public class ReviewQuestionsFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFirebaseDatabaseInterface = new ReviewQuestionsInterface();
+//        m_reviewQuestionsListener = new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                m_adapter.addItem(dataSnapshot.getValue(TrackerQuestion.class));
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//                m_adapter.removeItem();
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
     }
 
     @Override
     public void onResume() {
         super.onResume();
+       // mFirebaseDatabaseInterface.registerEventListener(m_reviewQuestionsListener);
         new AsyncTask<Void, Void, List<String>>() {
             @Override
             protected List<String> doInBackground(Void... params) {
@@ -94,6 +125,12 @@ public class ReviewQuestionsFragment extends BaseFragment {
         }.execute();
     }
 
+    @Override
+    public void onPause() {
+       // mFirebaseDatabaseInterface.unregisterEventListener(m_reviewQuestionsListener);
+        super.onPause();
+    }
+
     private void setUpAdapter(){
         m_adapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new IOnReviewerItemClickListerner() {
             int pos;
@@ -106,13 +143,13 @@ public class ReviewQuestionsFragment extends BaseFragment {
             @Override
             public void onisApprovedClick(TrackerQuestion question, String user, int position) {
                 pos = position;
-                mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, true, this);
+                mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), true, this);
             }
 
             @Override
             public void onisNotApprovedClick(TrackerQuestion question, String user, int position) {
                 pos = position;
-                mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, false, this);
+                mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), false, this);
             }
 
             @Override

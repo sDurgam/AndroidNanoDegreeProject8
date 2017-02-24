@@ -1,5 +1,6 @@
 package com.durga.sph.androidchallengetracker.ui.fragments;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -14,10 +15,6 @@ import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
-//import com.google.firebase.database.DatabaseReference;
-//import com.google.firebase.database.FirebaseDatabase;
-
 import com.durga.sph.androidchallengetracker.orm.MyProgressQuestion;
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
@@ -29,6 +26,9 @@ import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnLevelItemClickListerner;
 import com.durga.sph.androidchallengetracker.utils.Constants;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +50,7 @@ public class LevelFragment extends BaseFragment
     @BindView(R.id.questionsView)
     RecyclerView m_recyclerView;
     List<String> mysolvedQuestions;
+    ChildEventListener m_levelListener;
 
     public LevelFragment(){
         TAG = getClass().getName();
@@ -66,6 +67,35 @@ public class LevelFragment extends BaseFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        m_levelListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                TrackerQuestion question = dataSnapshot.getValue(TrackerQuestion.class);
+                m_adapter.addItem(question);
+                //update approved column if the question is added by the user
+                updateDatabase(question.id, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
     }
 
     @Nullable
@@ -103,6 +133,7 @@ public class LevelFragment extends BaseFragment
     @Override
     public void onResume() {
         super.onResume();
+        //mFirebaseDatabaseInterface.registerEventListener(m_levelListener);
         new AsyncTask<Void, Void, List<String>>() {
             @Override
             protected List<String> doInBackground(Void... params) {
@@ -111,10 +142,12 @@ public class LevelFragment extends BaseFragment
                 String[] projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID};
                 String selection = MyProgressContract.MyProgressEntry.COLUMN_ISSOLVED + "=?";
                 Cursor c = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, projectionFields, selection, new String[]{"1"}, null);
-                c.moveToFirst();
-                do {
-                    myquestions.add(c.getString(0));
-                }while (c.moveToNext());
+                if(c.getCount() > 0) {
+                    c.moveToFirst();
+                    do {
+                        myquestions.add(c.getString(0));
+                    } while (c.moveToNext());
+                }
                 c.close();
                 return myquestions;
             }
@@ -148,13 +181,12 @@ public class LevelFragment extends BaseFragment
 
     @Override
     public void onPause() {
-        //mFirebaseDatabaseInterface.unregisterEventListener(Constants.QUESTIONS);
+        // mFirebaseDatabaseInterface.unregisterEventListener(m_levelListener);
         super.onPause();
     }
 
     @Override
     public void onStop() {
-
         super.onStop();
     }
 
@@ -171,5 +203,25 @@ public class LevelFragment extends BaseFragment
                 mlevelNameTxt.setText(getResources().getString(R.string.reviewed_questions_name));
             }
         }
+    }
+
+    @Override
+    public void onQuestionsReady(final List<TrackerQuestion> questionsList) {
+        super.onQuestionsReady(questionsList);
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                if(questionsList != null) {
+                    TrackerQuestion question = null;
+                    for (int i = 0; i < questionsList.size(); i++) {
+                        question = questionsList.get(i);
+                        if(question.userId.equals(m_username)) {
+                            updateDatabase(questionsList.get(i).id, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED);
+                        }
+                    }
+                }
+                return null;
+            }
+        }.execute();
     }
 }

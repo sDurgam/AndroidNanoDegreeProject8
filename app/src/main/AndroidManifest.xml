@@ -22,12 +22,11 @@
         <provider
             android:authorities="com.durga.sph.androidchallengetracker.providers"
             android:name=".providers.MyProgressProvider"></provider>
-        <!--  <receiver android:name=".widget.MyProgressAppWidgetProvider">
+          <receiver android:name=".widget.MyProgressAppWidgetProvider">
               <intent-filter>
                   <action android:name="android.appwidget.action.APPWIDGET_UPDATE"></action>
               </intent-filter>
-              <meta-data android:name="" android:resource="@xml/myprogress_appwidget_info"></meta-data>
-          </receiver>-->
+              <meta-data android:name="android.appwidget.provider" android:resource="@xml/myprogress_appwidget_info"></meta-data>
+          </receiver>
     </application>
-
 </manifest>

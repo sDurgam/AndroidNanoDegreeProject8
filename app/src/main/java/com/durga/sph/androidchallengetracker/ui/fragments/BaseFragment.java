@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -134,9 +136,16 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
 
     protected void updateDatabase(String id, String param) {
         if(id != null) {
-            ContentValues values = new ContentValues();
-            values.put(param, 1);
-            getActivity().getContentResolver().update(MyProgressContract.MyProgressEntry.buildUriByID(id), values, null, null);
+            Uri uri = MyProgressContract.MyProgressEntry.buildUriByID(id);
+            String selection = MyProgressContract.MyProgressEntry._ID + "=?";
+            String[] selectionArgs = new String[] {id};
+            Cursor c = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, null, selection, selectionArgs, null);
+            if(c.getCount() != 0) {
+                ContentValues values = new ContentValues();
+                values.put(param, 1);
+                getActivity().getContentResolver().update(uri, values, null, null);
+            }
+            c.close();
         }else{
             Log.e(getClass().getName(), getResources().getString(R.string.action_failed));
             displayToastMessage(getResources().getString(R.string.action_failed));

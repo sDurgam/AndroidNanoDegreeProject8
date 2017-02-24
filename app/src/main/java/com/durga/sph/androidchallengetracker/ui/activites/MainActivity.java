@@ -22,6 +22,7 @@ import com.durga.sph.androidchallengetracker.ui.fragments.MyReviewedQuestionsFra
 import com.durga.sph.androidchallengetracker.ui.fragments.MySolvedQuestionsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.NewQuestionFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.ReviewQuestionsFragment;
+import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity{
     private FirebaseAuth mAuth;
     private FirebaseUser mFirebaseUser;
     int code=1;
+    boolean fromWidget = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +65,15 @@ public class MainActivity extends BaseActivity{
             mTwoPane = false;
         }
         if(savedInstanceState == null){
-            LevelFragment fragment = LevelFragment.newInstance(mlevelargs, 1);
-            mFragmentManager.beginTransaction().add(R.id.main_frameLayout, fragment).commit();
+            if(getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.FROMWIDGET)){
+                MyPointsFragment fragment = MyPointsFragment.newInstance();
+                mFragmentManager.beginTransaction().add(R.id.main_frameLayout, fragment).commit();
+                fromWidget = true;
+            }
+            else {
+                LevelFragment fragment = LevelFragment.newInstance(mlevelargs, 1);
+                mFragmentManager.beginTransaction().add(R.id.main_frameLayout, fragment).commit();
+            }
         }
         mAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
@@ -153,6 +162,9 @@ public class MainActivity extends BaseActivity{
             TabletViewFragmentPagerAdapter pagerAdapter = new TabletViewFragmentPagerAdapter(mFragmentManager, mlevelargs);
             mViewPager.setAdapter(pagerAdapter);
             mTabLayout.setupWithViewPager(mViewPager);
+            if(fromWidget){
+                mViewPager.setCurrentItem(2);
+            }
         }
     }
 
