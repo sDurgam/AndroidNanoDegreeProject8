@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <TextView android:id="@+id/added_desc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="@string/add_question_name">
     </TextView>
-
-    <LinearLayout
+    <android.support.v7.widget.AppCompatRadioButton
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/added_level"
-            android:text="@string/level1_name"
-            android:layout_weight="3"/>
-        <android.support.v4.widget.Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"/>
-        <android.support.v7.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:id="@+id/added_approved"
-            android:text="@string/mark_as_approved" />
-    </LinearLayout>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:id="@+id/added_level"
+        android:text="@string/level1_name"
+        android:checked="true"
+        android:enabled="false"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/added_desc"
+        />
+    <android.support.v7.widget.AppCompatCheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/added_approved"
+        android:text="@string/mark_as_approved"
+        android:enabled="false"
+        android:layout_below="@id/added_desc"
+        />
+</RelativeLayout>

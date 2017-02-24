@@ -68,38 +68,11 @@ public class ReviewQuestionsFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFirebaseDatabaseInterface = new ReviewQuestionsInterface();
-//        m_reviewQuestionsListener = new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                m_adapter.addItem(dataSnapshot.getValue(TrackerQuestion.class));
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//                m_adapter.removeItem();
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
     }
 
     @Override
     public void onResume() {
         super.onResume();
-       // mFirebaseDatabaseInterface.registerEventListener(m_reviewQuestionsListener);
         new AsyncTask<Void, Void, List<String>>() {
             @Override
             protected List<String> doInBackground(Void... params) {
@@ -127,7 +100,6 @@ public class ReviewQuestionsFragment extends BaseFragment {
 
     @Override
     public void onPause() {
-       // mFirebaseDatabaseInterface.unregisterEventListener(m_reviewQuestionsListener);
         super.onPause();
     }
 

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
-import com.durga.sph.androidchallengetracker.ui.adapters.MySessionCursorAdapterMy;
 
 import butterknife.ButterKnife;
 

@@ -8,9 +8,12 @@
         android:id="@+id/mydesc"
         android:text="Added Questions"
         android:layout_marginTop="@dimen/activity_vertical_margin"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <android.support.v7.widget.AppCompatRadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/mylevel"
-        android:layout_marginTop="@dimen/activity_vertical_margin"></TextView>
+        android:text="@string/level1_name"
+        android:checked="true"
+        android:enabled="false" />
+
 </LinearLayout>

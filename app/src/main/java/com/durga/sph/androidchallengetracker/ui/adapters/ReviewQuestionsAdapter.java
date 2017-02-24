@@ -2,14 +2,20 @@ package com.durga.sph.androidchallengetracker.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnReviewerItemClickListerner;
+import com.durga.sph.androidchallengetracker.utils.Constants;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -27,15 +33,16 @@ public class ReviewQuestionsAdapter extends BaseRecylerViewAdapter {
 
     public class MyViewHolder extends BaseRecylerViewAdapter.MyViewHolder{
         TextView descriptionView;
-        AppCompatCheckBox spamCheckedView;
-        AppCompatCheckBox approvedView;
-        AppCompatCheckBox unapprovedView;
+        AppCompatRadioButton levelView;
+        RadioGroup markGroup;
+        //AppCompatCheckBox spamCheckedView;
+        //AppCompatCheckBox approvedView;
+        //AppCompatCheckBox unapprovedView;
         public MyViewHolder(View itemView) {
             super(itemView);
-            descriptionView = (TextView) itemView.findViewById(R.id.reviewer_textView);
-            spamCheckedView = (AppCompatCheckBox) itemView.findViewById(R.id.reviewer_isspamView);
-            approvedView = (AppCompatCheckBox) itemView.findViewById(R.id.isApprovedView);
-            unapprovedView = (AppCompatCheckBox) itemView.findViewById(R.id.isNotApprovedView);
+            descriptionView = (TextView) itemView.findViewById(R.id.reviewer_quesdesc);
+            levelView = (AppCompatRadioButton) itemView.findViewById(R.id.reviewer_textLevel);
+            markGroup = (RadioGroup) itemView.findViewById(R.id.reviewer_optionsGroup);
         }
     }
 
@@ -52,34 +59,22 @@ public class ReviewQuestionsAdapter extends BaseRecylerViewAdapter {
         final int pos = position;
         ReviewQuestionsAdapter.MyViewHolder h = (ReviewQuestionsAdapter.MyViewHolder)holder;
         h.descriptionView.setText(recipe.getDescription());
-        if(h.spamCheckedView.isChecked()){
-            h.spamCheckedView.setChecked(false);
-        }
-        if(h.unapprovedView.isChecked()){
-            h.unapprovedView.setChecked(false);
-        }
-        if(h.approvedView.isChecked()){
-            h.approvedView.setChecked(false);
-        }
-        h.spamCheckedView.setOnClickListener(new View.OnClickListener() {
+        h.levelView.setText(String.format(Constants.LEVEL_CAPS_FORMATTER, recipe.level));
+        h.markGroup.clearCheck();
+        h.markGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                //display review question fragment
-                m_itemClickListener.onisSpamClick(m_trackerQuestionsList.get(pos), pos);
-            }
-        });
-        h.approvedView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                m_itemClickListener.onisApprovedClick(m_trackerQuestionsList.get(pos), m_user, pos);
-            }
-        });
-        h.unapprovedView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                m_itemClickListener.onisNotApprovedClick(m_trackerQuestionsList.get(pos), m_user, pos);
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId == R.id.reviewer_isspam){
+                    //display review question fragment
+                    m_itemClickListener.onisSpamClick(m_trackerQuestionsList.get(pos), pos);
+                }
+                else if(checkedId == R.id.reviewer_approved){
+                    m_itemClickListener.onisApprovedClick(m_trackerQuestionsList.get(pos), m_user, pos);
+                }
+                else {
+                    m_itemClickListener.onisNotApprovedClick(m_trackerQuestionsList.get(pos), m_user, pos);
+                }
             }
         });
     }
-
 }

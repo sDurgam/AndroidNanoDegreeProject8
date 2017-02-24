@@ -1,34 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <TextView android:id="@+id/reviewer_textView"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView android:id="@+id/reviewer_quesdesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </TextView>
-    <android.support.v7.widget.AppCompatCheckBox
+    <android.support.v7.widget.AppCompatRadioButton android:id="@+id/reviewer_textLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/reviewer_textView"
-        android:id="@+id/reviewer_isspamView"
-        android:text="@string/mark_as_spam"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true" />
-    <android.support.v7.widget.AppCompatCheckBox
+        android:checked="true"
+        android:enabled="false"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_below="@id/reviewer_quesdesc">
+    </android.support.v7.widget.AppCompatRadioButton>
+    <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/reviewer_textView"
-        android:id="@+id/isApprovedView"
-        android:text="@string/mark_as_approved"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true" />
-    <android.support.v7.widget.AppCompatCheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/reviewer_textView"
-        android:id="@+id/isNotApprovedView"
-        android:text="@string/mark_as_notapproved"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        />
+        android:id="@+id/reviewer_optionsGroup"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/reviewer_textLevel">
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mark_as_spam"
+            android:id="@+id/reviewer_isspam" />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mark_as_approved"
+            android:id="@+id/reviewer_approved"/>
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mark_as_notapproved"
+            android:id="@+id/reviewer_notapproved"/>
+    </RadioGroup>
 </RelativeLayout>

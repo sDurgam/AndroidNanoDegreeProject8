@@ -21,6 +21,7 @@ public class Constants {
     public static String TRACKER = "Tracker";
     public static String QUESTIONS = "Questions";
     public static String LEVELFORMATTER = "level%s";
+    public static String LEVEL_CAPS_FORMATTER = "Level %s";
     public static String LEVEL = "level";
     public static String LEVEL1 = "level1";
     public static String LEVEL2 = "level2";

@@ -28,6 +28,7 @@
     <string name="mark_as_spam">Spam</string>
     <string name="mark_as_solved">Solved</string>
     <string name="mark_as_approved">Approve</string>
+    <string name="marked_as_approved">Approved</string>
     <string name="mark_as_notapproved">Not Approve</string>
     <string name="action_failed">Action could not be performed</string>
     <string name="plus_name">+10</string>

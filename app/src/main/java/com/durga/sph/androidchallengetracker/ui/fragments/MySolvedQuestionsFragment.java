@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
-import com.durga.sph.androidchallengetracker.ui.adapters.MySessionCursorAdapterMy;
 
 import butterknife.ButterKnife;
 
@@ -23,7 +22,7 @@ public class MySolvedQuestionsFragment extends MyFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        uri = MyProgressContract.MyProgressEntry.buildUriReviewed();
+        uri = MyProgressContract.MyProgressEntry.buildUriSolved();
         projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
         uibindForm = new String[] {MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
         uibindTo = new int[] {R.id.mydesc, R.id.mylevel};

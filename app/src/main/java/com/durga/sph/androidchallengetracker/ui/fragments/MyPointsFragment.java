@@ -66,12 +66,9 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
         databaseInterface = new ProgressDatabaseInterface();
         m_localProgessMap = new HashMap<>();
         m_ProgessMap = new HashMap<>();
-        for(int i =0; i < 4; i++){  //initialize hashmap
-            m_ProgessMap.put(NAMEDB_LIST[i], 0l);
+        for(int i =0; i < NAMEDB_LIST.length; i++){  //initialize hashmap
             m_localProgessMap.put(NAMEDB_LIST[i], 0l);
         }
-        m_localProgessMap.put(NAMEDB_LIST[4], 0l);
-        m_localProgessMap.put(NAMEDB_LIST[5], 0l);
         mChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -162,17 +159,18 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
         }
 
         //isapproved percentage
-        c = c - m_ProgessMap.get(Constants.REVIEWEQUES);
+        if(m_ProgessMap.containsKey(Constants.REVIEWEQUES)) {
+            c = c - m_ProgessMap.get(Constants.REVIEWEQUES);
         /*if(c <= 0){
             entries1.add(new PieEntry(0.0f, NAME_LIST[5]));
         }*/
-        if(c > 0){
-            c = (float)m_localProgessMap.get(MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED)/c;
-            if(c > 0) {
-                entries1.add(new PieEntry(c, NAME_LIST[5]));
+            if (c > 0) {
+                c = (float) m_localProgessMap.get(MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED) / c;
+                if (c > 0) {
+                    entries1.add(new PieEntry(c, NAME_LIST[5]));
+                }
             }
         }
-
         PieDataSet ds1 = new PieDataSet(entries1, "My Progress");
         ds1.setColors(ColorTemplate.VORDIPLOM_COLORS);
         ds1.setSliceSpace(2f);
@@ -212,10 +210,12 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
         Float progress = 0.0f;
         Long p = null;
         progress = (float) m_localProgessMap.get(NAMEDB_LIST[i]);
-        p = m_ProgessMap.get(NAMEDB_LIST[i]);
-        if (progress !=0 && p != null && p != 0) {
-            progress = progress / p;
-            entryList.add(new PieEntry(progress, NAME_LIST[i]));
+        if(m_ProgessMap.containsKey(NAMEDB_LIST[i])) {
+            p = m_ProgessMap.get(NAMEDB_LIST[i]);
+            if (progress != 0 && p != null && p != 0) {
+                progress = progress / p;
+                entryList.add(new PieEntry(progress, NAME_LIST[i]));
+            }
         }
     }
 

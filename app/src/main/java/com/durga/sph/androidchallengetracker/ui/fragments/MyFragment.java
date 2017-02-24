@@ -2,13 +2,9 @@ package com.durga.sph.androidchallengetracker.ui.fragments;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.database.CharArrayBuffer;
-import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,9 +13,8 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.durga.sph.androidchallengetracker.R;
-import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
-import com.durga.sph.androidchallengetracker.ui.adapters.MyBaseCursorAdapter;
-import com.durga.sph.androidchallengetracker.ui.adapters.MySessionCursorAdapterMy;
+import com.durga.sph.androidchallengetracker.ui.adapters.MyAddedCursorAdapter;
+import com.durga.sph.androidchallengetracker.ui.adapters.MySessionCursorAdapter;
 
 import butterknife.BindView;
 
@@ -73,7 +68,12 @@ public class MyFragment extends Fragment implements LoaderManager.LoaderCallback
     }
 
     private void setUpCursorAdapter(){
-        adapter = new SimpleCursorAdapter(this.getActivity(), layoutId, null, uibindForm, uibindTo, 0);
+        if(this instanceof MyAddedQuestionsFragment){
+         adapter = new MyAddedCursorAdapter(this.getActivity(), layoutId, null, uibindForm, uibindTo, 0);
+        }
+        else {
+            adapter = new MySessionCursorAdapter(this.getActivity(), layoutId, null, uibindForm, uibindTo, 0);
+        }
         myquestionsView.setAdapter(adapter);
     }
 }
