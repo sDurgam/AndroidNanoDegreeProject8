@@ -17,6 +17,16 @@ import butterknife.ButterKnife;
 
 public class MyAddedQuestionsFragment extends MyFragment{
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        uri = MyProgressContract.MyProgressEntry.buildUriAdded();
+        projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
+        uibindForm = new String[] {MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
+        uibindTo = new int[] {R.id.added_desc, R.id.added_level, R.id.added_approved};
+        layoutId = R.layout.addedques_cell;
+        super.onCreate(savedInstanceState);
+    }
+
     public static MyAddedQuestionsFragment newInstance() {
         Bundle args = new Bundle();
         MyAddedQuestionsFragment fragment = new MyAddedQuestionsFragment();
@@ -24,10 +34,6 @@ public class MyAddedQuestionsFragment extends MyFragment{
         return fragment;
     }
 
-    public MyAddedQuestionsFragment(){
-        uri = MyProgressContract.MyProgressEntry.buildUriAdded();
-        //projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,6 +52,5 @@ public class MyAddedQuestionsFragment extends MyFragment{
     @Override
     public void onResume() {
         super.onResume();
-        String[] uibindForm = new String[] {MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
     }
 }

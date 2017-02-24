@@ -35,6 +35,11 @@ public class MyFragment extends Fragment implements LoaderManager.LoaderCallback
     @Nullable  @BindView(R.id.mysession_listView)
     ListView myquestionsView;
     Cursor cursor;
+    int layoutId;
+
+    String[] projectionFields;
+    String[] uibindForm;
+    int[] uibindTo;
 
     @Nullable @BindView(R.id.mysession_title)
     TextView myquestionsTitle;
@@ -47,7 +52,6 @@ public class MyFragment extends Fragment implements LoaderManager.LoaderCallback
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION};
         CursorLoader loader = new CursorLoader(this.getActivity(), uri, projectionFields, null, null, null);
         return loader;
     }
@@ -69,9 +73,7 @@ public class MyFragment extends Fragment implements LoaderManager.LoaderCallback
     }
 
     private void setUpCursorAdapter(){
-        String[] uibindForm = {MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION};
-        int[] uibindTo = {R.id.textView};
-        adapter = new SimpleCursorAdapter(this.getActivity(), R.layout.level_cell_view, null, uibindForm, uibindTo, 0);
+        adapter = new SimpleCursorAdapter(this.getActivity(), layoutId, null, uibindForm, uibindTo, 0);
         myquestionsView.setAdapter(adapter);
     }
 }

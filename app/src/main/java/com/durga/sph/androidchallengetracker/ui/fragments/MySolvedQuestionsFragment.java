@@ -23,10 +23,12 @@ public class MySolvedQuestionsFragment extends MyFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        uri = MyProgressContract.MyProgressEntry.buildUriReviewed();
+        projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
+        uibindForm = new String[] {MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
+        uibindTo = new int[] {R.id.mydesc, R.id.mylevel};
+        layoutId = R.layout.mysession_question_cell;
         super.onCreate(savedInstanceState);
-        //projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
-        String[] uibindForm = new String[]{MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
-        int[] uibindTo = new int[]{R.id.mydesc, R.id.mylevel};
     }
 
     public static MySolvedQuestionsFragment newInstance() {
