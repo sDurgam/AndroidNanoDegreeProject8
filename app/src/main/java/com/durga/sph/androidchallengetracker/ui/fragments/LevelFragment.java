@@ -216,7 +216,7 @@ public class LevelFragment extends BaseFragment
                     for (int i = 0; i < questionsList.size(); i++) {
                         question = questionsList.get(i);
                         if(question.userId.equals(m_username)) {
-                            updateDatabase(questionsList.get(i).id, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED);
+                            updateDatabase(question.id, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED);
                         }
                     }
                 }

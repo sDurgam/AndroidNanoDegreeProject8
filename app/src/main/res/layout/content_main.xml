@@ -18,7 +18,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/drawer_view">
+        app:menu="@menu/drawer_view"
+        android:fitsSystemWindows="false"
+        app:itemTextAppearance="?android:attr/textAppearanceSmallPopupMenu">
     </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

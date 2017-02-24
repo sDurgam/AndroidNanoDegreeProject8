@@ -136,14 +136,14 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
 
     protected void updateDatabase(String id, String param) {
         if(id != null) {
-            Uri uri = MyProgressContract.MyProgressEntry.buildUriByID(id);
             String selection = MyProgressContract.MyProgressEntry._ID + "=?";
             String[] selectionArgs = new String[] {id};
-            Cursor c = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, null, selection, selectionArgs, null);
+            String[] projection = new String[]{MyProgressContract.MyProgressEntry._ID};
+            Cursor c = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, projection, selection, selectionArgs, null);
             if(c.getCount() != 0) {
                 ContentValues values = new ContentValues();
                 values.put(param, 1);
-                getActivity().getContentResolver().update(uri, values, null, null);
+                getActivity().getContentResolver().update(MyProgressContract.MyProgressEntry.CONTENT_URI, values, selection, selectionArgs);
             }
             c.close();
         }else{

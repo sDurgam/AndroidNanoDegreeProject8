@@ -1,5 +1,7 @@
 package com.durga.sph.androidchallengetracker.utils;
 
+import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
+
 import java.util.HashMap;
 
 /**
@@ -8,6 +10,7 @@ import java.util.HashMap;
 
 public class Constants {
     public static int TAB_ITEM_COUNT = 5;
+    public static int TAB_ITEM_MYSESSION_COUNT = 4;
     public static String BLANKSTR = "\u0020";
     public static String MYPOINTS = "mypoints";
     public static String MYADDEDQUES = "myaddedques";
@@ -45,9 +48,6 @@ public class Constants {
     public static int APPROVE_MIN_QUESTION_COUNT = -3;
     public static int MAX_QUESTIONS_API_COUNT = 20;
 
-    //my progress table columns
-
-
     public static HashMap<String, Object> updateMapForAllWithValue
             (final String questionId,
              final String mlevel, HashMap<String, Object> mapToUpdate,
@@ -56,5 +56,7 @@ public class Constants {
                 + propertyToUpdate, valueToUpdate);
         return mapToUpdate;
     }
+
+    public static final String[] NAMEDB_LIST = new String[] { Constants.LEVEL1, Constants.LEVEL2, Constants.LEVEL3, Constants.REVIEWEQUES, MyProgressContract.MyProgressEntry.COLUMN_ISADDED, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
 
 }

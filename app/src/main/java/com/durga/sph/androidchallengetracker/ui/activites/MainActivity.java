@@ -2,16 +2,23 @@ package com.durga.sph.androidchallengetracker.ui.activites;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowInsets;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.ui.adapters.TabletViewFragmentPagerAdapter;
@@ -34,88 +41,65 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity{
 
-    @Nullable @BindView(R.id.toolbar)
-    Toolbar mToolbar;
     @Nullable @BindView(R.id.drawer_main)
     DrawerLayout mDrawerLayout;
     @Nullable @BindView(R.id.main_navigationView)
     NavigationView mNavigationView;
-    @Nullable @BindView(R.id.pager_main)
-    ViewPager mViewPager;
-    @Nullable @BindView(R.id.tabs)
-    TabLayout mTabLayout;
-    @BindString(R.string.level) String mlevelargs;
-    FragmentManager mFragmentManager;
-    static boolean mTwoPane = true;
-    String m_mySessionAttr;
-    private FirebaseAuth mAuth;
-    private FirebaseUser mFirebaseUser;
-    int code=1;
     boolean fromWidget = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        mTAG = this.getClass().getName();
         setSupportActionBar(mToolbar);
-        mFragmentManager = getFragmentManager();
+        ButterKnife.bind(this);
         if(mViewPager == null){
             mTwoPane = false;
         }
-        if(savedInstanceState == null){
-            if(getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.FROMWIDGET)){
-                MyPointsFragment fragment = MyPointsFragment.newInstance();
-                mFragmentManager.beginTransaction().add(R.id.main_frameLayout, fragment).commit();
-                fromWidget = true;
-            }
-            else {
-                LevelFragment fragment = LevelFragment.newInstance(mlevelargs, 1);
-                mFragmentManager.beginTransaction().add(R.id.main_frameLayout, fragment).commit();
-            }
+        if(getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getString(Constants.FROMWIDGET) != null){
+            fromWidget = true;
         }
-        mAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mAuth.getCurrentUser();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    onSignedInInitialize(user.getDisplayName());
-                } else {
-                    // User is signed out
-                    onSignedOutCleanup();
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setProviders(
-                                            AuthUI.EMAIL_PROVIDER)
-                                    .build(),
-                            code);
-                }
-            }
-        };
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectCustomSlowCalls().detectNetwork().build());
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectActivityLeaks().penaltyLog().build());
+        if(savedInstanceState == null){
+            LevelFragment fragment = LevelFragment.newInstance(mlevelargs, 1);
+            mFragmentManager.beginTransaction().add(R.id.main_frameLayout, fragment).commit();
+        }
+
         if(!mTwoPane) {
+            NavigationMenuView navMenuView = (NavigationMenuView) mNavigationView.getChildAt(0);
+            navMenuView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
             setUpDrawerContent();
+            if(fromWidget){
+                selectDrawerItem(R.id.nav_points_fragment);
+            }
         }
         else{
-            setupViewPager();
+            if(fromWidget){
+                openMySession();
+            }
+            else {
+                FragmentStatePagerAdapter pagerAdapter = new TabletViewFragmentPagerAdapter(mFragmentManager, mlevelargs, this);
+                setupViewPager(pagerAdapter);
+            }
         }
     }
 
     //only for mobile devices and not tablets
     void setUpDrawerContent(){
         if(mNavigationView != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                mNavigationView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                    @Override
+                    public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                        return insets;
+                    }
+                });
+            }
             mNavigationView.setNavigationItemSelectedListener(
                     new NavigationView.OnNavigationItemSelectedListener() {
-
                         @Override
                         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                            item.setChecked(true);
                             selectDrawerItem(item.getItemId());
                             return false;
                         }
@@ -157,50 +141,8 @@ public class MainActivity extends BaseActivity{
         mDrawerLayout.closeDrawers();
     }
 
-    private void setupViewPager(){
-        if(mViewPager != null) {
-            TabletViewFragmentPagerAdapter pagerAdapter = new TabletViewFragmentPagerAdapter(mFragmentManager, mlevelargs);
-            mViewPager.setAdapter(pagerAdapter);
-            mTabLayout.setupWithViewPager(mViewPager);
-            if(fromWidget){
-                mViewPager.setCurrentItem(2);
-            }
-        }
-    }
-
     public void onResume(){
         super.onResume();
     }
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == code){
-            if(resultCode == 0){
-                isAuthenticated = true;
-                FirebaseUser user = mAuth.getCurrentUser();
-            }
-        }
-    }
-
-    private void onSignedInInitialize(String username) {
-
-    }
-
-    private void onSignedOutCleanup() {
-
-    }
 }

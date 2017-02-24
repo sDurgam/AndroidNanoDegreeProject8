@@ -1,6 +1,7 @@
 package com.durga.sph.androidchallengetracker.ui.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.LocalSocketAddress;
@@ -21,6 +22,7 @@ import com.durga.sph.androidchallengetracker.network.LevelQuestionsInterface;
 import com.durga.sph.androidchallengetracker.network.ProgressDatabaseInterface;
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 import com.durga.sph.androidchallengetracker.ui.RecylclerViewEndlessScrollListener;
+import com.durga.sph.androidchallengetracker.ui.asynctaks.MyProgressAsyncTask;
 import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.ui.listeners.IProgressListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
@@ -34,6 +36,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +45,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.durga.sph.androidchallengetracker.utils.Constants.NAMEDB_LIST;
+
 /**
  * Created by root on 1/30/17.
  */
@@ -49,8 +54,7 @@ import butterknife.ButterKnife;
 public class MyPointsFragment extends BaseFragment implements IProgressListener {
 
 
-    private static String[] NAME_LIST = new String[] { "LEVEL1", "LEVEL2", "LEVEl3", "ADDED", "REVIEWED", "APPROVED"};
-    private  String[] NAMEDB_LIST = new String[] { Constants.LEVEL1, Constants.LEVEL2, Constants.LEVEL3, MyProgressContract.MyProgressEntry.COLUMN_ISADDED, Constants.REVIEWEQUES, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
+    private static String[] NAME_LIST = new String[] { "LEVEL1", "LEVEL2", "LEVEl3", "REVIEWED", "ADDED","APPROVED"};
     Map<String, Long> m_localProgessMap;
     Map<String, Long> m_ProgessMap;
     ProgressDatabaseInterface databaseInterface;
@@ -60,21 +64,31 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         databaseInterface = new ProgressDatabaseInterface();
+        m_localProgessMap = new HashMap<>();
         m_ProgessMap = new HashMap<>();
+        for(int i =0; i < 4; i++){  //initialize hashmap
+            m_ProgessMap.put(NAMEDB_LIST[i], 0l);
+            m_localProgessMap.put(NAMEDB_LIST[i], 0l);
+        }
+        m_localProgessMap.put(NAMEDB_LIST[4], 0l);
+        m_localProgessMap.put(NAMEDB_LIST[5], 0l);
         mChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                m_ProgessMap.put(dataSnapshot.getKey(), (Long) dataSnapshot.getValue());
+                m_ProgessMap.put(dataSnapshot.getKey(), dataSnapshot.getValue() != null ? (Long) dataSnapshot.getValue(): 0l);
+                generatePieData();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                m_ProgessMap.put(dataSnapshot.getKey(), (Long) dataSnapshot.getValue());
+                m_ProgessMap.put(dataSnapshot.getKey(), dataSnapshot.getValue() != null ? (Long) dataSnapshot.getValue(): 0l);
+                generatePieData();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                m_ProgessMap.put(dataSnapshot.getKey(), 0l);
+                m_ProgessMap.put(dataSnapshot.getKey(), dataSnapshot.getValue() != null ? (Long) dataSnapshot.getValue(): 0l);
+                generatePieData();
             }
 
             @Override
@@ -103,7 +117,6 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.mypoints_fragment, container, false);
         ButterKnife.bind(this, view);
-        m_localProgessMap = new HashMap<>();
         mChart.getDescription().setEnabled(false);
         // radius of the center hole in percent of maximum radius
         mChart.setHoleRadius(45f);
@@ -121,62 +134,18 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
     public void onResume() {
         super.onResume();
         databaseInterface.registerListener(mChildEventListener);
-        new AsyncTask<Void, Void, Cursor>(){
-
-            @Override
-            protected Cursor doInBackground(Void... params) {
-                Cursor l = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, null, null, null, null);
-                return l;
-            }
-
-            @Override
-            protected void onPostExecute(Cursor cursor) {
-                super.onPostExecute(cursor);
-                if(cursor.getCount() != 0){
-                    cursor.moveToFirst();
-                    do{
-                        if(cursor.getString(4).equals("1")) {
-                            if (cursor.getString(2).equals("1")) {
-                                updateHashMap(NAMEDB_LIST[0]);
-                            } else if (cursor.getString(2).equals("2")) {
-                                updateHashMap(NAMEDB_LIST[1]);
-                            } else if (cursor.getString(2).equals("3")) {
-                                updateHashMap(NAMEDB_LIST[2]);
-                            }
-                        }
-                        if(cursor.getString(6).equals("1")){
-                            updateHashMap(NAMEDB_LIST[3]);
-                        }
-                        if(cursor.getString(5).equals("1")){
-                            updateHashMap(NAMEDB_LIST[4]);
-                        }
-                        if(cursor.getString(7).equals("1")){
-                            updateHashMap(NAMEDB_LIST[5]);
-                        }
-
-                    }while (cursor.moveToNext());
-                }
-                cursor.close();
-                //call firebase
-                getProgress();
-            }
-        }.execute();
-    }
-
-    private void getProgress(){
-
         if(mFirebaseAuth.getCurrentUser() != null) {
-            m_username = mFirebaseAuth.getCurrentUser().getUid();
-            databaseInterface.getProgress(this);
+            new MyProgressAsyncTask(new WeakReference<Context>(this.getActivity()), this, databaseInterface, m_localProgessMap).execute();
         }
     }
+
 
     protected PieData generatePieData() {
 
         ArrayList<PieEntry> entries1 = new ArrayList<PieEntry>();
 
         //add level 1, level2, level 3
-        for(int i = 0; i < 3; i++) {
+        for(int i = 0; i < 4; i++) {
             addPieEntry(entries1, i);
         }
 
@@ -186,12 +155,11 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
             entries1.add(new PieEntry(0.0f, NAME_LIST[3]));
         }*/
         if(c > 0) {
-            c = m_localProgessMap.get(MyProgressContract.MyProgressEntry.COLUMN_ISADDED) / c;
-            entries1.add(new PieEntry(c, NAME_LIST[3]));
+            c = (float)m_localProgessMap.get(MyProgressContract.MyProgressEntry.COLUMN_ISADDED) / c;
+            if(c > 0) {
+                entries1.add(new PieEntry(c, NAME_LIST[4]));
+            }
         }
-
-        //isreviewed percentage
-        addPieEntry(entries1, 4);
 
         //isapproved percentage
         c = c - m_ProgessMap.get(Constants.REVIEWEQUES);
@@ -199,8 +167,10 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
             entries1.add(new PieEntry(0.0f, NAME_LIST[5]));
         }*/
         if(c > 0){
-            c = m_localProgessMap.get(MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED)/c;
-            entries1.add(new PieEntry(c, NAME_LIST[5]));
+            c = (float)m_localProgessMap.get(MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED)/c;
+            if(c > 0) {
+                entries1.add(new PieEntry(c, NAME_LIST[5]));
+            }
         }
 
         PieDataSet ds1 = new PieDataSet(entries1, "My Progress");
@@ -238,29 +208,13 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
         mChart.invalidate();
     }
 
-    void updateHashMap(String key){
-        long count = 1l;
-        if(m_localProgessMap.containsKey(key)){
-            count += m_localProgessMap.get(key);
-        }
-        m_localProgessMap.put(key, count);
-    }
-
     void addPieEntry(List<PieEntry> entryList, int i){
         Float progress = 0.0f;
         Long p = null;
-        if(!m_localProgessMap.containsKey(NAMEDB_LIST[i]) || m_localProgessMap.get(NAMEDB_LIST[i]) == null) {
-            //entryList.add(new PieEntry(progress, NAME_LIST[i]));
-            return;
-        }
-        else {
-            progress = (float) m_localProgessMap.get(NAMEDB_LIST[i]);
-            p = m_ProgessMap.get(NAMEDB_LIST[i]);
-            if (p != null && p != 0) {
-                progress = progress / p;
-            } else {
-                progress = 0.0f;
-            }
+        progress = (float) m_localProgessMap.get(NAMEDB_LIST[i]);
+        p = m_ProgessMap.get(NAMEDB_LIST[i]);
+        if (progress !=0 && p != null && p != 0) {
+            progress = progress / p;
             entryList.add(new PieEntry(progress, NAME_LIST[i]));
         }
     }
