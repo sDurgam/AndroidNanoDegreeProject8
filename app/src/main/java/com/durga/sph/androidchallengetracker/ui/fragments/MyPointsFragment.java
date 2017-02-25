@@ -201,6 +201,7 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
 
     @Override
     public void onProgressReceived(Map<String, Long> progressMap) {
+        mloadingBar.setVisibility(View.GONE);
         this.m_ProgessMap = progressMap;
         mChart.setData(generatePieData());
         mChart.invalidate();

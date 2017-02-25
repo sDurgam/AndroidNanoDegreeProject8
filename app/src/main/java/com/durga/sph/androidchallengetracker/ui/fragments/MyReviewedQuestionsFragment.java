@@ -38,7 +38,8 @@ public class MyReviewedQuestionsFragment extends MyFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.mysession_questionslayout, container, false);
         ButterKnife.bind(this, view);
-        myquestionsTitle.setText(getResources().getString(R.string.reviewed_questions_name));
+        myquestionsTitle.setText(getResources().getString(R.string.reviewed_questions_title));
+        emptyView.setText(getResources().getString(R.string.reviewed_empty_list));
         return view;
     }
 

@@ -15,8 +15,11 @@
     <string name="review_question_name">Review Question</string>
     <string name="review_questions_name">Review Questions</string>
     <string name="solved_questions_name">My Solved Questions</string>
+    <string name="solved_questions_title">Solved Questions</string>
     <string name="added_questions_name">My Added Questions</string>
+    <string name="added_questions_title">Added Questions</string>
     <string name="reviewed_questions_name">My Reviewed Questions</string>
+    <string name="reviewed_questions_title">Reviewed Questions</string>
     <string name="question">Question</string>
     <string name="level">Level</string>
     <string name="submit_for_review">submit for review</string>
@@ -35,4 +38,11 @@
     <string name="insert_error">Insert could not be performed. Not a valid URI</string>
     <string name="update_error">Update could not be performed. Not a valid URI</string>
     <string name="delete_error">Delete could not be performed. Not a valid URI</string>
+    <string name="firebase_connectpath">.info/connected</string>
+    <string name="offline_msg">The device is not connected to the network. Please try after connecting to the network</string>
+    <string name="connect_listerner_canceled">Firebase Network Connection Listener was cancelled</string>
+    <string name="added_empty_list">Add New Questions to the Tracker</string>
+    <string name="reviewed_empty_list">Review Questions from different levels</string>
+    <string name="solved_empty_list">Solve Questions from different levels</string>
+    <string name="empty_tracker_questions">Empty results fetched from the tracker</string>
 </resources>

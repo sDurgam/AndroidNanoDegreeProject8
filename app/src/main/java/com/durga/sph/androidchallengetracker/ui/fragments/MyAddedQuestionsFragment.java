@@ -39,7 +39,8 @@ public class MyAddedQuestionsFragment extends MyFragment{
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.mysession_questionslayout, container, false);
         ButterKnife.bind(this, view);
-        myquestionsTitle.setText(getResources().getString(R.string.added_questions_name));
+        myquestionsTitle.setText(getResources().getString(R.string.added_questions_title));
+        emptyView.setText(getResources().getString(R.string.added_empty_list));
         return view;
     }
 

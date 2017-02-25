@@ -175,6 +175,7 @@ public class LevelFragment extends BaseFragment
         });
         if(mFirebaseAuth.getCurrentUser() != null) {
             m_username = mFirebaseAuth.getCurrentUser().getUid();
+            mloadingBar.setVisibility(View.VISIBLE);
             mFirebaseDatabaseInterface.getQuestions(null, this, Constants.MAX_QUESTIONS_API_COUNT + 1, mysolvedQuestions);
         }
     }

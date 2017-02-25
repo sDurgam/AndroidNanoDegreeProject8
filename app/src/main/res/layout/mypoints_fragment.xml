@@ -2,10 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="MyPoints"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MyPoints"
+        style="@style/titleText"/>
+    <include layout="@layout/loading_layout" />
+
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/progressChart"
         android:layout_width="match_parent"

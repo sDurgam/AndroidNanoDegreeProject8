@@ -35,9 +35,6 @@ public class ReviewQuestionsAdapter extends BaseRecylerViewAdapter {
         TextView descriptionView;
         AppCompatRadioButton levelView;
         RadioGroup markGroup;
-        //AppCompatCheckBox spamCheckedView;
-        //AppCompatCheckBox approvedView;
-        //AppCompatCheckBox unapprovedView;
         public MyViewHolder(View itemView) {
             super(itemView);
             descriptionView = (TextView) itemView.findViewById(R.id.reviewer_quesdesc);
@@ -49,7 +46,8 @@ public class ReviewQuestionsAdapter extends BaseRecylerViewAdapter {
     @Override
     public BaseRecylerViewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int type)
     {
-        View view = LayoutInflater.from(m_context).inflate(R.layout.reviewer_cell_view, parent, false);
+        View view;
+        view = LayoutInflater.from(m_context).inflate(R.layout.reviewer_cell_view, parent, false);
         return new ReviewQuestionsAdapter.MyViewHolder(view);
     }
 

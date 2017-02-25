@@ -149,6 +149,7 @@ public class ReviewQuestionsFragment extends BaseFragment {
             }
         });
         m_username = mFirebaseAuth.getCurrentUser().getUid();
+        mloadingBar.setVisibility(View.VISIBLE);
         mFirebaseDatabaseInterface.getQuestions(m_username, this,Constants.MAX_QUESTIONS_API_COUNT+1, myreviewedQuestions);
     }
 }

@@ -68,7 +68,8 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
     }
 
     public int getItemCount() {
-        return m_trackerQuestionsList != null ? m_trackerQuestionsList.size() : 0;
+        if(m_trackerQuestionsList == null) return 0;
+        return m_trackerQuestionsList.size();
     }
 
 
@@ -115,4 +116,5 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
         if(m_trackerQuestionsList == null || m_trackerQuestionsList.size() <= 0) return false;
         return m_trackerQuestionsList.get(getItemCount()-1).id.equals(id);
     }
+
 }

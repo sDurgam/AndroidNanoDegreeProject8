@@ -18,4 +18,6 @@
         android:layout_marginBottom="@dimen/recyclerview_marginbottom"
         >
     </android.support.v7.widget.RecyclerView>
+    <include layout="@layout/empty_recycler_view" android:visibility="gone" />
+    <include layout="@layout/loading_layout"/>
 </RelativeLayout>
