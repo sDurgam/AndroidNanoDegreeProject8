@@ -8,7 +8,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
@@ -38,6 +40,10 @@ public class MyFragment extends Fragment implements LoaderManager.LoaderCallback
 
     @Nullable @BindView(R.id.mysession_title)
     TextView myquestionsTitle;
+    @BindView(R.id.emptySessionView)
+    TextView emptyView;
+    @BindView(R.id.loadingBar)
+    ProgressBar loadingBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,7 @@ public class MyFragment extends Fragment implements LoaderManager.LoaderCallback
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
+        loadingBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -75,5 +82,6 @@ public class MyFragment extends Fragment implements LoaderManager.LoaderCallback
             adapter = new MySessionCursorAdapter(this.getActivity(), layoutId, null, uibindForm, uibindTo, 0);
         }
         myquestionsView.setAdapter(adapter);
+        myquestionsView.setEmptyView(emptyView);
     }
 }

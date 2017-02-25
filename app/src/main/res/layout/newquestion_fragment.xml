@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_question_name"
-        android:gravity="center"
+        style="@style/titleText"
         android:layout_alignParentTop="true"
         android:id="@+id/addquestionLabel"
         app:layout_heightPercent="10%"
@@ -27,7 +27,8 @@
         android:layout_toRightOf="@id/questionLabel"
         android:id="@+id/newQuestionEditTxt"
         app:layout_heightPercent="50%"
-        app:layout_widthPercent="55%"/>
+        app:layout_widthPercent="55%"
+        android:inputType="text|textAutoCorrect"/>
     <TextView
         android:text=""
         android:layout_above="@+id/addquesSubmitReviewBtn"

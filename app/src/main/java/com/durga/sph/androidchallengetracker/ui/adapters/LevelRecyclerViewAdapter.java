@@ -39,7 +39,8 @@ public class LevelRecyclerViewAdapter extends BaseRecylerViewAdapter {
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int type)
     {
-        View view = LayoutInflater.from(m_context).inflate(R.layout.level_cell_view, parent, false);
+        View view;
+        view = LayoutInflater.from(m_context).inflate(R.layout.level_cell_view, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -49,9 +50,6 @@ public class LevelRecyclerViewAdapter extends BaseRecylerViewAdapter {
         final int pos = position;
         LevelRecyclerViewAdapter.MyViewHolder h = (LevelRecyclerViewAdapter.MyViewHolder)holder;
         h.descriptionView.setText(recipe.description);
-       /* if(h.solvedView.isChecked()){
-            h.solvedView.setChecked(false);
-        }*/
         h.solvedView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -8,7 +8,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.durga.sph.androidchallengetracker.R;
@@ -22,7 +26,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
+
+import butterknife.BindView;
 
 /**
  * Created by root on 2/3/17.
@@ -39,6 +47,10 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
     String m_lasttimeStamp = null;
     String m_username;
     BaseRecylerViewAdapter m_adapter;
+    @Nullable @BindView(R.id.emptyTrackerView)
+    TextView emptyView;
+    @Nullable @BindView(R.id.loadingBar)
+    ProgressBar mloadingBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,17 +101,11 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
         super.onPause();
     }
 
-//    public void registerFirebaseChildListener(String key){
-//        mFirebaseDatabaseInterface.registerQuestionsByLevelEventListener(key, );
-//    }
-//
-//    public void unregisterFirebaseChildListener(String key){
-//        mFirebaseDatabaseInterface.unregisterEventListener(key);
-//    }
-
     @Override
     public void onQuestionsReady(List<TrackerQuestion> questionsList) {
+        mloadingBar.setVisibility(View.GONE);
         if(questionsList != null && questionsList.size() > 0) {
+            emptyView.setVisibility(View.GONE);
             int index = 0;
             TrackerQuestion question = questionsList.get(0);
             if(m_adapter.isExistsQuestion(question.id))
@@ -112,11 +118,14 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
             else{
                 m_lastQuestionId = null;
             }
-           // m_lasttimeStamp = question.lastModified.get(Constants.LASTMODIFIED);
+
             m_adapter.updateAdapter(questionsList, index, questionsList.size());
         }
         else{
             //log it
+            if(m_adapter.getItemCount() == 0){ //display empty list view
+                emptyView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
