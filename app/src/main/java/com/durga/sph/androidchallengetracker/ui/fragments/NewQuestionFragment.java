@@ -104,6 +104,7 @@ public class NewQuestionFragment extends BaseFragment implements IOnQuestionAdde
     }
 
     private void saveQuestioninDB(){
+        newQuestionEditTxt.setContentDescription(newQuestionEditTxt.getText());
         String title = newQuestionEditTxt.getText().toString();
         String userId  = mFirebaseAuth.getCurrentUser().getUid();
         m_level = String.format(Constants.LEVELFORMATTER, getLevel());

@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/activity_horizontal_margin"
-    android:id="@+id/widgetMainLayout">
+    android:id="@+id/widgetMainLayout"
+    android:layoutDirection="locale"
+    android:textDirection="locale">
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,26 +17,27 @@
         android:layout_rowSpan="3"
         android:layout_rowWeight="3"
         android:layout_columnWeight="2"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/app_widget">
         <TextView
             android:text="@string/level1_widget_name"></TextView>
         <TextView
             android:text=""
             android:id="@+id/widget_level1"
-            android:layout_gravity="left|top"/>
+            android:layout_gravity="start|left|top"/>
         <TextView
             android:text="@string/level2_widget_name"
-            android:layout_gravity="left|top"/>
+            android:layout_gravity="start|left|top"/>
         <TextView
             android:text=""
             android:id="@+id/widget_level2"
-            android:layout_gravity="left|top"/>
+            android:layout_gravity="start|left|top"/>
         <TextView
             android:text="@string/level3_widget_name"
-            android:layout_gravity="left|top"/>
+            android:layout_gravity="start|left|top"/>
         <TextView
             android:text=""
             android:id="@+id/widget_level3"
-            android:layout_gravity="left|top"/>
+            android:layout_gravity="start|left|top"/>
     </GridLayout>
 </RelativeLayout>

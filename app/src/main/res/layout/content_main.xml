@@ -7,11 +7,14 @@
     android:layout_height="match_parent"
     android:layout_marginTop="?android:attr/actionBarSize"
     tools:showIn="@layout/activity_main"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    android:layoutDirection="locale"
+    android:textDirection="locale">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/main_frameLayout"></FrameLayout>
+        android:id="@+id/main_frameLayout"
+        android:padding="@dimen/padding"></FrameLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/main_navigationView"
@@ -20,7 +23,8 @@
         android:layout_gravity="start"
         app:menu="@menu/drawer_view"
         android:fitsSystemWindows="false"
-        app:itemTextAppearance="?android:attr/textAppearanceSmallPopupMenu">
+        app:itemTextAppearance="?android:attr/textAppearanceSmallPopupMenu"
+        android:contentDescription="@string/add_question_name">
     </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

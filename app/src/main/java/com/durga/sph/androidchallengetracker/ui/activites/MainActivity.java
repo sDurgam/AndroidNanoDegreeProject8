@@ -38,6 +38,8 @@ import com.google.firebase.auth.FirebaseUser;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Optional;
 
 
 public class MainActivity extends BaseActivity{
@@ -145,6 +147,12 @@ public class MainActivity extends BaseActivity{
 
     public void onResume(){
         super.onResume();
+    }
+
+    @Optional
+    @OnClick(R.id.mysession_button)
+    protected void MySessionClick(View view){
+        openMySession();
     }
 
 }

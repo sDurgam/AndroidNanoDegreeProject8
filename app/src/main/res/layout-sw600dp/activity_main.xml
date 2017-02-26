@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".ui.activites.MainActivity"
-    android:id="@+id/main_coordinateLayout">
+    android:id="@+id/main_coordinateLayout"
+    android:layoutDirection="locale"
+    android:textDirection="locale">
 
     <include layout="@layout/appbar_layout"></include>
 

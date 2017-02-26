@@ -50,16 +50,17 @@ public class ReviewQuestionsInterface extends FirebaseDatabaseInterface {
                 long count = dataSnapshot.getChildrenCount();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     //if approved by more than 3 reviewers and the question is not marked spam then add it to the list of questions
-                    if (!myquestions.contains(data.getKey()) && data.child(Constants.ISSPAM).getValue().equals(false) && !data.child(Constants.USERID).getValue().equals(user) &&  (long)data.child(Constants.UPVOTE).getValue()>= Constants.APPROVE_MIN_QUESTION_COUNT && (long)data.child(Constants.UPVOTE).getValue()<= Constants.APPROVE_MAX_QUESTION_COUNT) {
-                            question = new TrackerQuestion((HashMap<String, Object>) data.getValue());
-                            questionsList.add(question);
+                    if (!myquestions.contains(data.getKey()) && data.child(Constants.ISSPAM).getValue().equals(false) && !data.child(Constants.USERID).getValue().equals(user) && (long) data.child(Constants.UPVOTE).getValue() >= Constants.APPROVE_MIN_QUESTION_COUNT && (long) data.child(Constants.UPVOTE).getValue() <= Constants.APPROVE_MAX_QUESTION_COUNT) {
+                        question = new TrackerQuestion((HashMap<String, Object>) data.getValue());
+                        questionsList.add(question);
                     }
-                    isInitialValueLoaded = false;
-                    callback.onQuestionsReady(questionsList);
-                    if (questionsList.size() > 0 && questionsList.size() < length && count >= length) {
-                        TrackerQuestion lastQuestion = questionsList.get(questionsList.size() - 1);
-                        getMoreQuestions(user, callback, lastQuestion.getId(), length - questionsList.size(), myquestions);
-                    }
+                }
+                isInitialValueLoaded = false;
+                callback.onQuestionsReady(questionsList);
+                if (questionsList.size() > 0 && questionsList.size() < length && count >= length) {
+                    TrackerQuestion lastQuestion = questionsList.get(questionsList.size() - 1);
+                    getMoreQuestions(user, callback, lastQuestion.getId(), length - questionsList.size(), myquestions);
+
                 }
             }
             @Override

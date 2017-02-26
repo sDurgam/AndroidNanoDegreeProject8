@@ -57,21 +57,23 @@ public class ReviewQuestionsAdapter extends BaseRecylerViewAdapter {
         final int pos = position;
         ReviewQuestionsAdapter.MyViewHolder h = (ReviewQuestionsAdapter.MyViewHolder)holder;
         h.descriptionView.setText(recipe.getDescription());
+        h.descriptionView.setContentDescription(m_context.getResources().getString(R.string.questiondesc) + recipe.getDescription());
         h.levelView.setText(String.format(Constants.LEVEL_CAPS_FORMATTER, recipe.level));
+        h.levelView.setContentDescription(String.format(Constants.LEVEL_CAPS_FORMATTER, recipe.level));
         h.markGroup.clearCheck();
         h.markGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if(checkedId == R.id.reviewer_isspam){
                     //display review question fragment
-                    m_itemClickListener.onisSpamClick(m_trackerQuestionsList.get(pos), pos);
-                }
+                    m_itemClickListener.onisSpamClick(m_trackerQuestionsList.get(pos), pos);}
                 else if(checkedId == R.id.reviewer_approved){
                     m_itemClickListener.onisApprovedClick(m_trackerQuestionsList.get(pos), m_user, pos);
                 }
                 else {
                     m_itemClickListener.onisNotApprovedClick(m_trackerQuestionsList.get(pos), m_user, pos);
                 }
+                group.setContentDescription(m_context.getResources().getString (R.string.selected) + ((RadioButton)group.findViewById(checkedId)).getText());
             }
         });
     }

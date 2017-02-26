@@ -5,4 +5,5 @@
     android:id="@+id/loadingBar"
     style="?android:attr/progressBarStyleLarge"
     android:layout_gravity="center"
+    android:contentDescription="@string/loading"
      />

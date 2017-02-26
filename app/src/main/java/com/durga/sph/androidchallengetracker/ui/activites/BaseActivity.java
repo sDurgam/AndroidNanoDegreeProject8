@@ -122,12 +122,6 @@ public class BaseActivity extends AppCompatActivity {
         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectActivityLeaks().penaltyLog().build());
     }
 
-
-    @Optional @OnClick(R.id.mysession_button)
-    protected void MySessionClick(View view){
-        openMySession();
-    }
-
     protected void openMySession(){
         Intent sessionIntent = new Intent(this, MySessionActivity.class);
         startActivity(sessionIntent);

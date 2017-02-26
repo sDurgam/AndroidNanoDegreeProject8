@@ -1,12 +1,15 @@
 <RadioGroup android:layout_alignParentRight="true"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:contentDescription="@string/choose_level"
+    android:textDirection="locale">
     <RadioButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/level1_name"
-        android:id="@+id/radiobutton_level1" />
+        android:id="@+id/radiobutton_level1"
+        android:contentDescription="@string/level1_name"/>
     <RadioButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

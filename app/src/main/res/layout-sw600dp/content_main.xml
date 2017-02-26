@@ -5,9 +5,11 @@
     android:id="@+id/pager_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="168dp">
+    android:layout_marginTop="168dp"
+    android:padding="@dimen/padding">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/main_frameLayout"></FrameLayout>
+        android:id="@+id/main_frameLayout"
+        ></FrameLayout>
 </android.support.v4.view.ViewPager>

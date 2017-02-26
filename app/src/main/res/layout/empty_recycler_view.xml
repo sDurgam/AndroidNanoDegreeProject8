@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:text="@string/empty_tracker_questions"
     android:id="@+id/emptyTrackerView"
-    android:layout_marginTop="@dimen/imageview_maringtop">
-
+    android:layout_marginTop="@dimen/imageview_maringtop"
+    android:textDirection="locale"
+    >
 </TextView>

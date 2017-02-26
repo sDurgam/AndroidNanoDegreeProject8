@@ -2,12 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:textDirection="locale"
+    android:layoutDirection="locale">
     <TextView android:id="@+id/reviewer_quesdesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </TextView>
-    <android.support.v7.widget.AppCompatRadioButton android:id="@+id/reviewer_textLevel"
+    <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/reviewer_textLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="true"
@@ -21,22 +24,25 @@
         android:id="@+id/reviewer_optionsGroup"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_centerInParent="true"
-        android:layout_below="@id/reviewer_textLevel">
-        <RadioButton
+        android:layout_below="@id/reviewer_textLevel"
+        android:contentDescription="@string/review_options">
+        <android.support.v7.widget.AppCompatRadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mark_as_spam"
-            android:id="@+id/reviewer_isspam" />
-
-        <RadioButton
+            android:id="@+id/reviewer_isspam"
+            android:contentDescription="@string/mark_as_spam"/>
+        <android.support.v7.widget.AppCompatRadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mark_as_approved"
-            android:id="@+id/reviewer_approved"/>
-        <RadioButton
+            android:id="@+id/reviewer_approved"
+            android:contentDescription="@string/mark_as_approved"/>
+        <android.support.v7.widget.AppCompatRadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/mark_as_notapproved"
-            android:id="@+id/reviewer_notapproved"/>
+            android:id="@+id/reviewer_notapproved"
+            android:contentDescription="@string/mark_as_notapproved"/>
     </RadioGroup>
 </RelativeLayout>

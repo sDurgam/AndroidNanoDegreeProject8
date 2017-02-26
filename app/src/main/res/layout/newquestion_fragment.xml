@@ -3,11 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:textDirection="locale"
+    android:layoutDirection="locale">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_question_name"
+        android:contentDescription="@string/add_question_name"
         style="@style/titleText"
         android:layout_alignParentTop="true"
         android:id="@+id/addquestionLabel"
@@ -15,9 +18,11 @@
         app:layout_widthPercent="100%"/>
     <TextView
         android:text="@string/question"
+        android:contentDescription="@string/question"
         android:id="@+id/questionLabel"
         android:layout_below="@id/addquestionLabel"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         app:layout_heightPercent="50%"
         app:layout_widthPercent="35%"
         />
@@ -25,7 +30,9 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/addquestionLabel"
         android:layout_toRightOf="@id/questionLabel"
+        android:layout_toEndOf="@id/questionLabel"
         android:id="@+id/newQuestionEditTxt"
+        android:hint="@string/typequestion"
         app:layout_heightPercent="50%"
         app:layout_widthPercent="55%"
         android:inputType="text|textAutoCorrect"/>
@@ -40,11 +47,13 @@
     <Button
         android:layout_alignParentBottom="true"
         android:text="@string/submit_for_review"
+        android:contentDescription="@string/submit_for_review"
         android:id="@+id/addquesSubmitReviewBtn"
         app:layout_heightPercent="10%"
         app:layout_widthPercent="100%"/>
     <TextView
         android:text="@string/level"
+        android:contentDescription="@string/level"
         android:layout_above="@id/addQuesSummaryLabel"
         android:id="@+id/levelLabel"
         app:layout_heightPercent="20%"
@@ -55,10 +64,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignRight="@id/levelLabel"
+        android:layout_alignEnd="@id/levelLabel"
         app:layout_heightPercent="20%"
         app:layout_widthPercent="25%"
         android:layout_toRightOf="@id/levelLabel"
+        android:layout_toEndOf="@id/levelLabel"
         android:layout_above="@id/addQuesSummaryLabel">
     </include>
 

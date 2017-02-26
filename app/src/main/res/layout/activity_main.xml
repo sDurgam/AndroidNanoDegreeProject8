@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".ui.activites.MainActivity"
-    android:id="@+id/main_coordinateLayout">
+    android:id="@+id/main_coordinateLayout"
+    android:layoutDirection="locale">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -19,7 +20,8 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="@string/app_name"/>
+            app:title="@string/app_name"
+            android:textDirection="locale"/>
 
     </android.support.design.widget.AppBarLayout>
 

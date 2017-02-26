@@ -5,4 +5,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="imageview_maringtop">32dp</dimen>
     <dimen name="recyclerview_marginbottom">48dp</dimen>
+    <dimen name="padding">24dp</dimen>
 </resources>

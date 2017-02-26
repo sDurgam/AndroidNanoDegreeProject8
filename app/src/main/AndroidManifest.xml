@@ -7,23 +7,22 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:supportsRtl="true">
         <activity
             android:name=".ui.activites.MainActivity"
-            android:label="@string/app_name"
-            >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".ui.activites.MySessionActivity"
+            android:label="@string/my_progress"
             android:parentActivityName=".ui.activites.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activites.MainActivity" />
-
         </activity>
         <provider
             android:authorities="com.durga.sph.androidchallengetracker.providers"
