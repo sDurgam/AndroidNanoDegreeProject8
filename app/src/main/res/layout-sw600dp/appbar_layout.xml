@@ -29,6 +29,7 @@
             android:src="@drawable/common_google_signin_btn_icon_dark"
             android:id="@+id/mysession_button"
             android:contentDescription="@string/myprogress_button"
+            android:focusableInTouchMode="true"
             />
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"

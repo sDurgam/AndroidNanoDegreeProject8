@@ -1,6 +1,7 @@
 package com.durga.sph.androidchallengetracker.ui.activites;
 
 import android.app.FragmentManager;
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,15 +14,22 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.method.KeyListener;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowInsets;
 
 import com.durga.sph.androidchallengetracker.R;
+import com.durga.sph.androidchallengetracker.ui.DPadDrawerLayout;
 import com.durga.sph.androidchallengetracker.ui.adapters.TabletViewFragmentPagerAdapter;
 import com.durga.sph.androidchallengetracker.ui.fragments.LevelFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyAddedQuestionsFragment;
@@ -42,14 +50,14 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 
-public class MainActivity extends BaseActivity{
+public class MainActivity extends BaseActivity implements KeyEvent.Callback {
 
     @Nullable @BindView(R.id.drawer_main)
-    DrawerLayout mDrawerLayout;
+    DPadDrawerLayout mDrawerLayout;
     @Nullable @BindView(R.id.main_navigationView)
     NavigationView mNavigationView;
+    ActionBarDrawerToggle mDrawerToggle;
     boolean fromWidget = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +98,16 @@ public class MainActivity extends BaseActivity{
 
     //only for mobile devices and not tablets
     void setUpDrawerContent(){
+        //Reference: http://stackoverflow.com/questions/9178035/onkeydown-event-not-called-the-first-time
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Instrumentation inst = new Instrumentation();
+                inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
+            }
+
+        }).start();
+
         if(mNavigationView != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
                 mNavigationView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
@@ -103,12 +121,15 @@ public class MainActivity extends BaseActivity{
                     new NavigationView.OnNavigationItemSelectedListener() {
                         @Override
                         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                            mNavigationView.setCheckedItem(item.getItemId());
                             item.setChecked(true);
+                            menuItemId = item;
                             selectDrawerItem(item.getItemId());
-                            return false;
+                            return true;
                         }
                     }
             );
+            mNavigationView.setAccessibilityDelegate(new View.AccessibilityDelegate());
         }
     }
 
@@ -149,10 +170,25 @@ public class MainActivity extends BaseActivity{
         super.onResume();
     }
 
+    MenuItem menuItemId;
+
     @Optional
     @OnClick(R.id.mysession_button)
     protected void MySessionClick(View view){
         openMySession();
     }
 
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_X){
+        if(mDrawerLayout.isDrawerOpen(GravityCompat.START)){
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+        }
+        return true;
+    }
+    else return super.onKeyUp(keyCode, event);
+    }
 }

@@ -18,7 +18,8 @@
      android:layout_height="match_parent"
      android:id="@+id/mysession_listView"
      android:layout_marginTop="@dimen/activity_vertical_margin"
-     android:contentDescription="@string/questionsview"></ListView>
+     android:contentDescription="@string/questionsview"
+     android:descendantFocusability="afterDescendants"></ListView>
  <TextView
      android:id="@+id/emptySessionView"
      android:layout_width="match_parent"
