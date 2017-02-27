@@ -10,7 +10,8 @@
      android:layout_height="wrap_content"
      android:id="@+id/mysession_title"
      android:text="Added Questions"
-     style="@style/titleText" />
+     style="@style/titleText"
+     android:visibility="gone"/>
   <include layout="@layout/loading_layout"/>
 
  <ListView

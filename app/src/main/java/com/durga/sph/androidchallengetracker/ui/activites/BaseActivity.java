@@ -52,7 +52,7 @@ public class BaseActivity extends AppCompatActivity {
     String mTAG;
     @BindString(R.string.mysession_attr) String m_mysessionattribute;
     protected boolean isAuthenticated;
-    static boolean mTwoPane = true;
+    public static boolean mTwoPane = true;
     String m_mySessionAttr;
     private FirebaseAuth mAuth;
     private FirebaseUser mFirebaseUser;

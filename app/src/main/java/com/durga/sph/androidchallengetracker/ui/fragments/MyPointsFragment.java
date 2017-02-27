@@ -15,6 +15,7 @@ import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
@@ -45,6 +46,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.durga.sph.androidchallengetracker.ui.activites.BaseActivity.mTwoPane;
 import static com.durga.sph.androidchallengetracker.utils.Constants.NAMEDB_LIST;
 
 /**
@@ -59,6 +61,8 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
     Map<String, Long> m_ProgessMap;
     ProgressDatabaseInterface databaseInterface;
     ChildEventListener mChildEventListener;
+    @BindView(R.id.mypointsTitle)
+    TextView titleView;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -114,6 +118,10 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.mypoints_fragment, container, false);
         ButterKnife.bind(this, view);
+        //hide title if tablet
+        if(mTwoPane) {
+            titleView.setVisibility(View.GONE);
+        }
         mChart.getDescription().setEnabled(false);
         // radius of the center hole in percent of maximum radius
         mChart.setHoleRadius(45f);

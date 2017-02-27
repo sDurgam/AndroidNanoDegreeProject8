@@ -10,6 +10,8 @@ import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 
 import butterknife.ButterKnife;
 
+import static com.durga.sph.androidchallengetracker.ui.activites.BaseActivity.mTwoPane;
+
 /**
  * Created by root on 1/30/17.
  */
@@ -42,7 +44,10 @@ public class MySolvedQuestionsFragment extends MyFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.mysession_questionslayout, container, false);
         ButterKnife.bind(this, view);
-        myquestionsTitle.setText(getResources().getString(R.string.solved_questions_title));
+        if(!mTwoPane) {
+            myquestionsTitle.setVisibility(View.VISIBLE);
+            myquestionsTitle.setText(getResources().getString(R.string.solved_questions_title));
+        }
         emptyView.setText(getResources().getString(R.string.solved_empty_list));
         return view;
     }
