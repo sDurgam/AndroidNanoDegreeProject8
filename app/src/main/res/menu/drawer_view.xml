@@ -15,7 +15,7 @@
             android:title="@string/add_question_name"></item>
         <item
             android:id="@+id/nav_reviewquestions_fragment"
-            android:title="@string/review_question_name"></item>
+            android:title="@string/review_questions_name"></item>
         <item
             android:id="@+id/nav_points_fragment"
             android:title="@string/mypoints_name"></item>
