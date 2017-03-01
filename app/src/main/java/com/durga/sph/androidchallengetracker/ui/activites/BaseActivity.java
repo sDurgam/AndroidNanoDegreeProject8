@@ -40,7 +40,7 @@ import butterknife.BindView;
 public class BaseActivity extends AppCompatActivity {
 
     public static boolean mTwoPane = true;
-    protected boolean isAuthenticated;
+    protected boolean mIsAuthenticated;
     FirebaseAuth.AuthStateListener mAuthListener;
     @BindString(R.string.mysession_attr)
     String mySessionAttribute;
@@ -54,10 +54,10 @@ public class BaseActivity extends AppCompatActivity {
     //for tab layout
     @Nullable
     @BindView(R.id.pager_main)
-    ViewPager mviewPager;
+    ViewPager viewPager;
     @Nullable
     @BindView(R.id.tabs)
-    TabLayout mtabLayout;
+    TabLayout tabLayout;
     @BindString(R.string.level)
     String levelargs;
     @Nullable
@@ -148,16 +148,16 @@ public class BaseActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == mCode) {
             if (resultCode == 0) {
-                isAuthenticated = true;
+                mIsAuthenticated = true;
                 FirebaseUser user = mAuth.getCurrentUser();
             }
         }
     }
 
     protected void setupViewPager(FragmentStatePagerAdapter adapter) {
-        if (mviewPager != null) {
-            mviewPager.setAdapter(adapter);
-            mtabLayout.setupWithViewPager(mviewPager);
+        if (viewPager != null) {
+            viewPager.setAdapter(adapter);
+            tabLayout.setupWithViewPager(viewPager);
         }
     }
 

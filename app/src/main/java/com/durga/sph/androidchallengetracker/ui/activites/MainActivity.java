@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity {
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinateLayout);
         setSupportActionBar(mToolbar);
         ButterKnife.bind(this);
-        if (mviewPager == null) {
+        if (viewPager == null) {
             mTwoPane = false;
         }
         if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getString(Constants.FROMWIDGET) != null) {
