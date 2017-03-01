@@ -9,7 +9,7 @@
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
      android:id="@+id/mysession_title"
-     android:text="Added Questions"
+     android:text="@string/added_questions_name"
      style="@style/titleText"
      android:visibility="gone"/>
   <include layout="@layout/loading_layout"/>

@@ -8,6 +8,6 @@ import java.util.List;
  * Created by root on 2/8/17.
  */
 
-public interface IGetQuestionsInterface {
+public interface GetQuestionsInterface {
     void onQuestionsReady(List<TrackerQuestion> questionsList);
 }

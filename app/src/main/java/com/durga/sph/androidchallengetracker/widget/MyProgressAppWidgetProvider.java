@@ -5,28 +5,19 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
 import android.widget.RemoteViews;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.network.ProgressDatabaseInterface;
-import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 import com.durga.sph.androidchallengetracker.ui.activites.MainActivity;
 import com.durga.sph.androidchallengetracker.ui.asynctaks.MyProgressAsyncTask;
-import com.durga.sph.androidchallengetracker.ui.listeners.IProgressListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.ProgressListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.durga.sph.androidchallengetracker.utils.Constants.NAMEDB_LIST;
@@ -35,7 +26,7 @@ import static com.durga.sph.androidchallengetracker.utils.Constants.NAMEDB_LIST;
  * Created by root on 2/13/17.
  */
 
-public class MyProgressAppWidgetProvider extends AppWidgetProvider implements IProgressListener {
+public class MyProgressAppWidgetProvider extends AppWidgetProvider implements ProgressListener {
 
     Map<String, Long> m_localProgessMap;
     AppWidgetManager appWidgetManager;

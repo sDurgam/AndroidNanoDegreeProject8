@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
-import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,17 +16,17 @@ import java.util.Set;
  */
 
 public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRecylerViewAdapter.MyViewHolder> {
-    Context m_context;
-    List<TrackerQuestion> m_trackerQuestionsList;
-    Set<String> m_questionIdsSet;
-    String m_user;
+    Context context;
+    List<TrackerQuestion> trackerQuestionsList;
+    Set<String> questionIDsSet;
+    String user;
     private boolean isUpdating = false;
 
     public BaseRecylerViewAdapter(Context context, String user, List<TrackerQuestion> my_trackerQuestionsList){
-        this.m_context = context;
-        this.m_trackerQuestionsList = my_trackerQuestionsList;
-        this.m_user = user;
-        this.m_questionIdsSet = new HashSet<>();
+        this.context = context;
+        this.trackerQuestionsList = my_trackerQuestionsList;
+        this.user = user;
+        this.questionIDsSet = new HashSet<>();
     }
 
     @Override
@@ -42,44 +41,44 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
     }
 
     public void addItem(TrackerQuestion question){
-        if(m_questionIdsSet.contains(question.id)) return;
-        m_trackerQuestionsList.add(question);
-        m_questionIdsSet.add(question.id);
-        notifyItemInserted(m_trackerQuestionsList.size()-1);
-        notifyItemRangeChanged(m_trackerQuestionsList.size()-1, getItemCount());
+        if(questionIDsSet.contains(question.id)) return;
+        trackerQuestionsList.add(question);
+        questionIDsSet.add(question.id);
+        notifyItemInserted(trackerQuestionsList.size()-1);
+        notifyItemRangeChanged(trackerQuestionsList.size()-1, getItemCount());
     }
 
     public void removeItem(String questionId){
         int position = -1;
-        for(int i =0; i < m_trackerQuestionsList.size(); i++){
-            if(m_trackerQuestionsList.get(i).id.equals(questionId)){
+        for(int i = 0; i < trackerQuestionsList.size(); i++){
+            if(trackerQuestionsList.get(i).id.equals(questionId)){
                 position = i;
                 break;
             }
         }
-        m_trackerQuestionsList.remove(position);
+        trackerQuestionsList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount());
     }
 
     public void removeItem(int position){
         if(position != -1) {
-            m_trackerQuestionsList.remove(position);
+            trackerQuestionsList.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, getItemCount());
         }
     }
 
     public int getItemCount() {
-        if(m_trackerQuestionsList == null) return 0;
-        return m_trackerQuestionsList.size();
+        if(trackerQuestionsList == null) return 0;
+        return trackerQuestionsList.size();
     }
 
 
     public int getItemById(String id) {
         boolean isfound = false;
         int position = 0;
-        for(TrackerQuestion question : m_trackerQuestionsList){
+        for(TrackerQuestion question : trackerQuestionsList){
             if(question.getId().equals(id)){
                 isfound =true;
                 break;
@@ -97,9 +96,9 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
         TrackerQuestion question = null;
         for(;i < end && start >= 0 && end <= questions.size(); i++) {
             question = questions.get(i);
-            if(!m_questionIdsSet.contains(question.id)) {
-                m_trackerQuestionsList.add(question);
-                m_questionIdsSet.add(question.id);
+            if(!questionIDsSet.contains(question.id)) {
+                trackerQuestionsList.add(question);
+                questionIDsSet.add(question.id);
             }
         }
         if(i > start) {
@@ -108,21 +107,21 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
     }
 
     public String getQuestionIdByPosition(int position){
-        return position <= m_trackerQuestionsList.size() ? m_trackerQuestionsList.get(position).id : null;
+        return position <= trackerQuestionsList.size() ? trackerQuestionsList.get(position).id : null;
     }
 
     public TrackerQuestion getQuestionById(String id){
-        for(int i =0; i < m_trackerQuestionsList.size(); i++){
-            if(m_trackerQuestionsList.get(i).id.equals(id)){
-                return m_trackerQuestionsList.get(i);
+        for(int i = 0; i < trackerQuestionsList.size(); i++){
+            if(trackerQuestionsList.get(i).id.equals(id)){
+                return trackerQuestionsList.get(i);
             }
         }
         return null;
     }
 
     public boolean isExistsQuestion(String id){
-        if(m_trackerQuestionsList == null || m_trackerQuestionsList.size() <= 0) return false;
-        return m_trackerQuestionsList.get(getItemCount()-1).id.equals(id);
+        if(trackerQuestionsList == null || trackerQuestionsList.size() <= 0) return false;
+        return trackerQuestionsList.get(getItemCount()-1).id.equals(id);
     }
     public void setisUpdating(boolean isupdating){
         isUpdating = isupdating;
@@ -133,8 +132,8 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
     }
 
     public int findPos(TrackerQuestion question){
-        for(int i =0; i < m_trackerQuestionsList.size(); i++){
-            if(m_trackerQuestionsList.get(i).id.equals(question.id)){
+        for(int i = 0; i < trackerQuestionsList.size(); i++){
+            if(trackerQuestionsList.get(i).id.equals(question.id)){
                 return i;
             }
         }

@@ -6,6 +6,6 @@ import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
  * Created by root on 2/9/17.
  */
 
-public interface IListener {
-    public void add(TrackerQuestion question);
+public interface OnItemClickListener {
+    void isSuccess(boolean success);
 }

@@ -3,7 +3,7 @@ package com.durga.sph.androidchallengetracker.ui;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.ui.listeners.GetQuestionsInterface;
 
 /**
  * Created by root on 1/10/17.
@@ -11,7 +11,7 @@ import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface
 
 public abstract class RecylclerViewEndlessScrollListener extends RecyclerView.OnScrollListener {
 
-    IGetQuestionsInterface m_callback;
+    GetQuestionsInterface m_callback;
     LinearLayoutManager mlayoutManager;
     int mvisibleTreshold = 5;
     int mpreviousItemCount;
@@ -19,7 +19,7 @@ public abstract class RecylclerViewEndlessScrollListener extends RecyclerView.On
     boolean misLoading = true;
 
 
-    public RecylclerViewEndlessScrollListener(IGetQuestionsInterface callback, LinearLayoutManager layoutManager)
+    public RecylclerViewEndlessScrollListener(GetQuestionsInterface callback, LinearLayoutManager layoutManager)
     {
         super();
         mlayoutManager = layoutManager;
@@ -58,6 +58,6 @@ public abstract class RecylclerViewEndlessScrollListener extends RecyclerView.On
         }
     }
     //any subclass needs to implement its functionality to load more items in recyclerview
-    public abstract void onLoadMore(IGetQuestionsInterface callback);
+    public abstract void onLoadMore(GetQuestionsInterface callback);
 
 }

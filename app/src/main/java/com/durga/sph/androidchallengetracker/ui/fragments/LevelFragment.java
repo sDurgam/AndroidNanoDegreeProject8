@@ -1,30 +1,25 @@
 package com.durga.sph.androidchallengetracker.ui.fragments;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.durga.sph.androidchallengetracker.orm.MyProgressQuestion;
+
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
-import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.ui.listeners.GetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.network.LevelQuestionsInterface;
 import com.durga.sph.androidchallengetracker.ui.RecylclerViewEndlessScrollListener;
 import com.durga.sph.androidchallengetracker.ui.adapters.LevelRecyclerViewAdapter;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
-import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
-import com.durga.sph.androidchallengetracker.ui.listeners.IOnLevelItemClickListerner;
+import com.durga.sph.androidchallengetracker.ui.listeners.OnLevelItemClickListerner;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -42,18 +37,16 @@ import butterknife.ButterKnife;
 
 public class LevelFragment extends BaseFragment
 {
-    SimpleCursorAdapter mAdapter;
-    public String TAG;
-    int mcurrentLevel = 1;
+    int currentLevel = 1;
     @Nullable @BindView(R.id.levelNameTxt)
-    TextView mlevelNameTxt;
+    TextView levelNameTxt;
     @BindView(R.id.questionsView)
-    RecyclerView m_recyclerView;
+    RecyclerView recyclerView;
     List<String> mysolvedQuestions;
-    ChildEventListener m_levelListener;
+    ChildEventListener levelListener;
 
     public LevelFragment(){
-        TAG = getClass().getName();
+        tag = getClass().getName();
     }
 
     public static LevelFragment newInstance(String levelargs, int level) {
@@ -67,11 +60,11 @@ public class LevelFragment extends BaseFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        m_levelListener = new ChildEventListener() {
+        levelListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 TrackerQuestion question = dataSnapshot.getValue(TrackerQuestion.class);
-                m_adapter.addItem(question);
+                adapter.addItem(question);
                 //update approved column if the question is added by the user
                 updateDatabase(question.id, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED);
             }
@@ -104,20 +97,20 @@ public class LevelFragment extends BaseFragment
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.listquestions_fragment, container, false);
         ButterKnife.bind(this, view);
-        m_adapter = new LevelRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), m_username, new IOnLevelItemClickListerner() {
+        adapter = new LevelRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), username, new OnLevelItemClickListerner() {
             int pos;
             @Override
             public void onisSolvedClick(String questionId) {
-                TrackerQuestion question = m_adapter.getQuestionById(questionId);
+                TrackerQuestion question = adapter.getQuestionById(questionId);
                 addToDatabase(question, MyProgressContract.MyProgressEntry.COLUMN_ISSOLVED);
-                m_adapter.removeItem(m_adapter.findPos(question));
-                m_adapter.setisUpdating(false);
+                adapter.removeItem(adapter.findPos(question));
+                adapter.setisUpdating(false);
             }
         });
         Object levelargs = getArguments().get(getResources().getString(R.string.level));
         if(levelargs != null)
-            mcurrentLevel = (int)levelargs;
-        mFirebaseDatabaseInterface = new LevelQuestionsInterface(String.format(Constants.LEVELFORMATTER,mcurrentLevel));
+            currentLevel = (int)levelargs;
+        firebaseDatabaseInterface = new LevelQuestionsInterface(String.format(Constants.LEVELFORMATTER, currentLevel));
         return view;
     }
 
@@ -135,7 +128,7 @@ public class LevelFragment extends BaseFragment
     @Override
     public void onResume() {
         super.onResume();
-        //mFirebaseDatabaseInterface.registerEventListener(m_levelListener);
+        //firebaseDatabaseInterface.registerEventListener(levelListener);
         new AsyncTask<Void, Void, List<String>>() {
             @Override
             protected List<String> doInBackground(Void... params) {
@@ -166,25 +159,25 @@ public class LevelFragment extends BaseFragment
     private void setUpAdapter(){
 
         LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
-        m_recyclerView.setLayoutManager(lmanager);
-        m_recyclerView.setAdapter(m_adapter);
-        m_recyclerView.addOnScrollListener(new RecylclerViewEndlessScrollListener(this, lmanager) {
+        recyclerView.setLayoutManager(lmanager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecylclerViewEndlessScrollListener(this, lmanager) {
             @Override
-            public void onLoadMore(IGetQuestionsInterface callback) {
-                if(m_lastQuestionId == null) return;
-                mFirebaseDatabaseInterface.getMoreQuestions(null, callback, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1, mysolvedQuestions);
+            public void onLoadMore(GetQuestionsInterface callback) {
+                if(lastQuestionId == null) return;
+                firebaseDatabaseInterface.getMoreQuestions(null, callback, lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1, mysolvedQuestions);
             }
         });
-        if(mFirebaseAuth.getCurrentUser() != null) {
-            m_username = mFirebaseAuth.getCurrentUser().getUid();
-            mloadingBar.setVisibility(View.VISIBLE);
-            mFirebaseDatabaseInterface.getQuestions(null, this, Constants.MAX_QUESTIONS_API_COUNT + 1, mysolvedQuestions);
+        if(firebaseAuth.getCurrentUser() != null) {
+            username = firebaseAuth.getCurrentUser().getUid();
+            loadingBar.setVisibility(View.VISIBLE);
+            firebaseDatabaseInterface.getQuestions(null, this, Constants.MAX_QUESTIONS_API_COUNT + 1, mysolvedQuestions);
         }
     }
 
     @Override
     public void onPause() {
-        // mFirebaseDatabaseInterface.unregisterEventListener(m_levelListener);
+        // firebaseDatabaseInterface.unregisterEventListener(levelListener);
         super.onPause();
     }
 
@@ -195,15 +188,15 @@ public class LevelFragment extends BaseFragment
 
     //set the current level as screen name
     public void setScreenName(){
-        if(mlevelNameTxt != null) {
-            if (mcurrentLevel == 1 || mcurrentLevel == 2 || mcurrentLevel == 3) {
-                mlevelNameTxt.setText(String.format(getResources().getString(R.string.level_current_name), String.valueOf(mcurrentLevel)));
-            } else if (mcurrentLevel == 5) {
-                mlevelNameTxt.setText(getResources().getString(R.string.review_questions_name));
-            } else if (mcurrentLevel == 6) {
-                mlevelNameTxt.setText(getResources().getString(R.string.added_questions_name));
-            } else if (mcurrentLevel == 7) {
-                mlevelNameTxt.setText(getResources().getString(R.string.reviewed_questions_name));
+        if(levelNameTxt != null) {
+            if (currentLevel == 1 || currentLevel == 2 || currentLevel == 3) {
+                levelNameTxt.setText(String.format(getResources().getString(R.string.level_current_name), String.valueOf(currentLevel)));
+            } else if (currentLevel == 5) {
+                levelNameTxt.setText(getResources().getString(R.string.review_questions_name));
+            } else if (currentLevel == 6) {
+                levelNameTxt.setText(getResources().getString(R.string.added_questions_name));
+            } else if (currentLevel == 7) {
+                levelNameTxt.setText(getResources().getString(R.string.reviewed_questions_name));
             }
         }
     }
@@ -218,7 +211,7 @@ public class LevelFragment extends BaseFragment
                     TrackerQuestion question = null;
                     for (int i = 0; i < questionsList.size(); i++) {
                         question = questionsList.get(i);
-                        if(question.userId.equals(m_username)) {
+                        if(question.userId.equals(username)) {
                             updateDatabase(question.id, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED);
                         }
                     }

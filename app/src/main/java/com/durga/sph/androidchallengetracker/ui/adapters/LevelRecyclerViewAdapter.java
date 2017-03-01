@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
-import com.durga.sph.androidchallengetracker.ui.listeners.IOnLevelItemClickListerner;
+import com.durga.sph.androidchallengetracker.ui.listeners.OnLevelItemClickListerner;
 
 import java.util.List;
 
@@ -20,11 +20,11 @@ import java.util.List;
 
 public class LevelRecyclerViewAdapter extends BaseRecylerViewAdapter {
 
-    IOnLevelItemClickListerner m_itemClickListener;
+    OnLevelItemClickListerner itemClickListener;
 
-    public LevelRecyclerViewAdapter(Context context, List<TrackerQuestion> recipesList, String user, IOnLevelItemClickListerner listener){
+    public LevelRecyclerViewAdapter(Context context, List<TrackerQuestion> recipesList, String user, OnLevelItemClickListerner listener){
         super(context, user, recipesList);
-        this.m_itemClickListener = listener;
+        this.itemClickListener = listener;
     }
 
     public class MyViewHolder extends BaseRecylerViewAdapter.MyViewHolder{
@@ -41,13 +41,13 @@ public class LevelRecyclerViewAdapter extends BaseRecylerViewAdapter {
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int type)
     {
         View view;
-        view = LayoutInflater.from(m_context).inflate(R.layout.level_cell_view, parent, false);
+        view = LayoutInflater.from(context).inflate(R.layout.level_cell_view, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(BaseRecylerViewAdapter.MyViewHolder holder, int position) {
-        final TrackerQuestion recipe = m_trackerQuestionsList.get(position);
+        final TrackerQuestion recipe = trackerQuestionsList.get(position);
         final int pos = position;
         LevelRecyclerViewAdapter.MyViewHolder h = (LevelRecyclerViewAdapter.MyViewHolder)holder;
         h.descriptionView.setText(recipe.description);
@@ -56,10 +56,10 @@ public class LevelRecyclerViewAdapter extends BaseRecylerViewAdapter {
             @Override
             public void onClick(View v) {
                 if(!getisUpdating()) {
-                    m_itemClickListener.onisSolvedClick(recipe.id);
+                    itemClickListener.onisSolvedClick(recipe.id);
                 }
                 else{
-                    Toast.makeText(m_context, m_context.getString(R.string.solve_inprocess), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, context.getString(R.string.solve_inprocess), Toast.LENGTH_LONG).show();
                 }
             }
         });

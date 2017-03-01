@@ -14,18 +14,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
-import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
-import com.durga.sph.androidchallengetracker.ui.listeners.IListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.GetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.network.ReviewQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.ui.RecylclerViewEndlessScrollListener;
 import com.durga.sph.androidchallengetracker.ui.adapters.ReviewQuestionsAdapter;
-import com.durga.sph.androidchallengetracker.ui.listeners.IOnReviewerItemClickListerner;
+import com.durga.sph.androidchallengetracker.ui.listeners.OnReviewerItemClickListerner;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +42,7 @@ public class ReviewQuestionsFragment extends BaseFragment {
     @BindView(R.id.questionsView)
     RecyclerView reviewQuestionsView;
     List<String> myreviewedQuestions;
-    ChildEventListener m_reviewQuestionsListener;
+    ChildEventListener reviewQuestionsListener;
 
     public static ReviewQuestionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -68,7 +65,7 @@ public class ReviewQuestionsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseDatabaseInterface = new ReviewQuestionsInterface();
+        firebaseDatabaseInterface = new ReviewQuestionsInterface();
     }
 
     @Override
@@ -107,14 +104,14 @@ public class ReviewQuestionsFragment extends BaseFragment {
     }
 
     private void setUpAdapter(){
-        m_adapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new IOnReviewerItemClickListerner() {
+        adapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new OnReviewerItemClickListerner() {
             TrackerQuestion ques;
             @Override
             public void onisSpamClick(TrackerQuestion question, RadioGroup group) {
-                if(!m_adapter.getisUpdating()) {
+                if(!adapter.getisUpdating()) {
                     this.ques = question;
-                    mFirebaseDatabaseInterface.markQuestionAsSpam(question.id, this);
-                    m_adapter.setisUpdating(true);
+                    firebaseDatabaseInterface.markQuestionAsSpam(question.id, this);
+                    adapter.setisUpdating(true);
                 }else{
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.review_inprocess), Toast.LENGTH_LONG).show();
                 }
@@ -122,10 +119,10 @@ public class ReviewQuestionsFragment extends BaseFragment {
 
             @Override
             public void onisApprovedClick(TrackerQuestion question, RadioGroup group) {
-                if(!m_adapter.getisUpdating()) {
+                if(!adapter.getisUpdating()) {
                     this.ques = question;
-                    mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), true, this);
-                    m_adapter.setisUpdating(true);
+                    firebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), true, this);
+                    adapter.setisUpdating(true);
                 }else{
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.review_inprocess), Toast.LENGTH_LONG).show();
                 }
@@ -133,10 +130,10 @@ public class ReviewQuestionsFragment extends BaseFragment {
 
             @Override
             public void onisNotApprovedClick(TrackerQuestion question, RadioGroup group) {
-                if(!m_adapter.getisUpdating()) {
+                if(!adapter.getisUpdating()) {
                     this.ques = question;
-                    mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), false, this);
-                    m_adapter.setisUpdating(true);
+                    firebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), false, this);
+                    adapter.setisUpdating(true);
                 }else{
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.review_inprocess), Toast.LENGTH_LONG).show();
                 }
@@ -147,30 +144,31 @@ public class ReviewQuestionsFragment extends BaseFragment {
                 if(success){
                     //mark this question as reviewed in db
                     addToDatabase(this.ques, MyProgressContract.MyProgressEntry.COLUMN_ISREVIEWED);
-                    int pos = m_adapter.findPos(ques);
+                    int pos = adapter.findPos(ques);
                     myreviewedQuestions.add(ques.id);
+                    adapter.removeItem(pos);
                     displayToastMessage(getResources().getString(R.string.review_completed));
                 }
                 else{
                     //show message that action could not be performed
                     displayToastMessage(getResources().getString(R.string.action_failed));
                 }
-                m_adapter.setisUpdating(false);
+                adapter.setisUpdating(false);
             }
         });
         final String key = String.format(Constants.LEVELFORMATTER, 1);
         LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
         reviewQuestionsView.setLayoutManager(lmanager);
-        reviewQuestionsView.setAdapter(m_adapter);
+        reviewQuestionsView.setAdapter(adapter);
         reviewQuestionsView.addOnScrollListener(new RecylclerViewEndlessScrollListener(this, lmanager){
             @Override
-            public void onLoadMore(IGetQuestionsInterface callback) {
-                if(m_lastQuestionId == null) return;
-                mFirebaseDatabaseInterface.getMoreQuestions(m_username, callback, m_lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1, myreviewedQuestions);
+            public void onLoadMore(GetQuestionsInterface callback) {
+                if(lastQuestionId == null) return;
+                firebaseDatabaseInterface.getMoreQuestions(username, callback, lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1, myreviewedQuestions);
             }
         });
-        m_username = mFirebaseAuth.getCurrentUser().getUid();
-        mloadingBar.setVisibility(View.VISIBLE);
-        mFirebaseDatabaseInterface.getQuestions(m_username, this,Constants.MAX_QUESTIONS_API_COUNT+1, myreviewedQuestions);
+        username = firebaseAuth.getCurrentUser().getUid();
+        loadingBar.setVisibility(View.VISIBLE);
+        firebaseDatabaseInterface.getQuestions(username, this,Constants.MAX_QUESTIONS_API_COUNT+1, myreviewedQuestions);
     }
 }

@@ -7,6 +7,6 @@ import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
  * Created by root on 2/11/17.
  */
 
-public interface IOnLevelItemClickListerner {
+public interface OnLevelItemClickListerner {
     void onisSolvedClick(String questionId);
 }

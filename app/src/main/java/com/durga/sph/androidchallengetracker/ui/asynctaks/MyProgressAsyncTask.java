@@ -6,11 +6,10 @@ import android.os.AsyncTask;
 
 import com.durga.sph.androidchallengetracker.network.ProgressDatabaseInterface;
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
-import com.durga.sph.androidchallengetracker.ui.listeners.IProgressListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.ProgressListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.durga.sph.androidchallengetracker.utils.Constants.NAMEDB_LIST;
@@ -21,22 +20,23 @@ import static com.durga.sph.androidchallengetracker.utils.Constants.NAMEDB_LIST;
 
 public class MyProgressAsyncTask extends AsyncTask<Void, Void, Cursor>{
 
-    WeakReference<Context> m_weakcontext;
-    Map<String, Long> m_localProgessMap;
-    IProgressListener m_listener;
-    ProgressDatabaseInterface m_databaseInterface;
-    public MyProgressAsyncTask(WeakReference<Context> weakctx, IProgressListener listener, ProgressDatabaseInterface databaseInterface, Map<String, Long> localProgressMap){
-        m_weakcontext = weakctx;
-        m_localProgessMap = localProgressMap;
-        m_listener = listener;
-        m_databaseInterface = databaseInterface;
+    WeakReference<Context> weakContext;
+    Map<String, Long> localProgessMap;
+    ProgressListener listener;
+    ProgressDatabaseInterface databaseInterface;
+
+    public MyProgressAsyncTask(WeakReference<Context> weakctx, ProgressListener listener, ProgressDatabaseInterface databaseInterface, Map<String, Long> localProgressMap){
+        weakContext = weakctx;
+        localProgessMap = localProgressMap;
+        this.listener = listener;
+        this.databaseInterface = databaseInterface;
     }
 
     @Override
     protected Cursor doInBackground(Void... params) {
         Cursor l = null;
-        if(m_weakcontext.get() != null) {
-            l = m_weakcontext.get().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, null, null, null, null);
+        if(weakContext.get() != null) {
+            l = weakContext.get().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, null, null, null, null);
         }
         return l;
     }
@@ -72,18 +72,18 @@ public class MyProgressAsyncTask extends AsyncTask<Void, Void, Cursor>{
             cursor.close();
         }
         //call firebase
-        getProgress(m_listener);
+        getProgress(listener);
     }
 
     void updateHashMap(String key){
         long count = 1l;
-        if(m_localProgessMap.containsKey(key)){
-            count += m_localProgessMap.get(key);
+        if(localProgessMap.containsKey(key)){
+            count += localProgessMap.get(key);
         }
-        m_localProgessMap.put(key, count);
+        localProgessMap.put(key, count);
     }
 
-    void getProgress(IProgressListener listener){
-        m_databaseInterface.getProgress(listener);
+    void getProgress(ProgressListener listener){
+        databaseInterface.getProgress(listener);
     }
 }

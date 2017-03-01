@@ -1,19 +1,15 @@
 package com.durga.sph.androidchallengetracker.network;
 
-import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
-import com.durga.sph.androidchallengetracker.ui.listeners.IProgressListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.ProgressListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,7 +22,7 @@ public class ProgressDatabaseInterface extends FirebaseMainDatabaseInterface {
         mDatabaseReference = mFireBaseDatabase.getReference(Constants.PROGRESS);
     }
 
-    public void getProgress(final IProgressListener listener){
+    public void getProgress(final ProgressListener listener){
         final Map<String, Long> progressMap = new HashMap<>();
         mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -6,13 +6,10 @@ import android.content.Context;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.durga.sph.androidchallengetracker.R;
-import com.durga.sph.androidchallengetracker.ui.fragments.LevelFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyAddedQuestionsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyPointsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyReviewedQuestionsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MySolvedQuestionsFragment;
-import com.durga.sph.androidchallengetracker.ui.fragments.NewQuestionFragment;
-import com.durga.sph.androidchallengetracker.ui.fragments.ReviewQuestionsFragment;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 
 /**
@@ -21,10 +18,11 @@ import com.durga.sph.androidchallengetracker.utils.Constants;
 
 public class TabletViewMySessionPagerAdapter extends FragmentStatePagerAdapter {
 
-    Context m_context;
+    Context context;
+
     public TabletViewMySessionPagerAdapter(FragmentManager fm, Context ctx) {
         super(fm);
-        m_context = ctx;
+        context = ctx;
     }
 
     @Override
@@ -48,16 +46,16 @@ public class TabletViewMySessionPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         if(position == 0){
-            return m_context.getResources().getString(R.string.mypoints_name);
+            return context.getResources().getString(R.string.mypoints_name);
 
         }else if(position == 1){
-            return m_context.getResources().getString(R.string.solved_questions_name);
+            return context.getResources().getString(R.string.solved_questions_name);
         }
         else if(position == 2){
-            return m_context.getResources().getString(R.string.added_questions_name);
+            return context.getResources().getString(R.string.added_questions_name);
         }
         else if(position == 3){
-            return m_context.getResources().getString(R.string.reviewed_questions_name);
+            return context.getResources().getString(R.string.reviewed_questions_name);
 
         }
         return super.getPageTitle(position);

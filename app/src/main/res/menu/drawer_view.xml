@@ -3,39 +3,39 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_level01_fragment"
-            android:title="Level 1">
+            android:title="@string/level1_name">
         </item>
         <item
             android:id="@+id/nav_level02_fragment"
-            android:title="Level 2">
+            android:title="@string/level2_name">
         </item>
         <item
             android:id="@+id/nav_level03_fragment"
-            android:title="Level 3">
+            android:title="@string/level3_name">
         </item>
         <item
             android:id="@+id/nav_addquestion_fragment"
-            android:title="Add Question">
+            android:title="@string/add_question_name">
         </item>
         <item
             android:id="@+id/nav_reviewquestions_fragment"
-            android:title="Review Questions">
+            android:title="@string/review_question_name">
         </item>
         <item
             android:id="@+id/nav_points_fragment"
-            android:title="My Points">
+            android:title="@string/mypoints_name">
         </item>
         <item
             android:id="@+id/nav_solvedquestions_fragment"
-            android:title="My Solved Questions">
+            android:title="@string/solved_questions_name">
         </item>
         <item
             android:id="@+id/nav_myaddedquestions_fragment"
-            android:title="My Added Questions">
+            android:title="@string/added_questions_name">
         </item>
         <item
             android:id="@+id/nav_myreviewedquestions_fragment"
-            android:title="My Reviewed Questions">
+            android:title="@string/reviewed_questions_name">
         </item>
     </group>
 </menu>

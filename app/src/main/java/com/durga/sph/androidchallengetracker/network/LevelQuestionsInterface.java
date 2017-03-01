@@ -2,13 +2,10 @@ package com.durga.sph.androidchallengetracker.network;
 
 import android.util.Log;
 
-import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
+import com.durga.sph.androidchallengetracker.ui.listeners.GetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
-import com.durga.sph.androidchallengetracker.utils.Constants;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -27,19 +24,19 @@ public class LevelQuestionsInterface extends FirebaseDatabaseInterface {
     }
 
     @Override
-    public void getQuestions(String user, final IGetQuestionsInterface callback, int length, List<String> myquestions){
+    public void getQuestions(String user, final GetQuestionsInterface callback, int length, List<String> myquestions){
         final Query queryRef = mDatabaseReference.orderByKey().limitToFirst(length);
         getLevelQuestions(user, queryRef, callback, length, myquestions);
     }
 
     @Override
-    public void getMoreQuestions(String user, final IGetQuestionsInterface callback, String start, int length, List<String> myquestions){
+    public void getMoreQuestions(String user, final GetQuestionsInterface callback, String start, int length, List<String> myquestions){
         final Query queryRef = mDatabaseReference.orderByKey().startAt(start).limitToFirst(length);
         getLevelQuestions(user, queryRef, callback, length, myquestions);
     }
 
 
-    public void getLevelQuestions(final String user, Query queryRef, final IGetQuestionsInterface callback, final int length, final List<String> myquestions) {
+    public void getLevelQuestions(final String user, Query queryRef, final GetQuestionsInterface callback, final int length, final List<String> myquestions) {
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

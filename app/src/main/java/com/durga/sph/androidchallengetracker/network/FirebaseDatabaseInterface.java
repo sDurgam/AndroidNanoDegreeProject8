@@ -2,29 +2,20 @@ package com.durga.sph.androidchallengetracker.network;
 
 import android.util.Log;
 
-import com.durga.sph.androidchallengetracker.orm.MyProgressQuestion;
-import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
-import com.durga.sph.androidchallengetracker.ui.listeners.IListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.GetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
-import com.durga.sph.androidchallengetracker.ui.listeners.IOnItemClickListener;
-import com.durga.sph.androidchallengetracker.ui.listeners.IOnLevelItemClickListerner;
-import com.durga.sph.androidchallengetracker.ui.listeners.IOnQuestionAddedListener;
-import com.durga.sph.androidchallengetracker.ui.listeners.IOnReviewerItemClickListerner;
+import com.durga.sph.androidchallengetracker.ui.listeners.OnQuestionAddedListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.OnReviewerItemClickListerner;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StreamDownloadTask;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -39,7 +30,7 @@ public abstract class FirebaseDatabaseInterface extends FirebaseMainDatabaseInte
         return pushedQuestionRef.getKey();
     }
 
-    public void addNewQuestionToLevel(TrackerQuestion question, final IOnQuestionAddedListener callback){
+    public void addNewQuestionToLevel(TrackerQuestion question, final OnQuestionAddedListener callback){
         DatabaseReference levelref = mDatabaseReference.child(String.format(Constants.LEVELFORMATTER, question.level));
         final String key = levelref.push().getKey();
         question.id = key;
@@ -55,7 +46,7 @@ public abstract class FirebaseDatabaseInterface extends FirebaseMainDatabaseInte
     }
 
 
-    public void addNewQuestion(TrackerQuestion question, final IOnQuestionAddedListener callback){
+    public void addNewQuestion(TrackerQuestion question, final OnQuestionAddedListener callback){
         DatabaseReference levelref = mDatabaseReference.child(Constants.REVIEWEQUES);
         final String key = levelref.push().getKey();
         question.id = key;
@@ -89,7 +80,7 @@ public abstract class FirebaseDatabaseInterface extends FirebaseMainDatabaseInte
         });
 }
 
-    public void markQuestionAsSpam(String questionId, final IOnReviewerItemClickListerner listener) {
+    public void markQuestionAsSpam(String questionId, final OnReviewerItemClickListerner listener) {
         mFireBaseDatabase.getReference(Constants.REVIEWEQUES+"/"+questionId+"/"+Constants.ISSPAM).setValue(true, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -102,7 +93,7 @@ public abstract class FirebaseDatabaseInterface extends FirebaseMainDatabaseInte
         });
     }
 
-    public void markQuestionAsApproved(final String questionId, final String mlevel, final boolean isApproved, final IOnReviewerItemClickListerner listener){
+    public void markQuestionAsApproved(final String questionId, final String mlevel, final boolean isApproved, final OnReviewerItemClickListerner listener){
         Query queryRef = mFireBaseDatabase.getReference(Constants.REVIEWEQUES+"/"+questionId+"/"+Constants.UPVOTE);
         long vote = 0l;
         queryRef.getRef().runTransaction(new Transaction.Handler() {
@@ -198,15 +189,15 @@ public abstract class FirebaseDatabaseInterface extends FirebaseMainDatabaseInte
     }
 
     //Fetch questions for review, myadded and myreviewed questions
-    public void  getMoreQuestions(String user, IGetQuestionsInterface callback, String lastkey, int length, List<String> myquestions){
+    public void  getMoreQuestions(String user, GetQuestionsInterface callback, String lastkey, int length, List<String> myquestions){
     }
 
     //Fetch questions for review, myadded and myreviewed questions
-    public void getQuestions(String user, final IGetQuestionsInterface callback, int length, List<String> myquestions){
+    public void getQuestions(String user, final GetQuestionsInterface callback, int length, List<String> myquestions){
 
     }
 
-    public void addQuestion(){};
+    public void addQuestion(){}
 
 public void registerEventListener(ChildEventListener listener) {
         mDatabaseReference.addChildEventListener(listener);

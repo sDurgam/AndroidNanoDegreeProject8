@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,13 +20,10 @@ import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 import com.durga.sph.androidchallengetracker.ui.adapters.BaseRecylerViewAdapter;
-import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
-import com.durga.sph.androidchallengetracker.utils.Constants;
+import com.durga.sph.androidchallengetracker.ui.listeners.GetQuestionsInterface;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -37,28 +33,28 @@ import butterknife.BindView;
  * Created by root on 2/3/17.
  */
 
-public class BaseFragment extends Fragment implements IGetQuestionsInterface{
+public class BaseFragment extends Fragment implements GetQuestionsInterface {
 
     //Firebase variables
-    FirebaseAuth mFirebaseAuth;
-    FirebaseAuth.AuthStateListener mAuthStateListener;
-    ChildEventListener mChildEventListener;
-    protected FirebaseDatabaseInterface mFirebaseDatabaseInterface;
-    String m_lastQuestionId = null;
-    String m_lasttimeStamp = null;
-    String m_username;
-    BaseRecylerViewAdapter m_adapter;
+    FirebaseAuth firebaseAuth;
+    FirebaseAuth.AuthStateListener authStateListener;
+    ChildEventListener childEventListener;
+    protected FirebaseDatabaseInterface firebaseDatabaseInterface;
+    String lastQuestionId = null;
+    String lasttimeStamp = null;
+    String username;
+    BaseRecylerViewAdapter adapter;
     @Nullable @BindView(R.id.emptyTrackerView)
     TextView emptyView;
     @Nullable @BindView(R.id.loadingBar)
-    ProgressBar mloadingBar;
+    ProgressBar loadingBar;
 
-    String mTAG;
+    String tag;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTAG = this.getClass().getName();
+        tag = this.getClass().getName();
     }
 
     @Override
@@ -74,62 +70,57 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
     @Override
     public void onStart() {
         super.onStart();
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user != null){
-                    m_username = user.getUid();
-                    setAnalyticsUserId(m_username);
-                }
-                else{
-
+                    username = user.getUid();
+                    setAnalyticsUserId(username);
                 }
             }
         };
     }
 
     protected String userName(){
-        return mFirebaseAuth.getCurrentUser().getUid();
+        return firebaseAuth.getCurrentUser().getUid();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+        firebaseAuth.addAuthStateListener(authStateListener);
     }
 
     @Override
     public void onPause() {
-        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        firebaseAuth.removeAuthStateListener(authStateListener);
         super.onPause();
     }
 
     @Override
     public void onQuestionsReady(List<TrackerQuestion> questionsList) {
 
-        mloadingBar.setVisibility(View.GONE);
+        loadingBar.setVisibility(View.GONE);
         if(questionsList != null && questionsList.size() > 0) {
             emptyView.setVisibility(View.GONE);
             int index = 0;
             TrackerQuestion question = questionsList.get(0);
-            if(m_adapter.isExistsQuestion(question.id))
-            {
+            if(adapter.isExistsQuestion(question.id)) {
                 index= 1;
             }
             if(questionsList.size() >= index+1){
-                m_lastQuestionId = questionsList.get(questionsList.size()-1).id;
+                lastQuestionId = questionsList.get(questionsList.size()-1).id;
             }
             else{
-                m_lastQuestionId = null;
+                lastQuestionId = null;
             }
-
-            m_adapter.updateAdapter(questionsList, index, questionsList.size());
+            adapter.updateAdapter(questionsList, index, questionsList.size());
         }
         else{
             //log it
-            if(m_adapter.getItemCount() == 0){ //display empty list view
+            if(adapter.getItemCount() == 0){ //display empty list view
                 emptyView.setVisibility(View.VISIBLE);
             }
         }

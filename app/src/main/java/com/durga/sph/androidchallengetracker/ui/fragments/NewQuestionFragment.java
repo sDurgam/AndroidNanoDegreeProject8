@@ -16,7 +16,7 @@ import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
-import com.durga.sph.androidchallengetracker.ui.listeners.IOnQuestionAddedListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.OnQuestionAddedListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -29,7 +29,7 @@ import butterknife.OnClick;
  * Created by root on 1/30/17.
  */
 
-public class NewQuestionFragment extends BaseFragment implements IOnQuestionAddedListener {
+public class NewQuestionFragment extends BaseFragment implements OnQuestionAddedListener {
 
     @BindView(R.id.newQuestionEditTxt)
     EditText newQuestionEditTxt;
@@ -41,8 +41,8 @@ public class NewQuestionFragment extends BaseFragment implements IOnQuestionAdde
     @BindString(R.string.question_empty_error) String quesEmptyError;
     @BindString(R.string.level_empty_error) String levelEmptyError;
     String m_Username;
-    TrackerQuestion m_newQuestion;
-    String m_level;
+    TrackerQuestion newQuestion;
+    String level;
 
     public NewQuestionFragment(){
 
@@ -57,7 +57,7 @@ public class NewQuestionFragment extends BaseFragment implements IOnQuestionAdde
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseDatabaseInterface = new FirebaseDatabaseInterface() {
+        firebaseDatabaseInterface = new FirebaseDatabaseInterface() {
         };
     }
 
@@ -107,16 +107,16 @@ public class NewQuestionFragment extends BaseFragment implements IOnQuestionAdde
     private void saveQuestioninDB(){
         newQuestionEditTxt.setContentDescription(newQuestionEditTxt.getText());
         String title = newQuestionEditTxt.getText().toString();
-        String userId  = mFirebaseAuth.getCurrentUser().getUid();
-        m_level = String.format(Constants.LEVELFORMATTER, getLevel());
+        String userId  = firebaseAuth.getCurrentUser().getUid();
+        level = String.format(Constants.LEVELFORMATTER, getLevel());
         // Generate a reference to a new location and add some data using push()
         //id;
-        m_newQuestion = new TrackerQuestion(title, userId, getLevel());
+        newQuestion = new TrackerQuestion(title, userId, getLevel());
         if(BuildConfig.DEBUG) {
-            mFirebaseDatabaseInterface.addNewQuestionToLevel(m_newQuestion, this);
+            firebaseDatabaseInterface.addNewQuestionToLevel(newQuestion, this);
         }
         else {
-            mFirebaseDatabaseInterface.addNewQuestion(m_newQuestion, this);
+            firebaseDatabaseInterface.addNewQuestion(newQuestion, this);
         }
     }
 
@@ -162,11 +162,11 @@ public class NewQuestionFragment extends BaseFragment implements IOnQuestionAdde
             Bundle bundle = new Bundle();
             bundle.putString(FirebaseAnalytics.Param.ITEM_ID, questionId);
             logFirebaseAnalyticsEvent(getResources().getString(R.string.isadded), bundle);
-            m_newQuestion.id = questionId;
-            addToDatabase(m_newQuestion, MyProgressContract.MyProgressEntry.COLUMN_ISADDED);
+            newQuestion.id = questionId;
+            addToDatabase(newQuestion, MyProgressContract.MyProgressEntry.COLUMN_ISADDED);
         }
         else {
-            Log.e(mTAG, getResources().getString(R.string.action_failed) + getResources().getString(R.string.isadded));
+            Log.e(tag, getResources().getString(R.string.action_failed) + getResources().getString(R.string.isadded));
         }
     }
 }

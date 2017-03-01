@@ -1,14 +1,9 @@
 package com.durga.sph.androidchallengetracker.ui.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.net.LocalSocketAddress;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -18,14 +13,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.durga.sph.androidchallengetracker.R;
-import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
-import com.durga.sph.androidchallengetracker.network.LevelQuestionsInterface;
 import com.durga.sph.androidchallengetracker.network.ProgressDatabaseInterface;
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
-import com.durga.sph.androidchallengetracker.ui.RecylclerViewEndlessScrollListener;
 import com.durga.sph.androidchallengetracker.ui.asynctaks.MyProgressAsyncTask;
-import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
-import com.durga.sph.androidchallengetracker.ui.listeners.IProgressListener;
+import com.durga.sph.androidchallengetracker.ui.listeners.ProgressListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -53,14 +44,13 @@ import static com.durga.sph.androidchallengetracker.utils.Constants.NAMEDB_LIST;
  * Created by root on 1/30/17.
  */
 
-public class MyPointsFragment extends BaseFragment implements IProgressListener {
+public class MyPointsFragment extends BaseFragment implements ProgressListener {
 
 
     private static String[] NAME_LIST = new String[] { "LEVEL1", "LEVEL2", "LEVEl3", "REVIEWED", "ADDED","APPROVED"};
-    Map<String, Long> m_localProgessMap;
-    Map<String, Long> m_ProgessMap;
+    Map<String, Long> localProgessMap;
+    Map<String, Long> progessMap;
     ProgressDatabaseInterface databaseInterface;
-    ChildEventListener mChildEventListener;
     @BindView(R.id.mypointsTitle)
     TextView titleView;
 
@@ -68,27 +58,27 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         databaseInterface = new ProgressDatabaseInterface();
-        m_localProgessMap = new HashMap<>();
-        m_ProgessMap = new HashMap<>();
+        localProgessMap = new HashMap<>();
+        progessMap = new HashMap<>();
         for(int i =0; i < NAMEDB_LIST.length; i++){  //initialize hashmap
-            m_localProgessMap.put(NAMEDB_LIST[i], 0l);
+            localProgessMap.put(NAMEDB_LIST[i], 0l);
         }
-        mChildEventListener = new ChildEventListener() {
+        childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                m_ProgessMap.put(dataSnapshot.getKey(), dataSnapshot.getValue() != null ? (Long) dataSnapshot.getValue(): 0l);
+                progessMap.put(dataSnapshot.getKey(), dataSnapshot.getValue() != null ? (Long) dataSnapshot.getValue(): 0l);
                 generatePieData();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                m_ProgessMap.put(dataSnapshot.getKey(), dataSnapshot.getValue() != null ? (Long) dataSnapshot.getValue(): 0l);
+                progessMap.put(dataSnapshot.getKey(), dataSnapshot.getValue() != null ? (Long) dataSnapshot.getValue(): 0l);
                 generatePieData();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                m_ProgessMap.put(dataSnapshot.getKey(), dataSnapshot.getValue() != null ? (Long) dataSnapshot.getValue(): 0l);
+                progessMap.put(dataSnapshot.getKey(), dataSnapshot.getValue() != null ? (Long) dataSnapshot.getValue(): 0l);
                 generatePieData();
             }
 
@@ -138,9 +128,9 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
     @Override
     public void onResume() {
         super.onResume();
-        databaseInterface.registerListener(mChildEventListener);
-        if(mFirebaseAuth.getCurrentUser() != null) {
-            new MyProgressAsyncTask(new WeakReference<Context>(this.getActivity()), this, databaseInterface, m_localProgessMap).execute();
+        databaseInterface.registerListener(childEventListener);
+        if(firebaseAuth.getCurrentUser() != null) {
+            new MyProgressAsyncTask(new WeakReference<Context>(this.getActivity()), this, databaseInterface, localProgessMap).execute();
         }
     }
 
@@ -160,20 +150,20 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
             entries1.add(new PieEntry(0.0f, NAME_LIST[3]));
         }*/
         if(c > 0) {
-            c = (float)m_localProgessMap.get(MyProgressContract.MyProgressEntry.COLUMN_ISADDED) / c;
+            c = (float) localProgessMap.get(MyProgressContract.MyProgressEntry.COLUMN_ISADDED) / c;
             if(c > 0) {
                 entries1.add(new PieEntry(c, NAME_LIST[4]));
             }
         }
 
         //isapproved percentage
-        if(m_ProgessMap.containsKey(Constants.REVIEWEQUES)) {
-            c = c - m_ProgessMap.get(Constants.REVIEWEQUES);
+        if(progessMap.containsKey(Constants.REVIEWEQUES)) {
+            c = c - progessMap.get(Constants.REVIEWEQUES);
         /*if(c <= 0){
             entries1.add(new PieEntry(0.0f, NAME_LIST[5]));
         }*/
             if (c > 0) {
-                c = (float) m_localProgessMap.get(MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED) / c;
+                c = (float) localProgessMap.get(MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED) / c;
                 if (c > 0) {
                     entries1.add(new PieEntry(c, NAME_LIST[5]));
                 }
@@ -203,14 +193,14 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
 
     @Override
     public void onPause() {
-        databaseInterface.unregisterListerner(mChildEventListener);
+        databaseInterface.unregisterListerner(childEventListener);
         super.onPause();
     }
 
     @Override
     public void onProgressReceived(Map<String, Long> progressMap) {
-        mloadingBar.setVisibility(View.GONE);
-        this.m_ProgessMap = progressMap;
+        loadingBar.setVisibility(View.GONE);
+        this.progessMap = progressMap;
         mChart.setData(generatePieData());
         mChart.invalidate();
     }
@@ -218,9 +208,9 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
     void addPieEntry(List<PieEntry> entryList, int i){
         Float progress = 0.0f;
         Long p = null;
-        progress = (float) m_localProgessMap.get(NAMEDB_LIST[i]);
-        if(m_ProgessMap.containsKey(NAMEDB_LIST[i])) {
-            p = m_ProgessMap.get(NAMEDB_LIST[i]);
+        progress = (float) localProgessMap.get(NAMEDB_LIST[i]);
+        if(progessMap.containsKey(NAMEDB_LIST[i])) {
+            p = progessMap.get(NAMEDB_LIST[i]);
             if (progress != 0 && p != null && p != 0) {
                 progress = progress / p;
                 entryList.add(new PieEntry(progress, NAME_LIST[i]));
@@ -230,7 +220,7 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
 
     long getTotalAdded(){
         long count = 0l;
-        for(Long data : m_ProgessMap.values()){
+        for(Long data : progessMap.values()){
             count += data;
         }
         return count;
