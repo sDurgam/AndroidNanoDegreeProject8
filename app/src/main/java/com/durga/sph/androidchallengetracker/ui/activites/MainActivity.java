@@ -51,7 +51,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 
-public class MainActivity extends BaseActivity implements KeyEvent.Callback {
+public class MainActivity extends BaseActivity{
 
     @Nullable @BindView(R.id.drawer_main)
     DPadDrawerLayout mDrawerLayout;
@@ -91,27 +91,13 @@ public class MainActivity extends BaseActivity implements KeyEvent.Callback {
             }
         }
         else{
-            /*if(fromWidget){
-                openMySession();
-            }
-            else {*/
-                FragmentStatePagerAdapter pagerAdapter = new TabletViewFragmentPagerAdapter(mFragmentManager, mlevelargs, this);
-                setupViewPager(pagerAdapter);
-           // }
+            FragmentStatePagerAdapter pagerAdapter = new TabletViewFragmentPagerAdapter(mFragmentManager, mlevelargs, this);
+            setupViewPager(pagerAdapter);
         }
     }
 
     //only for mobile devices and not tablets
     void setUpDrawerContent(){
-        //Reference: http://stackoverflow.com/questions/9178035/onkeydown-event-not-called-the-first-time
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Instrumentation inst = new Instrumentation();
-//                inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
-//            }
-//
-//        }).start();
 
         if(mNavigationView != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -186,7 +172,7 @@ public class MainActivity extends BaseActivity implements KeyEvent.Callback {
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
@@ -213,19 +199,5 @@ public class MainActivity extends BaseActivity implements KeyEvent.Callback {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_BUTTON_Y){
-        if(mDrawerLayout.isDrawerOpen(GravityCompat.START)){
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else {
-            mDrawerLayout.openDrawer(GravityCompat.START);
-        }
-        return true;
-    }
-    else return super.onKeyUp(keyCode, event);
     }
 }
