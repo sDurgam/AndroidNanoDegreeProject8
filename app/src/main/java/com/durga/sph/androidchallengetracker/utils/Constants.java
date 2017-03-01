@@ -9,6 +9,10 @@ import java.util.HashMap;
  */
 
 public class Constants {
+    public static final String ONE = "1";
+    public static final String TWO = "2";
+    public static final String THREE = "3";
+    public static final String PREP_STATEMENT = "=?";
     public static int TAB_ITEM_COUNT = 5;
     public static int TAB_ITEM_MYSESSION_COUNT = 4;
     public static String BLANKSTR = "\u0020";
@@ -19,8 +23,7 @@ public class Constants {
     public static String PROGRESS = "progress";
     public static String MYPROGRESS = "My Progress";
     public static String MYPROGRESSTRACKER = "My Progress\nTracker";
-
-   // public static String REVIEWQUESPATH = "revieweques/";
+    // public static String REVIEWQUESPATH = "revieweques/";
     public static String TRACKER = "Tracker";
     public static String QUESTIONS = "Questions";
     public static String LEVELFORMATTER = "level%s";
@@ -29,16 +32,15 @@ public class Constants {
     public static String LEVEL1 = "level1";
     public static String LEVEL2 = "level2";
     public static String LEVEL3 = "level3";
+    public static final String[] NAMEDB_LIST = new String[]{Constants.LEVEL1, Constants.LEVEL2, Constants.LEVEL3, Constants.REVIEWEQUES, MyProgressContract.MyProgressEntry.COLUMN_ISADDED, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
     public static String UPVOTE = "upvote";
     public static String ID = "id";
     public static String TIME = "time";
     public static String UNKNOWN_URL = "unknown uri:";
     public static String FROMWIDGET = "fromwidget";
     public static String TRUE = "true";
-
     //move records path
     public static String LEVELIDFORMATTER = "level%s/%s";
-
     //tracker question
     public static String QUESTIONID = "id";
     public static String ISSPAM = "spam";
@@ -53,11 +55,6 @@ public class Constants {
     public static int APPROVE_MIN_QUESTION_COUNT = -3;
     public static int MAX_QUESTIONS_API_COUNT = 20;
 
-    public static final String ONE = "1";
-    public static final String TWO = "2";
-    public static final String THREE = "3";
-    public static final String PREP_STATEMENT = "=?";
-
     public static HashMap<String, Object> updateMapForAllWithValue
             (final String questionId,
              final String mlevel, HashMap<String, Object> mapToUpdate,
@@ -66,7 +63,5 @@ public class Constants {
                 + propertyToUpdate, valueToUpdate);
         return mapToUpdate;
     }
-
-    public static final String[] NAMEDB_LIST = new String[] { Constants.LEVEL1, Constants.LEVEL2, Constants.LEVEL3, Constants.REVIEWEQUES, MyProgressContract.MyProgressEntry.COLUMN_ISADDED, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
 
 }

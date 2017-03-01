@@ -27,11 +27,11 @@ public class MyReviewedQuestionsFragment extends MyFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        uri = MyProgressContract.MyProgressEntry.buildUriReviewed();
-        projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
-        uibindForm = new String[] {MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
-        uibindTo = new int[] {R.id.mydesc, R.id.mylevel};
-        layoutId = R.layout.mysession_question_cell;
+        mUri = MyProgressContract.MyProgressEntry.buildUriReviewed();
+        mProjectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
+        mUibindForm = new String[]{MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
+        mUibindTo = new int[]{R.id.mydesc, R.id.mylevel};
+        mLayoutId = R.layout.mysession_question_cell;
         super.onCreate(savedInstanceState);
     }
 
@@ -40,7 +40,7 @@ public class MyReviewedQuestionsFragment extends MyFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.mysession_questionslayout, container, false);
         ButterKnife.bind(this, view);
-        if(!mTwoPane) {
+        if (!mTwoPane) {
             myquestionsTitle.setVisibility(View.VISIBLE);
             myquestionsTitle.setText(getResources().getString(R.string.reviewed_questions_title));
         }

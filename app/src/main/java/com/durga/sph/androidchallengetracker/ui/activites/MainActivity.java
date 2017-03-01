@@ -34,68 +34,70 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 
-public class MainActivity extends BaseActivity{
+public class MainActivity extends BaseActivity {
 
-    @Nullable @BindView(R.id.drawer_main)
-    DPadDrawerLayout drawerLayout;
-    @Nullable @BindView(R.id.main_navigationView)
-    NavigationView navigationView;
-    ActionBarDrawerToggle drawerToggle;
-    boolean fromWidget = false;
+    @Nullable
+    @BindView(R.id.drawer_main)
+    DPadDrawerLayout mDrawerLayout;
+    @Nullable
+    @BindView(R.id.main_navigationView)
+    NavigationView mNavigationView;
+    ActionBarDrawerToggle mDrawerToggle;
+    boolean mFromWidget = false;
+    MenuItem menuItemId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinateLayout);
-        setSupportActionBar(toolbar);
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinateLayout);
+        setSupportActionBar(mToolbar);
         ButterKnife.bind(this);
-        if(viewPager == null){
+        if (mviewPager == null) {
             mTwoPane = false;
         }
-        if(getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getString(Constants.FROMWIDGET) != null){
-            fromWidget = true;
+        if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getString(Constants.FROMWIDGET) != null) {
+            mFromWidget = true;
         }
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             LevelFragment fragment = LevelFragment.newInstance(levelargs, 1);
-            fragmentManager.beginTransaction().add(R.id.main_frameLayout, fragment).commit();
+            mfragmentManager.beginTransaction().add(R.id.main_frameLayout, fragment).commit();
         }
 
-        if(!mTwoPane) {
+        if (!mTwoPane) {
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawerLayout.setDrawerListener(toggle);
+                    this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            mDrawerLayout.setDrawerListener(toggle);
             toggle.syncState();
-            NavigationMenuView navMenuView = (NavigationMenuView) navigationView.getChildAt(0);
-            navMenuView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
+            NavigationMenuView navMenuView = (NavigationMenuView) mNavigationView.getChildAt(0);
+            navMenuView.addItemDecoration(new DividerItemDecoration(MainActivity.this, DividerItemDecoration.VERTICAL));
             setUpDrawerContent();
-            if(fromWidget){
+            if (mFromWidget) {
                 selectDrawerItem(R.id.nav_points_fragment);
             }
-        }
-        else{
-            FragmentStatePagerAdapter pagerAdapter = new TabletViewFragmentPagerAdapter(fragmentManager, levelargs, this);
+        } else {
+            FragmentStatePagerAdapter pagerAdapter = new TabletViewFragmentPagerAdapter(mfragmentManager, levelargs, this);
             setupViewPager(pagerAdapter);
         }
     }
 
     //only for mobile devices and not tablets
-    void setUpDrawerContent(){
+    void setUpDrawerContent() {
 
-        if(navigationView != null) {
+        if (mNavigationView != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-                navigationView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                mNavigationView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
                     @Override
                     public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
                         return insets;
                     }
                 });
             }
-            navigationView.setNavigationItemSelectedListener(
+            mNavigationView.setNavigationItemSelectedListener(
                     new NavigationView.OnNavigationItemSelectedListener() {
                         @Override
                         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                            navigationView.setCheckedItem(item.getItemId());
+                            mNavigationView.setCheckedItem(item.getItemId());
                             item.setChecked(true);
                             menuItemId = item;
                             selectDrawerItem(item.getItemId());
@@ -103,60 +105,55 @@ public class MainActivity extends BaseActivity{
                         }
                     }
             );
-            navigationView.setAccessibilityDelegate(new View.AccessibilityDelegate());
+            mNavigationView.setAccessibilityDelegate(new View.AccessibilityDelegate());
         }
     }
 
-    private void selectDrawerItem(int type){
-        if(type == R.id.nav_points_fragment){
-            fragmentManager.beginTransaction().replace(R.id.main_frameLayout, MyPointsFragment.newInstance()).commit();
+    private void selectDrawerItem(int type) {
+        if (type == R.id.nav_points_fragment) {
+            mfragmentManager.beginTransaction().replace(R.id.main_frameLayout, MyPointsFragment.newInstance()).commit();
 
-        }else if(type == R.id.nav_level01_fragment){
-            fragmentManager.beginTransaction().replace(R.id.main_frameLayout, LevelFragment.newInstance(levelargs, 1)).commit();
+        } else if (type == R.id.nav_level01_fragment) {
+            mfragmentManager.beginTransaction().replace(R.id.main_frameLayout, LevelFragment.newInstance(levelargs, 1)).commit();
 
-        }else if(type == R.id.nav_level02_fragment){
-            fragmentManager.beginTransaction().replace(R.id.main_frameLayout, LevelFragment.newInstance(levelargs, 2)).commit();
+        } else if (type == R.id.nav_level02_fragment) {
+            mfragmentManager.beginTransaction().replace(R.id.main_frameLayout, LevelFragment.newInstance(levelargs, 2)).commit();
 
+        } else if (type == R.id.nav_level03_fragment) {
+            mfragmentManager.beginTransaction().replace(R.id.main_frameLayout, LevelFragment.newInstance(levelargs, 3)).commit();
+        } else if (type == R.id.nav_addquestion_fragment) {
+            mfragmentManager.beginTransaction().replace(R.id.main_frameLayout, NewQuestionFragment.newInstance()).commit();
+
+        } else if (type == R.id.nav_reviewquestions_fragment) {
+            mfragmentManager.beginTransaction().replace(R.id.main_frameLayout, ReviewQuestionsFragment.newInstance()).commit();
+
+        } else if (type == R.id.nav_solvedquestions_fragment) {
+            mfragmentManager.beginTransaction().replace(R.id.main_frameLayout, MySolvedQuestionsFragment.newInstance()).commit();
+
+        } else if (type == R.id.nav_myaddedquestions_fragment) {
+            mfragmentManager.beginTransaction().replace(R.id.main_frameLayout, MyAddedQuestionsFragment.newInstance()).commit();
+
+        } else if (type == R.id.nav_myreviewedquestions_fragment) {
+            mfragmentManager.beginTransaction().replace(R.id.main_frameLayout, MyReviewedQuestionsFragment.newInstance()).commit();
         }
-        else if(type == R.id.nav_level03_fragment){
-            fragmentManager.beginTransaction().replace(R.id.main_frameLayout, LevelFragment.newInstance(levelargs, 3)).commit();
-        }
-        else if(type == R.id.nav_addquestion_fragment){
-            fragmentManager.beginTransaction().replace(R.id.main_frameLayout, NewQuestionFragment.newInstance()).commit();
-
-        }else if(type == R.id.nav_reviewquestions_fragment){
-            fragmentManager.beginTransaction().replace(R.id.main_frameLayout, ReviewQuestionsFragment.newInstance()).commit();
-
-        }
-        else if(type == R.id.nav_solvedquestions_fragment){
-            fragmentManager.beginTransaction().replace(R.id.main_frameLayout, MySolvedQuestionsFragment.newInstance()).commit();
-
-        }else if(type == R.id.nav_myaddedquestions_fragment){
-            fragmentManager.beginTransaction().replace(R.id.main_frameLayout, MyAddedQuestionsFragment.newInstance()).commit();
-
-        }else if(type == R.id.nav_myreviewedquestions_fragment){
-            fragmentManager.beginTransaction().replace(R.id.main_frameLayout, MyReviewedQuestionsFragment.newInstance()).commit();
-        }
-        drawerLayout.closeDrawers();
+        mDrawerLayout.closeDrawers();
     }
 
-    public void onResume(){
+    public void onResume() {
         super.onResume();
     }
 
-    MenuItem menuItemId;
-
     @Optional
     @OnClick(R.id.mysession_button)
-    protected void MySessionClick(View view){
+    protected void MySessionClick(View view) {
         openMySession();
     }
 
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }

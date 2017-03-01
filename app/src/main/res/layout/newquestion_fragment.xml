@@ -1,77 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.percent.PercentRelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textDirection="locale"
-    android:layoutDirection="locale">
+    android:layoutDirection="locale"
+    android:orientation="vertical"
+    android:textDirection="locale">
+
     <TextView
+        android:id="@+id/addquestionLabel"
+        style="@style/titleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_question_name"
-        android:contentDescription="@string/add_question_name"
-        style="@style/titleText"
         android:layout_alignParentTop="true"
-        android:id="@+id/addquestionLabel"
+        android:contentDescription="@string/add_question_name"
+        android:text="@string/add_question_name"
         app:layout_heightPercent="10%"
-        app:layout_widthPercent="100%"/>
+        app:layout_widthPercent="100%" />
+
     <TextView
-        android:text="@string/question"
-        android:contentDescription="@string/question"
         android:id="@+id/questionLabel"
-        android:layout_below="@id/addquestionLabel"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_below="@id/addquestionLabel"
+        android:contentDescription="@string/question"
+        android:text="@string/question"
         app:layout_heightPercent="50%"
-        app:layout_widthPercent="35%"
-        />
+        app:layout_widthPercent="35%" />
+
     <EditText
+        android:id="@+id/newQuestionEditTxt"
         android:layout_alignParentRight="true"
         android:layout_below="@id/addquestionLabel"
-        android:layout_toRightOf="@id/questionLabel"
         android:layout_toEndOf="@id/questionLabel"
-        android:id="@+id/newQuestionEditTxt"
+        android:layout_toRightOf="@id/questionLabel"
         android:hint="@string/typequestion"
+        android:inputType="text|textAutoCorrect"
         app:layout_heightPercent="50%"
-        app:layout_widthPercent="55%"
-        android:inputType="text|textAutoCorrect"/>
+        app:layout_widthPercent="55%" />
+
     <TextView
-        android:text=""
-        android:layout_above="@+id/addquesSubmitReviewBtn"
         android:id="@+id/addQuesSummaryLabel"
+        android:layout_above="@+id/addquesSubmitReviewBtn"
+        android:text=""
         android:textStyle="bold"
         app:layout_heightPercent="10%"
-        app:layout_widthPercent="100%"
-        />
+        app:layout_widthPercent="100%" />
+
     <Button
-        android:layout_alignParentBottom="true"
-        android:text="@string/submit_for_review"
-        android:contentDescription="@string/submit_for_review"
         android:id="@+id/addquesSubmitReviewBtn"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/submit_for_review"
+        android:text="@string/submit_for_review"
         app:layout_heightPercent="10%"
-        app:layout_widthPercent="100%"/>
+        app:layout_widthPercent="100%" />
+
     <TextView
-        android:text="@string/level"
-        android:contentDescription="@string/level"
-        android:layout_above="@id/addQuesSummaryLabel"
         android:id="@+id/levelLabel"
+        android:layout_above="@id/addQuesSummaryLabel"
+        android:contentDescription="@string/level"
+        android:text="@string/level"
         app:layout_heightPercent="20%"
-        app:layout_widthPercent="30%"
-        />
-    <include layout="@layout/level_radiobutton_layout"
+        app:layout_widthPercent="30%" />
+
+    <include
         android:id="@+id/newquestionlevelRadioGroup"
+        layout="@layout/level_radiobutton_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignRight="@id/levelLabel"
+        android:layout_above="@id/addQuesSummaryLabel"
         android:layout_alignEnd="@id/levelLabel"
-        app:layout_heightPercent="20%"
-        app:layout_widthPercent="25%"
-        android:layout_toRightOf="@id/levelLabel"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignRight="@id/levelLabel"
         android:layout_toEndOf="@id/levelLabel"
-        android:layout_above="@id/addQuesSummaryLabel">
-    </include>
+        android:layout_toRightOf="@id/levelLabel"
+        app:layout_heightPercent="20%"
+        app:layout_widthPercent="25%"></include>
 
 </android.support.percent.PercentRelativeLayout>

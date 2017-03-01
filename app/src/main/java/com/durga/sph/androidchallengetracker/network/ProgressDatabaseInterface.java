@@ -18,33 +18,33 @@ import java.util.Map;
 
 public class ProgressDatabaseInterface extends FirebaseMainDatabaseInterface {
 
-    public ProgressDatabaseInterface(){
+    public ProgressDatabaseInterface() {
         mDatabaseReference = mFireBaseDatabase.getReference(Constants.PROGRESS);
     }
 
-    public void getProgress(final ProgressListener listener){
+    public void getProgress(final ProgressListener listener) {
         final Map<String, Long> progressMap = new HashMap<>();
         mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot data : dataSnapshot.getChildren()){
-                    progressMap.put(data.getKey(), (Long)data.getValue());
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    progressMap.put(data.getKey(), (Long) data.getValue());
                 }
                 listener.onProgressReceived(progressMap);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, databaseError.getMessage());
+                Log.e(mTag, databaseError.getMessage());
             }
         });
     }
 
-    public void registerListener(ChildEventListener listener){
+    public void registerListener(ChildEventListener listener) {
         mDatabaseReference.addChildEventListener(listener);
     }
 
-    public void unregisterListerner(ChildEventListener listener){
+    public void unregisterListerner(ChildEventListener listener) {
         mDatabaseReference.removeEventListener(listener);
     }
 }

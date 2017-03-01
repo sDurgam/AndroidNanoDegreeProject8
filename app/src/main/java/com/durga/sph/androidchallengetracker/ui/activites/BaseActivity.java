@@ -39,41 +39,47 @@ import butterknife.BindView;
 
 public class BaseActivity extends AppCompatActivity {
 
-    FirebaseAuth.AuthStateListener authListener;
-    String tag;
-    @BindString(R.string.mysession_attr) String mySessionAttribute;
-    protected boolean isAuthenticated;
     public static boolean mTwoPane = true;
+    protected boolean isAuthenticated;
+    FirebaseAuth.AuthStateListener mAuthListener;
+    @BindString(R.string.mysession_attr)
+    String mySessionAttribute;
     String mySessionAttr;
-    private FirebaseAuth auth;
-    private FirebaseUser firebaseUser;
-    DatabaseReference connectedRef;
-    int code=1;
-    Context context;
-    FragmentManager fragmentManager;
-    @Nullable @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    DatabaseReference mConnectedRef;
+    Context mContext;
+    FragmentManager mfragmentManager;
+    @Nullable
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     //for tab layout
-    @Nullable @BindView(R.id.pager_main)
-    ViewPager viewPager;
-    @Nullable @BindView(R.id.tabs)
-    TabLayout tabLayout;
-    @BindString(R.string.level) String levelargs;
-    @Nullable @BindView(R.id.mysession_button)
+    @Nullable
+    @BindView(R.id.pager_main)
+    ViewPager mviewPager;
+    @Nullable
+    @BindView(R.id.tabs)
+    TabLayout mtabLayout;
+    @BindString(R.string.level)
+    String levelargs;
+    @Nullable
+    @BindView(R.id.mysession_button)
     ImageView mysessionButton;
     @BindView(R.id.main_coordinateLayout)
-    CoordinatorLayout coordinatorLayout;
-    Snackbar snackBar;
+    CoordinatorLayout mCoordinatorLayout;
+    Snackbar mSnackBar;
+    String mTag;
+    int mCode = 1;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mFirebaseUser;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = this;
-        tag = this.getClass().getName();
-        fragmentManager = getFragmentManager();
-        auth = FirebaseAuth.getInstance();
-        firebaseUser = auth.getCurrentUser();
-        authListener = new FirebaseAuth.AuthStateListener() {
+        mContext = this;
+        mTag = this.getClass().getName();
+        mfragmentManager = getFragmentManager();
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mAuth.getCurrentUser();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -89,22 +95,21 @@ public class BaseActivity extends AppCompatActivity {
                                     .setProviders(
                                             AuthUI.EMAIL_PROVIDER)
                                     .build(),
-                            code);
+                            mCode);
                 }
             }
         };
-        connectedRef = FirebaseDatabase.getInstance().getReference(getResources().getString(R.string.firebase_connectpath));
-        connectedRef.addValueEventListener(new ValueEventListener() {
+        mConnectedRef = FirebaseDatabase.getInstance().getReference(getResources().getString(R.string.firebase_connectpath));
+        mConnectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 boolean connected = snapshot.getValue(Boolean.class);
                 if (connected) {
                     dismissSnackBar();
                 } else {
-                    if(!ConnectionUtils.isConnected(getApplicationContext())) {
+                    if (!ConnectionUtils.isConnected(getApplicationContext())) {
                         displaySnackBar(getResources().getString(R.string.offline_msg));
-                    }
-                    else{
+                    } else {
                         dismissSnackBar();
                     }
                 }
@@ -112,14 +117,14 @@ public class BaseActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Log.e(tag, getResources().getString(R.string.connect_listerner_canceled));
+                Log.e(mTag, getResources().getString(R.string.connect_listerner_canceled));
             }
         });
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectCustomSlowCalls().detectNetwork().build());
         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectActivityLeaks().penaltyLog().build());
     }
 
-    protected void openMySession(){
+    protected void openMySession() {
         Intent sessionIntent = new Intent(this, MySessionActivity.class);
         startActivity(sessionIntent);
     }
@@ -127,50 +132,47 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        auth.addAuthStateListener(authListener);
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (authListener != null) {
-            auth.removeAuthStateListener(authListener);
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == code){
-            if(resultCode == 0){
+        if (requestCode == mCode) {
+            if (resultCode == 0) {
                 isAuthenticated = true;
-                FirebaseUser user = auth.getCurrentUser();
+                FirebaseUser user = mAuth.getCurrentUser();
             }
         }
     }
 
-    protected void setupViewPager(FragmentStatePagerAdapter adapter){
-        if(viewPager != null) {
-            viewPager.setAdapter(adapter);
-            tabLayout.setupWithViewPager(viewPager);
+    protected void setupViewPager(FragmentStatePagerAdapter adapter) {
+        if (mviewPager != null) {
+            mviewPager.setAdapter(adapter);
+            mtabLayout.setupWithViewPager(mviewPager);
         }
     }
 
     //for offline or error messages
-    public void displaySnackBar(String message)
-    {
-        if(coordinatorLayout != null) {
-            snackBar = Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_INDEFINITE);
-            snackBar.show();
+    public void displaySnackBar(String message) {
+        if (mCoordinatorLayout != null) {
+            mSnackBar = Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_INDEFINITE);
+            mSnackBar.show();
         }
     }
 
     //onpause of the activity
-    public void dismissSnackBar()
-    {
-        if(snackBar != null && snackBar.isShown())
-        {
-            snackBar.dismiss();
+    public void dismissSnackBar() {
+        if (mSnackBar != null && mSnackBar.isShown()) {
+            mSnackBar.dismiss();
         }
     }
 
@@ -180,11 +182,11 @@ public class BaseActivity extends AppCompatActivity {
         dismissSnackBar();
     }
 
-    protected void logEvent(String event, Bundle bundle){
-        ((LearnAndroidTrackerApplication)getApplication()).getFirebaseAnalyticsInstance().logEvent(event, bundle);
+    protected void logEvent(String event, Bundle bundle) {
+        ((LearnAndroidTrackerApplication) getApplication()).getFirebaseAnalyticsInstance().logEvent(event, bundle);
     }
 
-    private void setAnalyticsUserId(String username){
-        ((LearnAndroidTrackerApplication)getApplication()).getFirebaseAnalyticsInstance().setUserId(username);
+    private void setAnalyticsUserId(String username) {
+        ((LearnAndroidTrackerApplication) getApplication()).getFirebaseAnalyticsInstance().setUserId(username);
     }
 }

@@ -1,38 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:id="@+id/reviewQuestionLayout"
-    android:textDirection="locale"
-    android:layoutDirection="locale">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="locale"
+    android:orientation="vertical"
+    android:textDirection="locale">
+
     <TextView
+        style="@style/titleText"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="@string/review_question_name"
-        style="@style/titleText"/>
+        android:text="@string/review_question_name" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"/>
-    <include layout="@layout/level_radiobutton_layout"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_weight="4" />
+
+    <include
+        android:id="@+id/reviewquestion_levelgroup"
+        layout="@layout/level_radiobutton_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:id="@+id/reviewquestion_levelgroup">
-    </include>
+        android:layout_marginTop="@dimen/activity_horizontal_margin"></include>
+
     <CheckedTextView
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="@string/approve_question"
-        android:textAlignment="center"
         android:id="@+id/reviewquesApproveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:checkMarkTint="@color/colorAccent"
+        android:checked="true"
         android:drawableLeft="?android:attr/listChoiceIndicatorMultiple"
         android:drawableStart="?android:attr/listChoiceIndicatorMultiple"
-        android:checked="true"
-        android:checkMarkTint="@color/colorAccent"/>
+        android:text="@string/approve_question"
+        android:textAlignment="center" />
 </LinearLayout>

@@ -19,16 +19,17 @@ public class TrackerQuestion {
     public boolean spam;
     public int level;
 
-    public TrackerQuestion(){}
+    public TrackerQuestion() {
+    }
 
     public TrackerQuestion(String description, String userId, int level) {
         this.description = description;
         this.userId = userId;
         dateCreated = new HashMap<>();
         Object timestamp = ServerValue.TIMESTAMP;
-        dateCreated.put(Constants.TIME,timestamp);
+        dateCreated.put(Constants.TIME, timestamp);
         dateLastChanged = new HashMap<>();
-        dateLastChanged.put(Constants.TIME,timestamp);
+        dateLastChanged.put(Constants.TIME, timestamp);
         upvote = 0;
         this.level = level;
     }

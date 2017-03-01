@@ -18,26 +18,24 @@ import com.durga.sph.androidchallengetracker.utils.Constants;
 
 public class TabletViewMySessionPagerAdapter extends FragmentStatePagerAdapter {
 
-    Context context;
+    Context mContext;
 
     public TabletViewMySessionPagerAdapter(FragmentManager fm, Context ctx) {
         super(fm);
-        context = ctx;
+        mContext = ctx;
     }
 
     @Override
     public Fragment getItem(int position) {
         Fragment fragment = null;
-        if(position == 0){
+        if (position == 0) {
             fragment = MyPointsFragment.newInstance();
 
-        }else if(position == 1){
+        } else if (position == 1) {
             fragment = MySolvedQuestionsFragment.newInstance();
-        }
-        else if(position == 2){
+        } else if (position == 2) {
             fragment = MyAddedQuestionsFragment.newInstance();
-        }
-        else if(position == 3) {
+        } else if (position == 3) {
             fragment = MyReviewedQuestionsFragment.newInstance();
         }
         return fragment;
@@ -45,17 +43,15 @@ public class TabletViewMySessionPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        if(position == 0){
-            return context.getResources().getString(R.string.mypoints_name);
+        if (position == 0) {
+            return mContext.getResources().getString(R.string.mypoints_name);
 
-        }else if(position == 1){
-            return context.getResources().getString(R.string.solved_questions_name);
-        }
-        else if(position == 2){
-            return context.getResources().getString(R.string.added_questions_name);
-        }
-        else if(position == 3){
-            return context.getResources().getString(R.string.reviewed_questions_name);
+        } else if (position == 1) {
+            return mContext.getResources().getString(R.string.solved_questions_name);
+        } else if (position == 2) {
+            return mContext.getResources().getString(R.string.added_questions_name);
+        } else if (position == 3) {
+            return mContext.getResources().getString(R.string.reviewed_questions_name);
 
         }
         return super.getPageTitle(position);

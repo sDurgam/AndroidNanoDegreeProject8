@@ -37,16 +37,20 @@ public class NewQuestionFragment extends BaseFragment implements OnQuestionAdded
     RadioGroup newquestionlevelRadioGroup;
     @BindView(R.id.addQuesSummaryLabel)
     TextView addQuesSummaryLabel;
-    @BindString(R.string.submitted_for_review) String submittedForReview;
-    @BindString(R.string.question_empty_error) String quesEmptyError;
-    @BindString(R.string.level_empty_error) String levelEmptyError;
-    String m_Username;
-    TrackerQuestion newQuestion;
-    String level;
+    @BindString(R.string.submitted_for_review)
+    String submittedForReview;
+    @BindString(R.string.question_empty_error)
+    String quesEmptyError;
+    @BindString(R.string.level_empty_error)
+    String levelEmptyError;
+    String mUserName;
+    TrackerQuestion mNewQuestion;
+    String mLevel;
 
-    public NewQuestionFragment(){
+    public NewQuestionFragment() {
 
     }
+
     public static NewQuestionFragment newInstance() {
         Bundle args = new Bundle();
         NewQuestionFragment fragment = new NewQuestionFragment();
@@ -57,7 +61,7 @@ public class NewQuestionFragment extends BaseFragment implements OnQuestionAdded
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        firebaseDatabaseInterface = new FirebaseDatabaseInterface() {
+        mFirebaseDatabaseInterface = new FirebaseDatabaseInterface() {
         };
     }
 
@@ -87,11 +91,11 @@ public class NewQuestionFragment extends BaseFragment implements OnQuestionAdded
     }
 
     @OnClick(R.id.addquesSubmitReviewBtn)
-    public void addquesSubmitReviewClick(View view){
+    public void addquesSubmitReviewClick(View view) {
         resetErrorMessage();
         //update database and show edit question fragment
         boolean isValid = validateQuestion();
-        if(isValid) {
+        if (isValid) {
             //save to firebase database
             saveQuestioninDB();
             displayErrorMessage(submittedForReview);
@@ -104,69 +108,66 @@ public class NewQuestionFragment extends BaseFragment implements OnQuestionAdded
         }
     }
 
-    private void saveQuestioninDB(){
+    private void saveQuestioninDB() {
         newQuestionEditTxt.setContentDescription(newQuestionEditTxt.getText());
         String title = newQuestionEditTxt.getText().toString();
-        String userId  = firebaseAuth.getCurrentUser().getUid();
-        level = String.format(Constants.LEVELFORMATTER, getLevel());
+        String userId = mFirebaseAuth.getCurrentUser().getUid();
+        mLevel = String.format(Constants.LEVELFORMATTER, getLevel());
         // Generate a reference to a new location and add some data using push()
         //id;
-        newQuestion = new TrackerQuestion(title, userId, getLevel());
-        if(BuildConfig.DEBUG) {
-            firebaseDatabaseInterface.addNewQuestionToLevel(newQuestion, this);
-        }
-        else {
-            firebaseDatabaseInterface.addNewQuestion(newQuestion, this);
+        mNewQuestion = new TrackerQuestion(title, userId, getLevel());
+        if (BuildConfig.DEBUG) {
+            mFirebaseDatabaseInterface.addNewQuestionToLevel(mNewQuestion, this);
+        } else {
+            mFirebaseDatabaseInterface.addNewQuestion(mNewQuestion, this);
         }
     }
 
-    private int getLevel(){
+    private int getLevel() {
         int id = newquestionlevelRadioGroup.getCheckedRadioButtonId();
-        if(id == R.id.radiobutton_level1) return 1;
-        if(id == R.id.radiobutton_level2) return 2;
+        if (id == R.id.radiobutton_level1) return 1;
+        if (id == R.id.radiobutton_level2) return 2;
         return 3;
     }
 
-    private boolean validateQuestion(){
+    private boolean validateQuestion() {
         boolean isValidQuestion = true;
-        if(newQuestionEditTxt.getText().toString().isEmpty()){
+        if (newQuestionEditTxt.getText().toString().isEmpty()) {
             isValidQuestion = false;
             displayErrorMessage(quesEmptyError);
-        }
-        else if(newquestionlevelRadioGroup.getCheckedRadioButtonId() == -1){
+        } else if (newquestionlevelRadioGroup.getCheckedRadioButtonId() == -1) {
             isValidQuestion = false;
             displayErrorMessage(levelEmptyError);
         }
         return isValidQuestion;
     }
 
-    private void resetFields(){
+    private void resetFields() {
         newQuestionEditTxt.setText("");
         newquestionlevelRadioGroup.clearCheck();
         resetErrorMessage();
     }
 
-    private void displayErrorMessage(String message){
+    private void displayErrorMessage(String message) {
         addQuesSummaryLabel.setText(message);
     }
 
-    private void resetErrorMessage(){
+    private void resetErrorMessage() {
         addQuesSummaryLabel.setText(Constants.BLANKSTR);
     }
 
     //Add under 'MyAdded' questions in the local database
     @Override
     public void issuccess(boolean success, String questionId) {
-        if(success && questionId != null){
+        if (success && questionId != null) {
             //add this new question in 'MyAdded Questions' in database
             Bundle bundle = new Bundle();
             bundle.putString(FirebaseAnalytics.Param.ITEM_ID, questionId);
             logFirebaseAnalyticsEvent(getResources().getString(R.string.isadded), bundle);
-            newQuestion.id = questionId;
-            addToDatabase(newQuestion, MyProgressContract.MyProgressEntry.COLUMN_ISADDED);
-        }
-        else {
-            Log.e(tag, getResources().getString(R.string.action_failed) + getResources().getString(R.string.isadded));
+            mNewQuestion.id = questionId;
+            addToDatabase(mNewQuestion, MyProgressContract.MyProgressEntry.COLUMN_ISADDED);
+        } else {
+            Log.e(mTag, getResources().getString(R.string.action_failed) + getResources().getString(R.string.isadded));
         }
     }
 }

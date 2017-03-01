@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 
-import java.security.PublicKey;
-
 /**
  * Created by root on 2/13/17.
  */
@@ -16,10 +14,6 @@ public class MyProgressDBHelper extends SQLiteOpenHelper {
 
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "myprogress";
-
-    public MyProgressDBHelper(Context context){
-        super(context, DB_NAME, null, DB_VERSION);
-    }
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_LEVEL = "level";
@@ -28,6 +22,9 @@ public class MyProgressDBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ISREVIEWED = "reviewed";
     public static final String COLUMN_ISADDED = "added";
     public static final String COLUMN_LASTMODIFIED = "lastmodified";
+    public MyProgressDBHelper(Context context) {
+        super(context, DB_NAME, null, DB_VERSION);
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

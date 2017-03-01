@@ -20,48 +20,47 @@ import java.util.List;
 
 public class LevelRecyclerViewAdapter extends BaseRecylerViewAdapter {
 
-    OnLevelItemClickListerner itemClickListener;
+    OnLevelItemClickListerner mItemClickListener;
 
-    public LevelRecyclerViewAdapter(Context context, List<TrackerQuestion> recipesList, String user, OnLevelItemClickListerner listener){
+    public LevelRecyclerViewAdapter(Context context, List<TrackerQuestion> recipesList, String user, OnLevelItemClickListerner listener) {
         super(context, user, recipesList);
-        this.itemClickListener = listener;
-    }
-
-    public class MyViewHolder extends BaseRecylerViewAdapter.MyViewHolder{
-        TextView descriptionView;
-        AppCompatCheckBox solvedView;
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            descriptionView = (TextView) itemView.findViewById(R.id.textView);
-            solvedView = (AppCompatCheckBox) itemView.findViewById(R.id.issolvedorReviewedView);
-        }
+        this.mItemClickListener = listener;
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int type)
-    {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int type) {
         View view;
-        view = LayoutInflater.from(context).inflate(R.layout.level_cell_view, parent, false);
+        view = LayoutInflater.from(mContext).inflate(R.layout.level_cell_view, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(BaseRecylerViewAdapter.MyViewHolder holder, int position) {
-        final TrackerQuestion recipe = trackerQuestionsList.get(position);
+        final TrackerQuestion recipe = mTrackerQuestionsList.get(position);
         final int pos = position;
-        LevelRecyclerViewAdapter.MyViewHolder h = (LevelRecyclerViewAdapter.MyViewHolder)holder;
+        LevelRecyclerViewAdapter.MyViewHolder h = (LevelRecyclerViewAdapter.MyViewHolder) holder;
         h.descriptionView.setText(recipe.description);
         h.solvedView.setChecked(false);
         h.solvedView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!getisUpdating()) {
-                    itemClickListener.onisSolvedClick(recipe.id);
-                }
-                else{
-                    Toast.makeText(context, context.getString(R.string.solve_inprocess), Toast.LENGTH_LONG).show();
+                if (!getisUpdating()) {
+                    mItemClickListener.onisSolvedClick(recipe.id);
+                } else {
+                    Toast.makeText(mContext, mContext.getString(R.string.solve_inprocess), Toast.LENGTH_LONG).show();
                 }
             }
         });
+    }
+
+    public class MyViewHolder extends BaseRecylerViewAdapter.MyViewHolder {
+        TextView descriptionView;
+        AppCompatCheckBox solvedView;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            descriptionView = (TextView) itemView.findViewById(R.id.textView);
+            solvedView = (AppCompatCheckBox) itemView.findViewById(R.id.issolvedorReviewedView);
+        }
     }
 }

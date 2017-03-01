@@ -4,16 +4,12 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.durga.sph.androidchallengetracker.utils.Constants;
-
-import java.net.URL;
-
 /**
  * Created by root on 2/13/17.
  */
 
 public class MyProgressContract {
-    public static final String CONTENT_AUTHORITY="com.durga.sph.androidchallengetracker.providers";
+    public static final String CONTENT_AUTHORITY = "com.durga.sph.androidchallengetracker.providers";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_MYPROGRESS = "myprogress";
 
@@ -44,7 +40,7 @@ public class MyProgressContract {
         }
 
         public static Uri buildUriSolved() {
-            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_ISSOLVED,"1").build();
+            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_ISSOLVED, "1").build();
         }
 
         public static Uri buildUriReviewed() {

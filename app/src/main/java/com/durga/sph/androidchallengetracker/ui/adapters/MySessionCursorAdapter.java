@@ -17,24 +17,24 @@ import com.durga.sph.androidchallengetracker.utils.Constants;
 
 public class MySessionCursorAdapter extends SimpleCursorAdapter {
 
-    private LayoutInflater inflater;
+    private LayoutInflater mInflater;
 
     public MySessionCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
         super(context, layout, c, from, to, flags);
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         super.bindView(view, context, cursor);
-        TextView desc=(TextView)view.findViewById(R.id.mydesc);
-        TextView level=(TextView)view.findViewById(R.id.mylevel);
+        TextView desc = (TextView) view.findViewById(R.id.mydesc);
+        TextView level = (TextView) view.findViewById(R.id.mylevel);
         desc.setText(cursor.getString(1));
         level.setText(String.format(Constants.LEVEL_CAPS_FORMATTER, cursor.getInt(2)));
     }
 
     @Override
-    public View newView (Context context, Cursor cursor, ViewGroup parent) {
-        return inflater.inflate(R.layout.mysession_question_cell, null);
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        return mInflater.inflate(R.layout.mysession_question_cell, null);
     }
 }

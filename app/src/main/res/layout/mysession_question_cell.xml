@@ -1,23 +1,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textDirection="locale"
-    android:layoutDirection="locale"
-    android:focusable="true"
     android:clickable="true"
-    android:foreground="?android:selectableItemBackground">
+    android:focusable="true"
+    android:foreground="?android:selectableItemBackground"
+    android:layoutDirection="locale"
+    android:orientation="vertical"
+    android:textDirection="locale">
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/mydesc"
-        android:text="@string/added_questions_name"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
-    <android.support.v7.widget.AppCompatRadioButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/added_questions_name" />
+
+    <android.support.v7.widget.AppCompatRadioButton
         android:id="@+id/mylevel"
-        android:text="@string/level1_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:checked="true"
-        android:enabled="false" />
+        android:enabled="false"
+        android:text="@string/level1_name" />
 
 </LinearLayout>

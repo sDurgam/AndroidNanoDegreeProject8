@@ -24,26 +24,26 @@ import butterknife.BindView;
  * Created by root on 2/22/17.
  */
 
-public class MyFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MyFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final int MYPROGRESS_LOADER = 100;
-    Uri uri;
-    private SimpleCursorAdapter adapter;
-    @Nullable  @BindView(R.id.mysession_listView)
+    Uri mUri;
+    Cursor mCursor;
+    @Nullable
+    @BindView(R.id.mysession_listView)
     ListView myquestionsView;
-    Cursor cursor;
-    int layoutId;
-
-    String[] projectionFields;
-    String[] uibindForm;
-    int[] uibindTo;
-
-    @Nullable @BindView(R.id.mysession_title)
+    int mLayoutId;
+    String[] mProjectionFields;
+    String[] mUibindForm;
+    int[] mUibindTo;
+    @Nullable
+    @BindView(R.id.mysession_title)
     TextView myquestionsTitle;
     @BindView(R.id.emptySessionView)
     TextView emptyView;
     @BindView(R.id.loadingBar)
     ProgressBar loadingBar;
+    private SimpleCursorAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,19 +53,19 @@ public class MyFragment extends Fragment implements LoaderManager.LoaderCallback
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        CursorLoader loader = new CursorLoader(this.getActivity(), uri, projectionFields, null, null, null);
+        CursorLoader loader = new CursorLoader(this.getActivity(), mUri, mProjectionFields, null, null, null);
         return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.swapCursor(data);
+        mAdapter.swapCursor(data);
         loadingBar.setVisibility(View.GONE);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        adapter.swapCursor(null);
+        mAdapter.swapCursor(null);
     }
 
     @Override
@@ -74,14 +74,13 @@ public class MyFragment extends Fragment implements LoaderManager.LoaderCallback
         setUpCursorAdapter();
     }
 
-    private void setUpCursorAdapter(){
-        if(this instanceof MyAddedQuestionsFragment){
-         adapter = new MyAddedCursorAdapter(this.getActivity(), layoutId, null, uibindForm, uibindTo, 0);
+    private void setUpCursorAdapter() {
+        if (this instanceof MyAddedQuestionsFragment) {
+            mAdapter = new MyAddedCursorAdapter(this.getActivity(), mLayoutId, null, mUibindForm, mUibindTo, 0);
+        } else {
+            mAdapter = new MySessionCursorAdapter(this.getActivity(), mLayoutId, null, mUibindForm, mUibindTo, 0);
         }
-        else {
-            adapter = new MySessionCursorAdapter(this.getActivity(), layoutId, null, uibindForm, uibindTo, 0);
-        }
-        myquestionsView.setAdapter(adapter);
+        myquestionsView.setAdapter(mAdapter);
         myquestionsView.setEmptyView(emptyView);
     }
 }

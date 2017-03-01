@@ -1,59 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetMainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/activity_horizontal_margin"
-    android:id="@+id/widgetMainLayout"
     android:layoutDirection="locale"
+    android:padding="@dimen/activity_horizontal_margin"
     android:textDirection="locale">
+
     <GridLayout
+        android:id="@+id/widgetLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:rowCount="3"
+        android:layout_centerInParent="true"
         android:layout_columnSpan="2"
+        android:layout_columnWeight="2"
         android:layout_rowSpan="3"
         android:layout_rowWeight="3"
-        android:layout_columnWeight="2"
-        android:layout_centerInParent="true"
+        android:columnCount="2"
         android:contentDescription="@string/app_widget"
-        android:id="@+id/widgetLayout">
+        android:rowCount="3">
+
         <TextView
             android:text="@string/level1_widget_name"
             android:textColor="@color/colorPrimary"></TextView>
+
         <TextView
-            android:text=""
-            android:textColor="@color/colorAccent"
             android:id="@+id/widget_level1"
-            android:layout_gravity="start|left|top"/>
+            android:layout_gravity="start|left|top"
+            android:text=""
+            android:textColor="@color/colorAccent" />
+
         <TextView
+            android:layout_gravity="start|left|top"
             android:text="@string/level2_widget_name"
-            android:layout_gravity="start|left|top"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/colorPrimary" />
+
         <TextView
-            android:text=""
             android:id="@+id/widget_level2"
-            android:textColor="@color/colorAccent"
-            android:layout_gravity="start|left|top"/>
-        <TextView
-            android:text="@string/level3_widget_name"
             android:layout_gravity="start|left|top"
-            android:textColor="@color/colorPrimary"/>
-        <TextView
             android:text=""
+            android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:layout_gravity="start|left|top"
+            android:text="@string/level3_widget_name"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
             android:id="@+id/widget_level3"
-            android:textColor="@color/colorAccent"
-            android:layout_gravity="start|left|top"/>
+            android:layout_gravity="start|left|top"
+            android:text=""
+            android:textColor="@color/colorAccent" />
     </GridLayout>
+
     <TextView
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_below="@id/widgetLayout"
-        android:text="@string/app_name"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:maxLines="3"
+        android:text="@string/app_name"
         android:textStyle="bold" />
 </RelativeLayout>

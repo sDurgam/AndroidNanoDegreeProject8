@@ -2,29 +2,32 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layoutDirection="locale"
+    android:orientation="vertical"
     android:textDirection="locale">
+
     <TextView
+        android:id="@+id/levelNameTxt"
+        style="@style/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:id="@+id/levelNameTxt"
-        android:text=""
         android:layout_centerHorizontal="true"
-        style="@style/titleText"
-        />
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="" />
+
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/questionsView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/questionsView"
         android:layout_below="@id/levelNameTxt"
-        android:layout_marginTop="@dimen/imageview_maringtop"
         android:layout_marginBottom="@dimen/recyclerview_marginbottom"
-        android:contentDescription="@string/questionsview"
-        >
-    </android.support.v7.widget.RecyclerView>
-    <include layout="@layout/empty_recycler_view" android:visibility="gone" />
-    <include layout="@layout/loading_layout"/>
+        android:layout_marginTop="@dimen/imageview_maringtop"
+        android:contentDescription="@string/questionsview"></android.support.v7.widget.RecyclerView>
+
+    <include
+        layout="@layout/empty_recycler_view"
+        android:visibility="gone" />
+
+    <include layout="@layout/loading_layout" />
 
 </RelativeLayout>

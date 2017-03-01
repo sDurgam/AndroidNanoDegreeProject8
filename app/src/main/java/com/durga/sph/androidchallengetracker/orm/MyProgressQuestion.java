@@ -10,7 +10,7 @@ public class MyProgressQuestion {
     public boolean isReviewed;
     public boolean isAdded;
 
-    public MyProgressQuestion(String id){
+    public MyProgressQuestion(String id) {
         id = this.id;
     }
 

@@ -1,23 +1,26 @@
-<RadioGroup android:layout_alignParentRight="true"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_alignParentRight="true"
     android:contentDescription="@string/choose_level"
     android:textDirection="locale">
+
     <RadioButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/level1_name"
         android:id="@+id/radiobutton_level1"
-        android:contentDescription="@string/level1_name"/>
-    <RadioButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/level2_name"
-        android:id="@+id/radiobutton_level2"/>
+        android:contentDescription="@string/level1_name"
+        android:text="@string/level1_name" />
+
     <RadioButton
+        android:id="@+id/radiobutton_level2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/level3_name"
-        android:id="@+id/radiobutton_level3"/>
+        android:text="@string/level2_name" />
+
+    <RadioButton
+        android:id="@+id/radiobutton_level3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/level3_name" />
 </RadioGroup>

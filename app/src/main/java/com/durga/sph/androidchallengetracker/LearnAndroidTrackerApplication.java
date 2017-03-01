@@ -9,7 +9,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
  */
 
 public class LearnAndroidTrackerApplication extends Application {
-    private FirebaseAnalytics firebaseAnalytics;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void onCreate() {
@@ -17,10 +17,10 @@ public class LearnAndroidTrackerApplication extends Application {
         getFirebaseAnalyticsInstance();
     }
 
-    public FirebaseAnalytics getFirebaseAnalyticsInstance(){
-        if(firebaseAnalytics == null){
-            firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+    public FirebaseAnalytics getFirebaseAnalyticsInstance() {
+        if (mFirebaseAnalytics == null) {
+            mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         }
-        return firebaseAnalytics;
+        return mFirebaseAnalytics;
     }
 }

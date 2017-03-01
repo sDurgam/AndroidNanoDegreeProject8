@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.durga.sph.androidchallengetracker.ui.DPadDrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.durga.sph.androidchallengetracker.ui.DPadDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="?android:attr/actionBarSize"
-    tools:showIn="@layout/activity_main"
-    tools:openDrawer="start"
+    android:descendantFocusability="afterDescendants"
     android:layoutDirection="locale"
     android:textDirection="locale"
-    android:descendantFocusability="afterDescendants">
+    tools:openDrawer="start"
+    tools:showIn="@layout/activity_main">
+
     <FrameLayout
+        android:id="@+id/main_frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/main_frameLayout"
-        android:padding="@dimen/padding"
         android:descendantFocusability="afterDescendants"
+        android:padding="@dimen/padding"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"></FrameLayout>
 
     <android.support.design.widget.NavigationView
@@ -25,10 +25,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/drawer_view"
+        android:contentDescription="@string/add_question_name"
         android:fitsSystemWindows="false"
         app:itemTextAppearance="?android:attr/textAppearanceSmallPopupMenu"
-        android:contentDescription="@string/add_question_name">
-    </android.support.design.widget.NavigationView>
+        app:menu="@menu/drawer_view"></android.support.design.widget.NavigationView>
 
 </com.durga.sph.androidchallengetracker.ui.DPadDrawerLayout>

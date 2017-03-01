@@ -28,22 +28,23 @@ import static com.durga.sph.androidchallengetracker.utils.Constants.NAMEDB_LIST;
 
 public class MyProgressAppWidgetProvider extends AppWidgetProvider implements ProgressListener {
 
-    Map<String, Long> m_localProgessMap;
-    AppWidgetManager appWidgetManager;
-    int[] appWidgetIds;
-    Context context;
-    public MyProgressAppWidgetProvider(){
-        m_localProgessMap = new HashMap<>();
+    Map<String, Long> mLocalProgessMap;
+    AppWidgetManager mAppWidgetManager;
+    int[] mAppWidgetIds;
+    Context mContext;
+
+    public MyProgressAppWidgetProvider() {
+        mLocalProgessMap = new HashMap<>();
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-        this.context = context;
-        this.appWidgetManager = appWidgetManager;
-        this.appWidgetIds = appWidgetIds;
-        if(FirebaseAuth.getInstance() != null && FirebaseAuth.getInstance().getCurrentUser() != null) {
-            new MyProgressAsyncTask(new WeakReference<Context>(context), this, new ProgressDatabaseInterface(), m_localProgessMap).execute();
+        this.mContext = context;
+        this.mAppWidgetManager = appWidgetManager;
+        this.mAppWidgetIds = appWidgetIds;
+        if (FirebaseAuth.getInstance() != null && FirebaseAuth.getInstance().getCurrentUser() != null) {
+            new MyProgressAsyncTask(new WeakReference<Context>(context), this, new ProgressDatabaseInterface(), mLocalProgessMap).execute();
         }
     }
 
@@ -59,27 +60,27 @@ public class MyProgressAppWidgetProvider extends AppWidgetProvider implements Pr
 
     @Override
     public void onProgressReceived(Map<String, Long> progressMap) {
-        final int N = appWidgetIds.length;
+        final int N = mAppWidgetIds.length;
         int appwidgetId = -1;
         //add level 1, level2, level 3
         for (int i = 0; i < N; i++) {
-            appwidgetId = appWidgetIds[i];
+            appwidgetId = mAppWidgetIds[i];
             //make an async task to track MyProgress
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+            RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_layout);
             //make an api call to know the progress for each level, solved, added, approved and reviewed questions
-            views.setTextViewText(R.id.widget_level1, getValue(m_localProgessMap, NAMEDB_LIST[0]).toString() + "/" + getValue(progressMap, NAMEDB_LIST[0].toString()));
-            views.setTextViewText(R.id.widget_level2, getValue(m_localProgessMap, NAMEDB_LIST[1]) + "/" + getValue(progressMap, NAMEDB_LIST[1]));
-            views.setTextViewText(R.id.widget_level3, getValue(m_localProgessMap, NAMEDB_LIST[2]) + "/" + getValue(progressMap, NAMEDB_LIST[2]));
-            Intent intent = new Intent(context, MainActivity.class);
+            views.setTextViewText(R.id.widget_level1, getValue(mLocalProgessMap, NAMEDB_LIST[0]).toString() + "/" + getValue(progressMap, NAMEDB_LIST[0].toString()));
+            views.setTextViewText(R.id.widget_level2, getValue(mLocalProgessMap, NAMEDB_LIST[1]) + "/" + getValue(progressMap, NAMEDB_LIST[1]));
+            views.setTextViewText(R.id.widget_level3, getValue(mLocalProgessMap, NAMEDB_LIST[2]) + "/" + getValue(progressMap, NAMEDB_LIST[2]));
+            Intent intent = new Intent(mContext, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra(Constants.FROMWIDGET, Constants.TRUE);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
             views.setOnClickPendingIntent(R.id.widgetMainLayout, pendingIntent);
-            appWidgetManager.updateAppWidget(appwidgetId, views);
+            mAppWidgetManager.updateAppWidget(appwidgetId, views);
         }
     }
 
-    private Long getValue(Map<String, Long> map, String key){
-        return  (map.get(key) == null)? 0 : map.get(key);
+    private Long getValue(Map<String, Long> map, String key) {
+        return (map.get(key) == null) ? 0 : map.get(key);
     }
 }

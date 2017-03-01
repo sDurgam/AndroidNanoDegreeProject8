@@ -2,39 +2,39 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layoutDirection="locale"
+    android:orientation="vertical"
     android:textDirection="locale">
-    <TextView android:id="@+id/added_desc"
+
+    <TextView
+        android:id="@+id/added_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:text="@string/add_question_name"
-        >
-    </TextView>
+        android:text="@string/add_question_name"></TextView>
+
     <android.support.v7.widget.AppCompatRadioButton
+        android:id="@+id/added_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/added_level"
-        android:text="@string/level1_name"
-        android:checked="true"
-        android:enabled="false"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/added_desc"
+        android:checked="true"
         android:contentDescription="@string/read_level"
-        />
+        android:enabled="false"
+        android:text="@string/level1_name" />
+
     <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/added_approved"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/added_approved"
-        android:text="@string/mark_as_approved"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/added_desc"
         android:contentDescription="@string/add_question_name"
         android:enabled="false"
-        android:layout_below="@id/added_desc"
-        />
+        android:text="@string/mark_as_approved" />
 </RelativeLayout>

@@ -18,18 +18,8 @@ import static com.durga.sph.androidchallengetracker.ui.activites.BaseActivity.mT
 
 public class MySolvedQuestionsFragment extends MyFragment {
 
-    public MySolvedQuestionsFragment(){
-        uri = MyProgressContract.MyProgressEntry.buildUriSolved();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        uri = MyProgressContract.MyProgressEntry.buildUriSolved();
-        projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
-        uibindForm = new String[] {MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
-        uibindTo = new int[] {R.id.mydesc, R.id.mylevel};
-        layoutId = R.layout.mysession_question_cell;
-        super.onCreate(savedInstanceState);
+    public MySolvedQuestionsFragment() {
+        mUri = MyProgressContract.MyProgressEntry.buildUriSolved();
     }
 
     public static MySolvedQuestionsFragment newInstance() {
@@ -40,11 +30,21 @@ public class MySolvedQuestionsFragment extends MyFragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        mUri = MyProgressContract.MyProgressEntry.buildUriSolved();
+        mProjectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
+        mUibindForm = new String[]{MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL};
+        mUibindTo = new int[]{R.id.mydesc, R.id.mylevel};
+        mLayoutId = R.layout.mysession_question_cell;
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.mysession_questionslayout, container, false);
         ButterKnife.bind(this, view);
-        if(!mTwoPane) {
+        if (!mTwoPane) {
             myquestionsTitle.setVisibility(View.VISIBLE);
             myquestionsTitle.setText(getResources().getString(R.string.solved_questions_title));
         }

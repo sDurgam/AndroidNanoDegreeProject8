@@ -2,12 +2,12 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_coordinateLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.activites.MainActivity"
-    android:id="@+id/main_coordinateLayout"
-    android:layoutDirection="locale">
+    android:layoutDirection="locale"
+    tools:mContext=".ui.activites.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -19,12 +19,12 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            android:textDirection="locale"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="@string/app_name"
-            android:textDirection="locale"/>
+            app:title="@string/app_name" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main"/>
+    <include layout="@layout/content_main" />
 
 </android.support.design.widget.CoordinatorLayout>

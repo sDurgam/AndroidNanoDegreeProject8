@@ -23,24 +23,24 @@ public class MySessionActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        toolbar.setTitle(getResources().getString(R.string.my_progress));
-        setSupportActionBar(toolbar);
+        mToolbar.setTitle(getResources().getString(R.string.my_progress));
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         mysessionButton.setVisibility(View.GONE);
-        FragmentStatePagerAdapter pagerAdapter = new TabletViewMySessionPagerAdapter(fragmentManager, this);
+        FragmentStatePagerAdapter pagerAdapter = new TabletViewMySessionPagerAdapter(mfragmentManager, this);
         setupViewPager(pagerAdapter);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-            switch (item.getItemId()) {
-                // Respond to the action bar's Up/Home button
-                case android.R.id.home:
-                    NavUtils.navigateUpFromSameTask(this);
-                    return true;
-            }
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }

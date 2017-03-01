@@ -35,26 +35,28 @@ import butterknife.BindView;
 
 public class BaseFragment extends Fragment implements GetQuestionsInterface {
 
+    protected FirebaseDatabaseInterface mFirebaseDatabaseInterface;
     //Firebase variables
-    FirebaseAuth firebaseAuth;
-    FirebaseAuth.AuthStateListener authStateListener;
-    ChildEventListener childEventListener;
-    protected FirebaseDatabaseInterface firebaseDatabaseInterface;
-    String lastQuestionId = null;
-    String lasttimeStamp = null;
-    String username;
-    BaseRecylerViewAdapter adapter;
-    @Nullable @BindView(R.id.emptyTrackerView)
+    FirebaseAuth mFirebaseAuth;
+    FirebaseAuth.AuthStateListener mAuthStateListener;
+    ChildEventListener mChildEventListener;
+    String mLastQuestionId = null;
+    String mLastTimeStamp = null;
+    String mUsername;
+    BaseRecylerViewAdapter mAdapter;
+    @Nullable
+    @BindView(R.id.emptyTrackerView)
     TextView emptyView;
-    @Nullable @BindView(R.id.loadingBar)
+    @Nullable
+    @BindView(R.id.loadingBar)
     ProgressBar loadingBar;
 
-    String tag;
+    String mTag;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        tag = this.getClass().getName();
+        mTag = this.getClass().getName();
     }
 
     @Override
@@ -70,32 +72,32 @@ public class BaseFragment extends Fragment implements GetQuestionsInterface {
     @Override
     public void onStart() {
         super.onStart();
-        firebaseAuth = FirebaseAuth.getInstance();
-        authStateListener = new FirebaseAuth.AuthStateListener() {
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user != null){
-                    username = user.getUid();
-                    setAnalyticsUserId(username);
+                if (user != null) {
+                    mUsername = user.getUid();
+                    setAnalyticsUserId(mUsername);
                 }
             }
         };
     }
 
-    protected String userName(){
-        return firebaseAuth.getCurrentUser().getUid();
+    protected String userName() {
+        return mFirebaseAuth.getCurrentUser().getUid();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        firebaseAuth.addAuthStateListener(authStateListener);
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
     @Override
     public void onPause() {
-        firebaseAuth.removeAuthStateListener(authStateListener);
+        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         super.onPause();
     }
 
@@ -103,30 +105,28 @@ public class BaseFragment extends Fragment implements GetQuestionsInterface {
     public void onQuestionsReady(List<TrackerQuestion> questionsList) {
 
         loadingBar.setVisibility(View.GONE);
-        if(questionsList != null && questionsList.size() > 0) {
+        if (questionsList != null && questionsList.size() > 0) {
             emptyView.setVisibility(View.GONE);
             int index = 0;
             TrackerQuestion question = questionsList.get(0);
-            if(adapter.isExistsQuestion(question.id)) {
-                index= 1;
+            if (mAdapter.isExistsQuestion(question.id)) {
+                index = 1;
             }
-            if(questionsList.size() >= index+1){
-                lastQuestionId = questionsList.get(questionsList.size()-1).id;
+            if (questionsList.size() >= index + 1) {
+                mLastQuestionId = questionsList.get(questionsList.size() - 1).id;
+            } else {
+                mLastQuestionId = null;
             }
-            else{
-                lastQuestionId = null;
-            }
-            adapter.updateAdapter(questionsList, index, questionsList.size());
-        }
-        else{
+            mAdapter.updateAdapter(questionsList, index, questionsList.size());
+        } else {
             //log it
-            if(adapter.getItemCount() == 0){ //display empty list view
+            if (mAdapter.getItemCount() == 0) { //display empty list view
                 emptyView.setVisibility(View.VISIBLE);
             }
         }
     }
 
-    protected void displayToastMessage(String message){
+    protected void displayToastMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -141,28 +141,28 @@ public class BaseFragment extends Fragment implements GetQuestionsInterface {
     }
 
     protected void updateDatabase(String id, String param) {
-        if(id != null) {
+        if (id != null) {
             String selection = MyProgressContract.MyProgressEntry._ID + MyProgressContract.MyProgressEntry.PREPARED_QUERY;
-            String[] selectionArgs = new String[] {id};
+            String[] selectionArgs = new String[]{id};
             String[] projection = new String[]{MyProgressContract.MyProgressEntry._ID};
             Cursor c = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, projection, selection, selectionArgs, null);
-            if(c.getCount() != 0) {
+            if (c.getCount() != 0) {
                 ContentValues values = new ContentValues();
                 values.put(param, 1);
                 getActivity().getContentResolver().update(MyProgressContract.MyProgressEntry.CONTENT_URI, values, selection, selectionArgs);
             }
             c.close();
-        }else{
+        } else {
             Log.e(getClass().getName(), getResources().getString(R.string.action_failed));
             displayToastMessage(getResources().getString(R.string.action_failed));
         }
     }
 
-    protected void logFirebaseAnalyticsEvent(String event, Bundle bundle){
-        ((LearnAndroidTrackerApplication)getActivity().getApplication()).getFirebaseAnalyticsInstance().logEvent(event, bundle);
+    protected void logFirebaseAnalyticsEvent(String event, Bundle bundle) {
+        ((LearnAndroidTrackerApplication) getActivity().getApplication()).getFirebaseAnalyticsInstance().logEvent(event, bundle);
     }
 
-    private void setAnalyticsUserId(String username){
-        ((LearnAndroidTrackerApplication)getActivity().getApplication()).getFirebaseAnalyticsInstance().setUserId(username);
+    private void setAnalyticsUserId(String username) {
+        ((LearnAndroidTrackerApplication) getActivity().getApplication()).getFirebaseAnalyticsInstance().setUserId(username);
     }
 }

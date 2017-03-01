@@ -13,13 +13,13 @@ public class FirebaseMainDatabaseInterface {
     FirebaseDatabase mFireBaseDatabase;
     DatabaseReference mDatabaseReference;
     ChildEventListener mquestionChildEventListener;
-    boolean isInitialValueLoaded = true;
-    String TAG;
+    boolean misInitialValueLoaded = true;
+    String mTag;
 
 
-    public FirebaseMainDatabaseInterface(){
+    public FirebaseMainDatabaseInterface() {
         mFireBaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFireBaseDatabase.getReference();
-        TAG = this.getClass().getName();
+        mTag = this.getClass().getName();
     }
 }

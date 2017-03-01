@@ -16,17 +16,17 @@ import java.util.Set;
  */
 
 public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRecylerViewAdapter.MyViewHolder> {
-    Context context;
-    List<TrackerQuestion> trackerQuestionsList;
-    Set<String> questionIDsSet;
-    String user;
-    private boolean isUpdating = false;
+    Context mContext;
+    List<TrackerQuestion> mTrackerQuestionsList;
+    Set<String> mQuestionIDsSet;
+    String mUser;
+    private boolean mIsUpdating = false;
 
-    public BaseRecylerViewAdapter(Context context, String user, List<TrackerQuestion> my_trackerQuestionsList){
-        this.context = context;
-        this.trackerQuestionsList = my_trackerQuestionsList;
-        this.user = user;
-        this.questionIDsSet = new HashSet<>();
+    public BaseRecylerViewAdapter(Context mContext, String mUser, List<TrackerQuestion> my_trackerQuestionsList) {
+        this.mContext = mContext;
+        this.mTrackerQuestionsList = my_trackerQuestionsList;
+        this.mUser = mUser;
+        this.mQuestionIDsSet = new HashSet<>();
     }
 
     @Override
@@ -34,109 +34,109 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
         return null;
     }
 
-    public abstract class MyViewHolder extends RecyclerView.ViewHolder {
-        public MyViewHolder(View itemView){
-            super(itemView);
-        }
+    public void addItem(TrackerQuestion question) {
+        if (mQuestionIDsSet.contains(question.id)) return;
+        mTrackerQuestionsList.add(question);
+        mQuestionIDsSet.add(question.id);
+        notifyItemInserted(mTrackerQuestionsList.size() - 1);
+        notifyItemRangeChanged(mTrackerQuestionsList.size() - 1, getItemCount());
     }
 
-    public void addItem(TrackerQuestion question){
-        if(questionIDsSet.contains(question.id)) return;
-        trackerQuestionsList.add(question);
-        questionIDsSet.add(question.id);
-        notifyItemInserted(trackerQuestionsList.size()-1);
-        notifyItemRangeChanged(trackerQuestionsList.size()-1, getItemCount());
-    }
-
-    public void removeItem(String questionId){
+    public void removeItem(String questionId) {
         int position = -1;
-        for(int i = 0; i < trackerQuestionsList.size(); i++){
-            if(trackerQuestionsList.get(i).id.equals(questionId)){
+        for (int i = 0; i < mTrackerQuestionsList.size(); i++) {
+            if (mTrackerQuestionsList.get(i).id.equals(questionId)) {
                 position = i;
                 break;
             }
         }
-        trackerQuestionsList.remove(position);
+        mTrackerQuestionsList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount());
     }
 
-    public void removeItem(int position){
-        if(position != -1) {
-            trackerQuestionsList.remove(position);
+    public void removeItem(int position) {
+        if (position != -1) {
+            mTrackerQuestionsList.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, getItemCount());
         }
     }
 
     public int getItemCount() {
-        if(trackerQuestionsList == null) return 0;
-        return trackerQuestionsList.size();
+        if (mTrackerQuestionsList == null) return 0;
+        return mTrackerQuestionsList.size();
     }
-
 
     public int getItemById(String id) {
         boolean isfound = false;
         int position = 0;
-        for(TrackerQuestion question : trackerQuestionsList){
-            if(question.getId().equals(id)){
-                isfound =true;
+        for (TrackerQuestion question : mTrackerQuestionsList) {
+            if (question.getId().equals(id)) {
+                isfound = true;
                 break;
             }
             position++;
         }
-        if(!isfound) {
+        if (!isfound) {
             position = -1;
         }
         return position;
     }
 
-    public void updateAdapter(List<TrackerQuestion> questions, int start, int end){
+    public void updateAdapter(List<TrackerQuestion> questions, int start, int end) {
         int i = start;
         TrackerQuestion question = null;
-        for(;i < end && start >= 0 && end <= questions.size(); i++) {
+        for (; i < end && start >= 0 && end <= questions.size(); i++) {
             question = questions.get(i);
-            if(!questionIDsSet.contains(question.id)) {
-                trackerQuestionsList.add(question);
-                questionIDsSet.add(question.id);
+            if (!mQuestionIDsSet.contains(question.id)) {
+                mTrackerQuestionsList.add(question);
+                mQuestionIDsSet.add(question.id);
             }
         }
-        if(i > start) {
+        if (i > start) {
             notifyDataSetChanged();
         }
     }
 
-    public String getQuestionIdByPosition(int position){
-        return position <= trackerQuestionsList.size() ? trackerQuestionsList.get(position).id : null;
+    public String getQuestionIdByPosition(int position) {
+        return position <= mTrackerQuestionsList.size() ? mTrackerQuestionsList.get(position).id : null;
     }
 
-    public TrackerQuestion getQuestionById(String id){
-        for(int i = 0; i < trackerQuestionsList.size(); i++){
-            if(trackerQuestionsList.get(i).id.equals(id)){
-                return trackerQuestionsList.get(i);
+    public TrackerQuestion getQuestionById(String id) {
+        for (int i = 0; i < mTrackerQuestionsList.size(); i++) {
+            if (mTrackerQuestionsList.get(i).id.equals(id)) {
+                return mTrackerQuestionsList.get(i);
             }
         }
         return null;
     }
 
-    public boolean isExistsQuestion(String id){
-        if(trackerQuestionsList == null || trackerQuestionsList.size() <= 0) return false;
-        return trackerQuestionsList.get(getItemCount()-1).id.equals(id);
-    }
-    public void setisUpdating(boolean isupdating){
-        isUpdating = isupdating;
+    public boolean isExistsQuestion(String id) {
+        if (mTrackerQuestionsList == null || mTrackerQuestionsList.size() <= 0) return false;
+        return mTrackerQuestionsList.get(getItemCount() - 1).id.equals(id);
     }
 
-    public boolean getisUpdating(){
-        return isUpdating;
+    public void setisUpdating(boolean isupdating) {
+        mIsUpdating = isupdating;
     }
 
-    public int findPos(TrackerQuestion question){
-        for(int i = 0; i < trackerQuestionsList.size(); i++){
-            if(trackerQuestionsList.get(i).id.equals(question.id)){
+    public boolean getisUpdating() {
+        return mIsUpdating;
+    }
+
+    public int findPos(TrackerQuestion question) {
+        for (int i = 0; i < mTrackerQuestionsList.size(); i++) {
+            if (mTrackerQuestionsList.get(i).id.equals(question.id)) {
                 return i;
             }
         }
         return -1;
+    }
+
+    public abstract class MyViewHolder extends RecyclerView.ViewHolder {
+        public MyViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 }

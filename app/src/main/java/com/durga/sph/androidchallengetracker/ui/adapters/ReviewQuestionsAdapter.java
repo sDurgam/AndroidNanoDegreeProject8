@@ -22,57 +22,57 @@ import java.util.List;
 
 public class ReviewQuestionsAdapter extends BaseRecylerViewAdapter {
 
-    OnReviewerItemClickListerner itemClickListener;
+    OnReviewerItemClickListerner mItemClickListener;
 
-    public ReviewQuestionsAdapter(Context context, List<TrackerQuestion> recipesList, String user, OnReviewerItemClickListerner listener){
+    public ReviewQuestionsAdapter(Context context, List<TrackerQuestion> recipesList, String user, OnReviewerItemClickListerner listener) {
         super(context, user, recipesList);
-        this.itemClickListener = listener;
-    }
-
-    public class MyViewHolder extends BaseRecylerViewAdapter.MyViewHolder{
-        TextView descriptionView;
-        AppCompatRadioButton levelView;
-        RadioGroup markGroup;
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            descriptionView = (TextView) itemView.findViewById(R.id.reviewer_quesdesc);
-            levelView = (AppCompatRadioButton) itemView.findViewById(R.id.reviewer_textLevel);
-            markGroup = (RadioGroup) itemView.findViewById(R.id.reviewer_optionsGroup);
-        }
+        this.mItemClickListener = listener;
     }
 
     @Override
-    public BaseRecylerViewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int type)
-    {
+    public BaseRecylerViewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int type) {
         View view;
-        view = LayoutInflater.from(context).inflate(R.layout.reviewer_cell_view, parent, false);
+        view = LayoutInflater.from(mContext).inflate(R.layout.reviewer_cell_view, parent, false);
         return new ReviewQuestionsAdapter.MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final BaseRecylerViewAdapter.MyViewHolder holder, int position) {
-        final TrackerQuestion recipe = trackerQuestionsList.get(position);
-        ReviewQuestionsAdapter.MyViewHolder h = (ReviewQuestionsAdapter.MyViewHolder)holder;
+        final TrackerQuestion recipe = mTrackerQuestionsList.get(position);
+        ReviewQuestionsAdapter.MyViewHolder h = (ReviewQuestionsAdapter.MyViewHolder) holder;
         h.descriptionView.setText(recipe.getDescription());
-        h.descriptionView.setContentDescription(context.getResources().getString(R.string.questiondesc) + recipe.getDescription());
+        h.descriptionView.setContentDescription(mContext.getResources().getString(R.string.questiondesc) + recipe.getDescription());
         h.levelView.setText(String.format(Constants.LEVEL_CAPS_FORMATTER, recipe.level));
         h.levelView.setContentDescription(String.format(Constants.LEVEL_CAPS_FORMATTER, recipe.level));
         h.markGroup.clearCheck();
         h.markGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    if (checkedId == R.id.reviewer_isspam) {
-                        //display review question fragment
-                        itemClickListener.onisSpamClick(recipe, group);
-                    } else if (checkedId == R.id.reviewer_approved) {
-                        itemClickListener.onisApprovedClick(recipe, group);
-                    } else {
-                        itemClickListener.onisNotApprovedClick(recipe, group);
-                    }
-                    if (checkedId != -1) {
-                        group.setContentDescription(context.getResources().getString(R.string.selected) + ((RadioButton) group.findViewById(checkedId)).getText());
-                    }
+                if (checkedId == R.id.reviewer_isspam) {
+                    //display review question fragment
+                    mItemClickListener.onisSpamClick(recipe, group);
+                } else if (checkedId == R.id.reviewer_approved) {
+                    mItemClickListener.onisApprovedClick(recipe, group);
+                } else {
+                    mItemClickListener.onisNotApprovedClick(recipe, group);
                 }
+                if (checkedId != -1) {
+                    group.setContentDescription(mContext.getResources().getString(R.string.selected) + ((RadioButton) group.findViewById(checkedId)).getText());
+                }
+            }
         });
+    }
+
+    public class MyViewHolder extends BaseRecylerViewAdapter.MyViewHolder {
+        TextView descriptionView;
+        AppCompatRadioButton levelView;
+        RadioGroup markGroup;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            descriptionView = (TextView) itemView.findViewById(R.id.reviewer_quesdesc);
+            levelView = (AppCompatRadioButton) itemView.findViewById(R.id.reviewer_textLevel);
+            markGroup = (RadioGroup) itemView.findViewById(R.id.reviewer_optionsGroup);
+        }
     }
 }

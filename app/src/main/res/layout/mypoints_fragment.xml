@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="locale"
+    android:orientation="vertical"
     android:textDirection="locale">
 
     <TextView
+        android:id="@+id/mypointsTitle"
+        style="@style/titleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/my_progress"
-        android:id="@+id/mypointsTitle"
-        style="@style/titleText"/>
+        android:text="@string/my_progress" />
+
     <include layout="@layout/loading_layout" />
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/progressChart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/myprogress_chart"/>
+        android:contentDescription="@string/myprogress_chart" />
 
 </LinearLayout>

@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
-import com.durga.sph.androidchallengetracker.ui.activites.BaseActivity;
-import com.durga.sph.androidchallengetracker.ui.activites.MainActivity;
 
 import butterknife.ButterKnife;
 
@@ -18,17 +16,7 @@ import static com.durga.sph.androidchallengetracker.ui.activites.BaseActivity.mT
  * Created by root on 1/30/17.
  */
 
-public class MyAddedQuestionsFragment extends MyFragment{
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        uri = MyProgressContract.MyProgressEntry.buildUriAdded();
-        projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
-        uibindForm = new String[] {MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
-        uibindTo = new int[] {R.id.added_desc, R.id.added_level, R.id.added_approved};
-        layoutId = R.layout.addedques_cell;
-        super.onCreate(savedInstanceState);
-    }
+public class MyAddedQuestionsFragment extends MyFragment {
 
     public static MyAddedQuestionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -37,13 +25,22 @@ public class MyAddedQuestionsFragment extends MyFragment{
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        mUri = MyProgressContract.MyProgressEntry.buildUriAdded();
+        mProjectionFields = new String[]{MyProgressContract.MyProgressEntry._ID, MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
+        mUibindForm = new String[]{MyProgressContract.MyProgressEntry.COLUMN_DESCRIPTION, MyProgressContract.MyProgressEntry.COLUMN_LEVEL, MyProgressContract.MyProgressEntry.COLUMN_ISAPPROVED};
+        mUibindTo = new int[]{R.id.added_desc, R.id.added_level, R.id.added_approved};
+        mLayoutId = R.layout.addedques_cell;
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.mysession_questionslayout, container, false);
         ButterKnife.bind(this, view);
-        if(!mTwoPane){
+        if (!mTwoPane) {
             myquestionsTitle.setVisibility(View.VISIBLE);
             myquestionsTitle.setText(getResources().getString(R.string.added_questions_title));
         }

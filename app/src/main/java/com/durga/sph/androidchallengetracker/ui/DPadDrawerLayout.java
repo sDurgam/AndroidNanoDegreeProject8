@@ -20,44 +20,7 @@ import java.util.ArrayList;
 
 public class DPadDrawerLayout extends DrawerLayout {
 
-    private DrawerListener wrappedListener;
-
-    private final DrawerListener drawerListener = new DrawerListener() {
-
-        @Override
-        public void onDrawerOpened(View drawerView) {
-            // if the content has focus, transfer focus to the drawer
-            if (getContentView().hasFocus())
-                drawerView.requestFocus(View.FOCUS_FORWARD);
-
-            if (wrappedListener != null)
-                wrappedListener.onDrawerOpened(drawerView);
-        }
-
-        @Override
-        public void onDrawerClosed(View drawerView) {
-            if (drawerView.hasFocus())
-                getContentView().requestFocus(View.FOCUS_FORWARD);
-
-            if (wrappedListener != null)
-                wrappedListener.onDrawerClosed(drawerView);
-        }
-
-        @Override
-        public void onDrawerSlide(View drawerView, float slideOffset) {
-            if (wrappedListener != null)
-                wrappedListener.onDrawerSlide(drawerView, slideOffset);
-        }
-
-        @Override
-        public void onDrawerStateChanged(int newState) {
-            if (wrappedListener != null)
-                wrappedListener.onDrawerStateChanged(newState);
-        }
-
-    };
-
-    private static final OnTouchListener drawerTouchListener = new OnTouchListener() {
+    private final OnTouchListener drawerTouchListener = new OnTouchListener() {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -66,7 +29,6 @@ public class DPadDrawerLayout extends DrawerLayout {
         }
 
     };
-
     private final OnHierarchyChangeListener hierarchyChangeListener = new OnHierarchyChangeListener() {
 
         @Override
@@ -78,6 +40,41 @@ public class DPadDrawerLayout extends DrawerLayout {
         @Override
         public void onChildViewRemoved(View parent, View child) {
 
+        }
+
+    };
+    private DrawerListener mWrappedListener;
+    private final DrawerListener drawerListener = new DrawerListener() {
+
+        @Override
+        public void onDrawerOpened(View drawerView) {
+            // if the content has focus, transfer focus to the drawer
+            if (getContentView().hasFocus())
+                drawerView.requestFocus(View.FOCUS_FORWARD);
+
+            if (mWrappedListener != null)
+                mWrappedListener.onDrawerOpened(drawerView);
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            if (drawerView.hasFocus())
+                getContentView().requestFocus(View.FOCUS_FORWARD);
+
+            if (mWrappedListener != null)
+                mWrappedListener.onDrawerClosed(drawerView);
+        }
+
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {
+            if (mWrappedListener != null)
+                mWrappedListener.onDrawerSlide(drawerView, slideOffset);
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+            if (mWrappedListener != null)
+                mWrappedListener.onDrawerStateChanged(newState);
         }
 
     };
@@ -98,9 +95,9 @@ public class DPadDrawerLayout extends DrawerLayout {
     }
 
     private void init() {
-        if(isInTouchMode()){
+        if (isInTouchMode()) {
             return;
-        }else{
+        } else {
             setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             super.addDrawerListener(drawerListener);
             setOnHierarchyChangeListener(hierarchyChangeListener);
@@ -110,7 +107,7 @@ public class DPadDrawerLayout extends DrawerLayout {
     @Override
     public void addDrawerListener(@NonNull DrawerListener listener) {
         super.addDrawerListener(listener);
-        wrappedListener = listener;
+        mWrappedListener = listener;
     }
 
     private View getContentView() {
@@ -119,14 +116,14 @@ public class DPadDrawerLayout extends DrawerLayout {
 
     @Override
     public void setDrawerListener(DrawerListener listener) {
-        wrappedListener = listener;
+        mWrappedListener = listener;
     }
 
     @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        if(isInTouchMode()){
+        if (isInTouchMode()) {
             super.addFocusables(views, direction, focusableMode);
-        }else{
+        } else {
             addFocusablesOnTV(views, direction, focusableMode);
         }
     }
@@ -177,10 +174,10 @@ public class DPadDrawerLayout extends DrawerLayout {
 
     @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
-        if(isInTouchMode()){
-            return super.onRequestFocusInDescendants(direction,previouslyFocusedRect);
-        }else{
-            return onRequestFocusInDescendantsOnTV(direction,previouslyFocusedRect);
+        if (isInTouchMode()) {
+            return super.onRequestFocusInDescendants(direction, previouslyFocusedRect);
+        } else {
+            return onRequestFocusInDescendantsOnTV(direction, previouslyFocusedRect);
         }
     }
 
@@ -209,9 +206,9 @@ public class DPadDrawerLayout extends DrawerLayout {
 
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
-        if(isInTouchMode()){
+        if (isInTouchMode()) {
             return super.dispatchPopulateAccessibilityEvent(event);
-        }else{
+        } else {
             return dispatchPopulateAccessibilityEventOnTV(event);
         }
     }

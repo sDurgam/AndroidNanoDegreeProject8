@@ -13,13 +13,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
-import com.durga.sph.androidchallengetracker.ui.listeners.GetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.network.ReviewQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
+import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 import com.durga.sph.androidchallengetracker.ui.RecylclerViewEndlessScrollListener;
 import com.durga.sph.androidchallengetracker.ui.adapters.ReviewQuestionsAdapter;
+import com.durga.sph.androidchallengetracker.ui.listeners.GetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.ui.listeners.OnReviewerItemClickListerner;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.google.firebase.database.ChildEventListener;
@@ -41,8 +41,8 @@ public class ReviewQuestionsFragment extends BaseFragment {
     TextView screenTitle;
     @BindView(R.id.questionsView)
     RecyclerView reviewQuestionsView;
-    List<String> myreviewedQuestions;
-    ChildEventListener reviewQuestionsListener;
+    List<String> myReviewedQuestions;
+    ChildEventListener mReviewQuestionsListener;
 
     public static ReviewQuestionsFragment newInstance() {
         Bundle args = new Bundle();
@@ -65,7 +65,7 @@ public class ReviewQuestionsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        firebaseDatabaseInterface = new ReviewQuestionsInterface();
+        mFirebaseDatabaseInterface = new ReviewQuestionsInterface();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ReviewQuestionsFragment extends BaseFragment {
                 String selection = MyProgressContract.MyProgressEntry.COLUMN_ISREVIEWED + Constants.PREP_STATEMENT;
                 Cursor c = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, projectionFields, selection, new String[]{Constants.ONE}, null);
                 c.moveToFirst();
-                if(c.getCount() > 0) {
+                if (c.getCount() > 0) {
                     do {
                         myquestions.add(c.getString(0));
                     } while (c.moveToNext());
@@ -92,7 +92,7 @@ public class ReviewQuestionsFragment extends BaseFragment {
             @Override
             protected void onPostExecute(List<String> myquestions) {
                 super.onPostExecute(myquestions);
-                myreviewedQuestions = myquestions;
+                myReviewedQuestions = myquestions;
                 setUpAdapter();
             }
         }.execute();
@@ -103,72 +103,72 @@ public class ReviewQuestionsFragment extends BaseFragment {
         super.onPause();
     }
 
-    private void setUpAdapter(){
-        adapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new OnReviewerItemClickListerner() {
+    private void setUpAdapter() {
+        mAdapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new OnReviewerItemClickListerner() {
             TrackerQuestion ques;
+
             @Override
             public void onisSpamClick(TrackerQuestion question, RadioGroup group) {
-                if(!adapter.getisUpdating()) {
+                if (!mAdapter.getisUpdating()) {
                     this.ques = question;
-                    firebaseDatabaseInterface.markQuestionAsSpam(question.id, this);
-                    adapter.setisUpdating(true);
-                }else{
+                    mFirebaseDatabaseInterface.markQuestionAsSpam(question.id, this);
+                    mAdapter.setisUpdating(true);
+                } else {
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.review_inprocess), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onisApprovedClick(TrackerQuestion question, RadioGroup group) {
-                if(!adapter.getisUpdating()) {
+                if (!mAdapter.getisUpdating()) {
                     this.ques = question;
-                    firebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), true, this);
-                    adapter.setisUpdating(true);
-                }else{
+                    mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), true, this);
+                    mAdapter.setisUpdating(true);
+                } else {
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.review_inprocess), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onisNotApprovedClick(TrackerQuestion question, RadioGroup group) {
-                if(!adapter.getisUpdating()) {
+                if (!mAdapter.getisUpdating()) {
                     this.ques = question;
-                    firebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), false, this);
-                    adapter.setisUpdating(true);
-                }else{
+                    mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), false, this);
+                    mAdapter.setisUpdating(true);
+                } else {
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.review_inprocess), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void isSuccess(boolean success) {
-                if(success){
+                if (success) {
                     //mark this question as reviewed in db
                     addToDatabase(this.ques, MyProgressContract.MyProgressEntry.COLUMN_ISREVIEWED);
-                    int pos = adapter.findPos(ques);
-                    myreviewedQuestions.add(ques.id);
-                    adapter.removeItem(pos);
+                    int pos = mAdapter.findPos(ques);
+                    myReviewedQuestions.add(ques.id);
+                    //mAdapter.removeItem(pos);
                     displayToastMessage(getResources().getString(R.string.review_completed));
-                }
-                else{
+                } else {
                     //show message that action could not be performed
                     displayToastMessage(getResources().getString(R.string.action_failed));
                 }
-                adapter.setisUpdating(false);
+                mAdapter.setisUpdating(false);
             }
         });
         final String key = String.format(Constants.LEVELFORMATTER, 1);
         LinearLayoutManager lmanager = new LinearLayoutManager(this.getActivity());
         reviewQuestionsView.setLayoutManager(lmanager);
-        reviewQuestionsView.setAdapter(adapter);
-        reviewQuestionsView.addOnScrollListener(new RecylclerViewEndlessScrollListener(this, lmanager){
+        reviewQuestionsView.setAdapter(mAdapter);
+        reviewQuestionsView.addOnScrollListener(new RecylclerViewEndlessScrollListener(this, lmanager) {
             @Override
             public void onLoadMore(GetQuestionsInterface callback) {
-                if(lastQuestionId == null) return;
-                firebaseDatabaseInterface.getMoreQuestions(username, callback, lastQuestionId, Constants.MAX_QUESTIONS_API_COUNT+1, myreviewedQuestions);
+                if (mLastQuestionId == null) return;
+                mFirebaseDatabaseInterface.getMoreQuestions(mUsername, callback, mLastQuestionId, Constants.MAX_QUESTIONS_API_COUNT + 1, myReviewedQuestions);
             }
         });
-        username = firebaseAuth.getCurrentUser().getUid();
+        mUsername = mFirebaseAuth.getCurrentUser().getUid();
         loadingBar.setVisibility(View.VISIBLE);
-        firebaseDatabaseInterface.getQuestions(username, this,Constants.MAX_QUESTIONS_API_COUNT+1, myreviewedQuestions);
+        mFirebaseDatabaseInterface.getQuestions(mUsername, this, Constants.MAX_QUESTIONS_API_COUNT + 1, myReviewedQuestions);
     }
 }
