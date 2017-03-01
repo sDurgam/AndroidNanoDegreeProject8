@@ -49,6 +49,7 @@
     <string name="empty_tracker_questions">Empty results fetched from the tracker</string>
     <string name="review_inprocess">Still updating the review for the last selected question</string>
     <string name="review_error">Error while updating the review for the selected question</string>
+    <string name="review_completed">Successfully updated your review for the question</string>
     <string name="solve_inprocess">Still updating the status for the last selected question to solved</string>
     <string name="my_progress">My Progess</string>
 

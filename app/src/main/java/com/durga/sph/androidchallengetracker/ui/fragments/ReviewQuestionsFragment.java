@@ -116,7 +116,6 @@ public class ReviewQuestionsFragment extends BaseFragment {
                     mFirebaseDatabaseInterface.markQuestionAsSpam(question.id, this);
                     m_adapter.setisUpdating(true);
                 }else{
-                    group.clearCheck();
                     Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.review_inprocess), Toast.LENGTH_LONG).show();
                 }
             }
@@ -150,7 +149,7 @@ public class ReviewQuestionsFragment extends BaseFragment {
                     addToDatabase(this.ques, MyProgressContract.MyProgressEntry.COLUMN_ISREVIEWED);
                     int pos = m_adapter.findPos(ques);
                     myreviewedQuestions.add(ques.id);
-                    m_adapter.removeItem(pos);
+                    displayToastMessage(getResources().getString(R.string.review_completed));
                 }
                 else{
                     //show message that action could not be performed
