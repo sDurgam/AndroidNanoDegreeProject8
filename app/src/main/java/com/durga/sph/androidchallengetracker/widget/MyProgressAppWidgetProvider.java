@@ -80,7 +80,8 @@ public class MyProgressAppWidgetProvider extends AppWidgetProvider implements IP
             views.setTextViewText(R.id.widget_level2, getValue(m_localProgessMap, NAMEDB_LIST[1]) + "/" + getValue(progressMap, NAMEDB_LIST[1]));
             views.setTextViewText(R.id.widget_level3, getValue(m_localProgessMap, NAMEDB_LIST[2]) + "/" + getValue(progressMap, NAMEDB_LIST[2]));
             Intent intent = new Intent(context, MainActivity.class);
-            intent.putExtra(Constants.FROMWIDGET, "true");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra(Constants.FROMWIDGET, Constants.TRUE);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
             views.setOnClickPendingIntent(R.id.widgetMainLayout, pendingIntent);
             appWidgetManager.updateAppWidget(appwidgetId, views);

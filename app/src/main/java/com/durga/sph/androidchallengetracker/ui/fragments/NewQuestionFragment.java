@@ -3,6 +3,7 @@ package com.durga.sph.androidchallengetracker.ui.fragments;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,14 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.durga.sph.androidchallengetracker.BuildConfig;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 import com.durga.sph.androidchallengetracker.ui.listeners.IOnQuestionAddedListener;
 import com.durga.sph.androidchallengetracker.utils.Constants;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -87,8 +90,6 @@ public class NewQuestionFragment extends BaseFragment implements IOnQuestionAdde
     public void addquesSubmitReviewClick(View view){
         resetErrorMessage();
         //update database and show edit question fragment
-        // EditQuestionFragment editQuestionFragment = EditQuestionFragment.newInstance("abc");
-        // getFragmentManager().beginTransaction().replace(R.id.main_frameLayout, editQuestionFragment).commit();
         boolean isValid = validateQuestion();
         if(isValid) {
             //save to firebase database
@@ -111,7 +112,12 @@ public class NewQuestionFragment extends BaseFragment implements IOnQuestionAdde
         // Generate a reference to a new location and add some data using push()
         //id;
         m_newQuestion = new TrackerQuestion(title, userId, getLevel());
-        mFirebaseDatabaseInterface.addNewQuestion(m_newQuestion,this);
+        if(BuildConfig.DEBUG) {
+            mFirebaseDatabaseInterface.addNewQuestionToLevel(m_newQuestion, this);
+        }
+        else {
+            mFirebaseDatabaseInterface.addNewQuestion(m_newQuestion, this);
+        }
     }
 
     private int getLevel(){
@@ -153,8 +159,14 @@ public class NewQuestionFragment extends BaseFragment implements IOnQuestionAdde
     public void issuccess(boolean success, String questionId) {
         if(success && questionId != null){
             //add this new question in 'MyAdded Questions' in database
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, questionId);
+            logFirebaseAnalyticsEvent(getResources().getString(R.string.isadded), bundle);
             m_newQuestion.id = questionId;
             addToDatabase(m_newQuestion, MyProgressContract.MyProgressEntry.COLUMN_ISADDED);
+        }
+        else {
+            Log.e(mTAG, getResources().getString(R.string.action_failed) + getResources().getString(R.string.isadded));
         }
     }
 }

@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.durga.sph.androidchallengetracker.LearnAndroidTrackerApplication;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.network.FirebaseDatabaseInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
@@ -52,9 +53,12 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
     @Nullable @BindView(R.id.loadingBar)
     ProgressBar mloadingBar;
 
+    String mTAG;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mTAG = this.getClass().getName();
     }
 
     @Override
@@ -77,6 +81,7 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user != null){
                     m_username = user.getUid();
+                    setAnalyticsUserId(m_username);
                 }
                 else{
 
@@ -103,6 +108,7 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
 
     @Override
     public void onQuestionsReady(List<TrackerQuestion> questionsList) {
+
         mloadingBar.setVisibility(View.GONE);
         if(questionsList != null && questionsList.size() > 0) {
             emptyView.setVisibility(View.GONE);
@@ -145,7 +151,7 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
 
     protected void updateDatabase(String id, String param) {
         if(id != null) {
-            String selection = MyProgressContract.MyProgressEntry._ID + "=?";
+            String selection = MyProgressContract.MyProgressEntry._ID + MyProgressContract.MyProgressEntry.PREPARED_QUERY;
             String[] selectionArgs = new String[] {id};
             String[] projection = new String[]{MyProgressContract.MyProgressEntry._ID};
             Cursor c = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, projection, selection, selectionArgs, null);
@@ -159,5 +165,13 @@ public class BaseFragment extends Fragment implements IGetQuestionsInterface{
             Log.e(getClass().getName(), getResources().getString(R.string.action_failed));
             displayToastMessage(getResources().getString(R.string.action_failed));
         }
+    }
+
+    protected void logFirebaseAnalyticsEvent(String event, Bundle bundle){
+        ((LearnAndroidTrackerApplication)getActivity().getApplication()).getFirebaseAnalyticsInstance().logEvent(event, bundle);
+    }
+
+    private void setAnalyticsUserId(String username){
+        ((LearnAndroidTrackerApplication)getActivity().getApplication()).getFirebaseAnalyticsInstance().setUserId(username);
     }
 }

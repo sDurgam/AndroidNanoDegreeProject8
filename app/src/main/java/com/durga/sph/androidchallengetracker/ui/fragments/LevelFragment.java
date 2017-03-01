@@ -107,9 +107,11 @@ public class LevelFragment extends BaseFragment
         m_adapter = new LevelRecyclerViewAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), m_username, new IOnLevelItemClickListerner() {
             int pos;
             @Override
-            public void onisSolvedClick(String questionId, String user, int position) {
-                addToDatabase(m_adapter.getQuestionByPosition(position), MyProgressContract.MyProgressEntry.COLUMN_ISSOLVED);
-                m_adapter.removeItem(position);
+            public void onisSolvedClick(String questionId) {
+                TrackerQuestion question = m_adapter.getQuestionById(questionId);
+                addToDatabase(question, MyProgressContract.MyProgressEntry.COLUMN_ISSOLVED);
+                m_adapter.removeItem(m_adapter.findPos(question));
+                m_adapter.setisUpdating(false);
             }
         });
         Object levelargs = getArguments().get(getResources().getString(R.string.level));

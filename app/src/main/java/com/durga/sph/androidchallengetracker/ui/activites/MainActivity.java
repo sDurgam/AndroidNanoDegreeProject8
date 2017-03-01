@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.method.KeyListener;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +79,10 @@ public class MainActivity extends BaseActivity implements KeyEvent.Callback {
         }
 
         if(!mTwoPane) {
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            mDrawerLayout.setDrawerListener(toggle);
+            toggle.syncState();
             NavigationMenuView navMenuView = (NavigationMenuView) mNavigationView.getChildAt(0);
             navMenuView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
             setUpDrawerContent();
@@ -86,27 +91,27 @@ public class MainActivity extends BaseActivity implements KeyEvent.Callback {
             }
         }
         else{
-            if(fromWidget){
+            /*if(fromWidget){
                 openMySession();
             }
-            else {
+            else {*/
                 FragmentStatePagerAdapter pagerAdapter = new TabletViewFragmentPagerAdapter(mFragmentManager, mlevelargs, this);
                 setupViewPager(pagerAdapter);
-            }
+           // }
         }
     }
 
     //only for mobile devices and not tablets
     void setUpDrawerContent(){
         //Reference: http://stackoverflow.com/questions/9178035/onkeydown-event-not-called-the-first-time
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Instrumentation inst = new Instrumentation();
-                inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
-            }
-
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Instrumentation inst = new Instrumentation();
+//                inst.sendKeyDownUpSync(KeyEvent.KEYCODE_DPAD_UP);
+//            }
+//
+//        }).start();
 
         if(mNavigationView != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -178,9 +183,41 @@ public class MainActivity extends BaseActivity implements KeyEvent.Callback {
         openMySession();
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main2, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_X){
+        if(keyCode==KeyEvent.KEYCODE_BUTTON_Y){
         if(mDrawerLayout.isDrawerOpen(GravityCompat.START)){
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }

@@ -3,12 +3,14 @@ package com.durga.sph.androidchallengetracker.ui.adapters;
 import android.content.Context;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatRadioButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
@@ -54,7 +56,6 @@ public class ReviewQuestionsAdapter extends BaseRecylerViewAdapter {
     @Override
     public void onBindViewHolder(final BaseRecylerViewAdapter.MyViewHolder holder, int position) {
         final TrackerQuestion recipe = m_trackerQuestionsList.get(position);
-        final int pos = position;
         ReviewQuestionsAdapter.MyViewHolder h = (ReviewQuestionsAdapter.MyViewHolder)holder;
         h.descriptionView.setText(recipe.getDescription());
         h.descriptionView.setContentDescription(m_context.getResources().getString(R.string.questiondesc) + recipe.getDescription());
@@ -64,17 +65,18 @@ public class ReviewQuestionsAdapter extends BaseRecylerViewAdapter {
         h.markGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if(checkedId == R.id.reviewer_isspam){
-                    //display review question fragment
-                    m_itemClickListener.onisSpamClick(m_trackerQuestionsList.get(pos), pos);}
-                else if(checkedId == R.id.reviewer_approved){
-                    m_itemClickListener.onisApprovedClick(m_trackerQuestionsList.get(pos), m_user, pos);
+                    if (checkedId == R.id.reviewer_isspam) {
+                        //display review question fragment
+                        m_itemClickListener.onisSpamClick(recipe, group);
+                    } else if (checkedId == R.id.reviewer_approved) {
+                        m_itemClickListener.onisApprovedClick(recipe, group);
+                    } else {
+                        m_itemClickListener.onisNotApprovedClick(recipe, group);
+                    }
+                    if (checkedId != -1) {
+                        group.setContentDescription(m_context.getResources().getString(R.string.selected) + ((RadioButton) group.findViewById(checkedId)).getText());
+                    }
                 }
-                else {
-                    m_itemClickListener.onisNotApprovedClick(m_trackerQuestionsList.get(pos), m_user, pos);
-                }
-                group.setContentDescription(m_context.getResources().getString (R.string.selected) + ((RadioButton)group.findViewById(checkedId)).getText());
-            }
         });
     }
 }

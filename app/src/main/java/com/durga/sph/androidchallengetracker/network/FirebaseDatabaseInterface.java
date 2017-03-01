@@ -39,6 +39,22 @@ public abstract class FirebaseDatabaseInterface extends FirebaseMainDatabaseInte
         return pushedQuestionRef.getKey();
     }
 
+    public void addNewQuestionToLevel(TrackerQuestion question, final IOnQuestionAddedListener callback){
+        DatabaseReference levelref = mDatabaseReference.child(String.format(Constants.LEVELFORMATTER, question.level));
+        final String key = levelref.push().getKey();
+        question.id = key;
+        levelref.child(key).setValue(question, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null){
+                    Log.e(TAG, databaseError.toString());
+                }
+                callback.issuccess(databaseError== null, key);
+            }
+        });
+    }
+
+
     public void addNewQuestion(TrackerQuestion question, final IOnQuestionAddedListener callback){
         DatabaseReference levelref = mDatabaseReference.child(Constants.REVIEWEQUES);
         final String key = levelref.push().getKey();
@@ -53,7 +69,6 @@ public abstract class FirebaseDatabaseInterface extends FirebaseMainDatabaseInte
             }
         });
         //update progress reviewquestions count
-
         mFireBaseDatabase.getReference(Constants.PROGRESS+"/"+Constants.REVIEWEQUES).runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {

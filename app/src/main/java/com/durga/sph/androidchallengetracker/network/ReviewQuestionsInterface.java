@@ -1,5 +1,7 @@
 package com.durga.sph.androidchallengetracker.network;
 
+import android.util.Log;
+
 import com.durga.sph.androidchallengetracker.ui.listeners.IGetQuestionsInterface;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 import com.durga.sph.androidchallengetracker.utils.Constants;
@@ -65,7 +67,7 @@ public class ReviewQuestionsInterface extends FirebaseDatabaseInterface {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.e(this.getClass().getName(), databaseError.getMessage());
             }
         });
     }

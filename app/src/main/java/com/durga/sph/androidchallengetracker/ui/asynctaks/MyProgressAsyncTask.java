@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import com.durga.sph.androidchallengetracker.network.ProgressDatabaseInterface;
 import com.durga.sph.androidchallengetracker.providers.MyProgressContract;
 import com.durga.sph.androidchallengetracker.ui.listeners.IProgressListener;
+import com.durga.sph.androidchallengetracker.utils.Constants;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -46,22 +47,22 @@ public class MyProgressAsyncTask extends AsyncTask<Void, Void, Cursor>{
         if(cursor != null && cursor.getCount() != 0){
             cursor.moveToFirst();
             do{
-                if(cursor.getString(4).equals("1")) {
-                    if (cursor.getString(2).equals("1")) {
+                if(cursor.getString(4).equals(Constants.ONE)) {
+                    if (cursor.getString(2).equals(Constants.ONE)) {
                         updateHashMap(NAMEDB_LIST[0]);
-                    } else if (cursor.getString(2).equals("2")) {
+                    } else if (cursor.getString(2).equals(Constants.TWO)) {
                         updateHashMap(NAMEDB_LIST[1]);
-                    } else if (cursor.getString(2).equals("3")) {
+                    } else if (cursor.getString(2).equals(Constants.THREE)) {
                         updateHashMap(NAMEDB_LIST[2]);
                     }
                 }
-                if(cursor.getString(6).equals("1")){
+                if(cursor.getString(6).equals(Constants.ONE)){
                     updateHashMap(NAMEDB_LIST[4]);
                 }
-                if(cursor.getString(5).equals("1")){
+                if(cursor.getString(5).equals(Constants.ONE)){
                     updateHashMap(NAMEDB_LIST[3]);
                 }
-                if(cursor.getString(7).equals("1")){
+                if(cursor.getString(7).equals(Constants.ONE)){
                     updateHashMap(NAMEDB_LIST[5]);
                 }
 

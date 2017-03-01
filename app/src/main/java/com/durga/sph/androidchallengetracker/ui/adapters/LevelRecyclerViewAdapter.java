@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
@@ -50,10 +51,16 @@ public class LevelRecyclerViewAdapter extends BaseRecylerViewAdapter {
         final int pos = position;
         LevelRecyclerViewAdapter.MyViewHolder h = (LevelRecyclerViewAdapter.MyViewHolder)holder;
         h.descriptionView.setText(recipe.description);
+        h.solvedView.setChecked(false);
         h.solvedView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                m_itemClickListener.onisSolvedClick(recipe.id, m_user, pos);
+                if(!getisUpdating()) {
+                    m_itemClickListener.onisSolvedClick(recipe.id);
+                }
+                else{
+                    Toast.makeText(m_context, m_context.getString(R.string.solve_inprocess), Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

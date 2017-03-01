@@ -179,7 +179,7 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
                 }
             }
         }
-        PieDataSet ds1 = new PieDataSet(entries1, "My Progress");
+        PieDataSet ds1 = new PieDataSet(entries1, Constants.MYPOINTS);
         ds1.setColors(ColorTemplate.VORDIPLOM_COLORS);
         ds1.setSliceSpace(2f);
         ds1.setValueTextColor(Color.WHITE);
@@ -190,7 +190,7 @@ public class MyPointsFragment extends BaseFragment implements IProgressListener 
     }
 
     private SpannableString generateCenterText() {
-        SpannableString s = new SpannableString("My Progress\nTracker");
+        SpannableString s = new SpannableString(Constants.MYPROGRESSTRACKER);
         s.setSpan(new RelativeSizeSpan(2f), 0, 8, 0);
         s.setSpan(new ForegroundColorSpan(Color.GRAY), 8, s.length(), 0);
         return s;

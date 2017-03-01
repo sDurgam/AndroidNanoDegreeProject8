@@ -21,13 +21,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.durga.sph.androidchallengetracker.LearnAndroidTrackerApplication;
 import com.durga.sph.androidchallengetracker.R;
 import com.durga.sph.androidchallengetracker.ui.adapters.TabletViewFragmentPagerAdapter;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyAddedQuestionsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyPointsFragment;
 import com.durga.sph.androidchallengetracker.ui.fragments.MyReviewedQuestionsFragment;
+import com.durga.sph.androidchallengetracker.utils.ConnectionUtils;
 import com.durga.sph.androidchallengetracker.utils.Constants;
 import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -88,6 +91,7 @@ public class BaseActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
+                    setAnalyticsUserId(user.getUid());
                 } else {
                     // User is signed out
                     startActivityForResult(
@@ -109,7 +113,12 @@ public class BaseActivity extends AppCompatActivity {
                 if (connected) {
                     dismissSnackBar();
                 } else {
-                    displaySnackBar(getResources().getString(R.string.offline_msg));
+                    if(!ConnectionUtils.isConnected(getApplicationContext())) {
+                        displaySnackBar(getResources().getString(R.string.offline_msg));
+                    }
+                    else{
+                        dismissSnackBar();
+                    }
                 }
             }
 
@@ -183,5 +192,11 @@ public class BaseActivity extends AppCompatActivity {
         dismissSnackBar();
     }
 
+    protected void logEvent(String event, Bundle bundle){
+        ((LearnAndroidTrackerApplication)getApplication()).getFirebaseAnalyticsInstance().logEvent(event, bundle);
+    }
 
+    private void setAnalyticsUserId(String username){
+        ((LearnAndroidTrackerApplication)getApplication()).getFirebaseAnalyticsInstance().setUserId(username);
+    }
 }

@@ -8,5 +8,5 @@ import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
  */
 
 public interface IOnLevelItemClickListerner {
-    void onisSolvedClick(String questionId, String user, int position);
+    void onisSolvedClick(String questionId);
 }

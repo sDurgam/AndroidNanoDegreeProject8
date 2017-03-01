@@ -21,6 +21,7 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
     List<TrackerQuestion> m_trackerQuestionsList;
     Set<String> m_questionIdsSet;
     String m_user;
+    private boolean isUpdating = false;
 
     public BaseRecylerViewAdapter(Context context, String user, List<TrackerQuestion> my_trackerQuestionsList){
         this.m_context = context;
@@ -62,9 +63,11 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
     }
 
     public void removeItem(int position){
-        m_trackerQuestionsList.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, getItemCount());
+        if(position != -1) {
+            m_trackerQuestionsList.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, getItemCount());
+        }
     }
 
     public int getItemCount() {
@@ -108,13 +111,33 @@ public abstract class BaseRecylerViewAdapter extends RecyclerView.Adapter<BaseRe
         return position <= m_trackerQuestionsList.size() ? m_trackerQuestionsList.get(position).id : null;
     }
 
-    public TrackerQuestion getQuestionByPosition(int position){
-        return position <= m_trackerQuestionsList.size() ? m_trackerQuestionsList.get(position) : null;
+    public TrackerQuestion getQuestionById(String id){
+        for(int i =0; i < m_trackerQuestionsList.size(); i++){
+            if(m_trackerQuestionsList.get(i).id.equals(id)){
+                return m_trackerQuestionsList.get(i);
+            }
+        }
+        return null;
     }
 
     public boolean isExistsQuestion(String id){
         if(m_trackerQuestionsList == null || m_trackerQuestionsList.size() <= 0) return false;
         return m_trackerQuestionsList.get(getItemCount()-1).id.equals(id);
     }
+    public void setisUpdating(boolean isupdating){
+        isUpdating = isupdating;
+    }
 
+    public boolean getisUpdating(){
+        return isUpdating;
+    }
+
+    public int findPos(TrackerQuestion question){
+        for(int i =0; i < m_trackerQuestionsList.size(); i++){
+            if(m_trackerQuestionsList.get(i).id.equals(question.id)){
+                return i;
+            }
+        }
+        return -1;
+    }
 }

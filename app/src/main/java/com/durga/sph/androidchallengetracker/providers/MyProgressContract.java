@@ -33,6 +33,7 @@ public class MyProgressContract {
         public static final String COLUMN_ISAPPROVED = "approved";
         public static final String COLUMN_CREATEDATE = "createdate";
         public static final String COLUMN_LASTMODIFIED = "lastmodified";
+        public static final String PREPARED_QUERY = "=?";
 
         public static Uri buildUriByID(String id) {
             return CONTENT_URI.buildUpon().appendPath(id).build();

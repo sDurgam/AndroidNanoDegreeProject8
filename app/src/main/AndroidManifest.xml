@@ -2,36 +2,51 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.durga.sph.androidchallengetracker">
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
+        android:name=".LearnAndroidTrackerApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
         <activity
             android:name=".ui.activites.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activites.MySessionActivity"
+        <activity
+            android:name=".ui.activites.MySessionActivity"
             android:label="@string/my_progress"
             android:parentActivityName=".ui.activites.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activites.MainActivity" />
         </activity>
+
         <provider
-            android:authorities="com.durga.sph.androidchallengetracker.providers"
-            android:name=".providers.MyProgressProvider"></provider>
-          <receiver android:name=".widget.MyProgressAppWidgetProvider">
-              <intent-filter>
-                  <action android:name="android.appwidget.action.APPWIDGET_UPDATE"></action>
-              </intent-filter>
-              <meta-data android:name="android.appwidget.provider" android:resource="@xml/myprogress_appwidget_info"></meta-data>
-          </receiver>
+            android:name=".providers.MyProgressProvider"
+            android:authorities="com.durga.sph.androidchallengetracker.providers" />
+
+        <receiver android:name=".widget.MyProgressAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/myprogress_appwidget_info" />
+        </receiver>
+
     </application>
+
 </manifest>

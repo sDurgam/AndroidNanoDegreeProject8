@@ -18,6 +18,6 @@
         android:id="@+id/mylevel"
         android:text="@string/level1_name"
         android:checked="true"
-        android:enabled="true" />
+        android:enabled="false" />
 
 </LinearLayout>

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,11 +80,13 @@ public class ReviewQuestionsFragment extends BaseFragment {
                 //get questions which are reviewed
                 List<String> myquestions = new ArrayList<>();
                 String[] projectionFields = new String[]{MyProgressContract.MyProgressEntry._ID};
-                String selection = MyProgressContract.MyProgressEntry.COLUMN_ISREVIEWED + "=?";
-                Cursor c = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, projectionFields, selection, new String[]{"1"}, null);
+                String selection = MyProgressContract.MyProgressEntry.COLUMN_ISREVIEWED + Constants.PREP_STATEMENT;
+                Cursor c = getActivity().getContentResolver().query(MyProgressContract.MyProgressEntry.CONTENT_URI, projectionFields, selection, new String[]{Constants.ONE}, null);
                 c.moveToFirst();
-                while (c.moveToNext()) {
-                    myquestions.add(c.getString(0));
+                if(c.getCount() > 0) {
+                    do {
+                        myquestions.add(c.getString(0));
+                    } while (c.moveToNext());
                 }
                 c.close();
                 return myquestions;
@@ -105,36 +108,55 @@ public class ReviewQuestionsFragment extends BaseFragment {
 
     private void setUpAdapter(){
         m_adapter = new ReviewQuestionsAdapter(this.getActivity(), new ArrayList<TrackerQuestion>(), super.userName(), new IOnReviewerItemClickListerner() {
-            int pos;
+            TrackerQuestion ques;
             @Override
-            public void onisSpamClick(TrackerQuestion question, int position) {
-                pos = position;
-                mFirebaseDatabaseInterface.markQuestionAsSpam(question.id, this);
+            public void onisSpamClick(TrackerQuestion question, RadioGroup group) {
+                if(!m_adapter.getisUpdating()) {
+                    this.ques = question;
+                    mFirebaseDatabaseInterface.markQuestionAsSpam(question.id, this);
+                    m_adapter.setisUpdating(true);
+                }else{
+                    group.clearCheck();
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.review_inprocess), Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
-            public void onisApprovedClick(TrackerQuestion question, String user, int position) {
-                pos = position;
-                mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), true, this);
+            public void onisApprovedClick(TrackerQuestion question, RadioGroup group) {
+                if(!m_adapter.getisUpdating()) {
+                    this.ques = question;
+                    mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), true, this);
+                    m_adapter.setisUpdating(true);
+                }else{
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.review_inprocess), Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
-            public void onisNotApprovedClick(TrackerQuestion question, String user, int position) {
-                pos = position;
-                mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), false, this);
+            public void onisNotApprovedClick(TrackerQuestion question, RadioGroup group) {
+                if(!m_adapter.getisUpdating()) {
+                    this.ques = question;
+                    mFirebaseDatabaseInterface.markQuestionAsApproved(question.id, String.format(Constants.LEVELFORMATTER, question.level), false, this);
+                    m_adapter.setisUpdating(true);
+                }else{
+                    Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.review_inprocess), Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
             public void isSuccess(boolean success) {
                 if(success){
                     //mark this question as reviewed in db
-                    addToDatabase(m_adapter.getQuestionByPosition(pos), MyProgressContract.MyProgressEntry.COLUMN_ISREVIEWED);
+                    addToDatabase(this.ques, MyProgressContract.MyProgressEntry.COLUMN_ISREVIEWED);
+                    int pos = m_adapter.findPos(ques);
+                    myreviewedQuestions.add(ques.id);
                     m_adapter.removeItem(pos);
                 }
                 else{
                     //show message that action could not be performed
                     displayToastMessage(getResources().getString(R.string.action_failed));
                 }
+                m_adapter.setisUpdating(false);
             }
         });
         final String key = String.format(Constants.LEVELFORMATTER, 1);

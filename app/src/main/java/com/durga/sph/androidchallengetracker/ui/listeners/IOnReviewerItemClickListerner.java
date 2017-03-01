@@ -1,5 +1,7 @@
 package com.durga.sph.androidchallengetracker.ui.listeners;
 
+import android.widget.RadioGroup;
+
 import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
 
 /**
@@ -7,7 +9,7 @@ import com.durga.sph.androidchallengetracker.orm.TrackerQuestion;
  */
 
 public interface IOnReviewerItemClickListerner extends IOnItemClickListener {
-    void onisApprovedClick(TrackerQuestion question, String user, int position);
-    void onisNotApprovedClick(TrackerQuestion question, String user, int position);
-    void onisSpamClick(TrackerQuestion question, int position);
+    void onisApprovedClick(TrackerQuestion question, RadioGroup group);
+    void onisNotApprovedClick(TrackerQuestion question, RadioGroup group);
+    void onisSpamClick(TrackerQuestion question, RadioGroup group);
 }

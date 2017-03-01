@@ -17,7 +17,10 @@ public class Constants {
     public static String MYREVIEWEDQUES = "myreviewedques";
     public static String REVIEWEQUES = "revieweques";
     public static String PROGRESS = "progress";
-    public static String REVIEWQUESPATH = "revieweques/";
+    public static String MYPROGRESS = "My Progress";
+    public static String MYPROGRESSTRACKER = "My Progress\nTracker";
+
+   // public static String REVIEWQUESPATH = "revieweques/";
     public static String TRACKER = "Tracker";
     public static String QUESTIONS = "Questions";
     public static String LEVELFORMATTER = "level%s";
@@ -31,6 +34,7 @@ public class Constants {
     public static String TIME = "time";
     public static String UNKNOWN_URL = "unknown uri:";
     public static String FROMWIDGET = "fromwidget";
+    public static String TRUE = "true";
 
     //move records path
     public static String LEVELIDFORMATTER = "level%s/%s";
@@ -48,6 +52,11 @@ public class Constants {
     public static int APPROVE_MAX_QUESTION_COUNT = 10;
     public static int APPROVE_MIN_QUESTION_COUNT = -3;
     public static int MAX_QUESTIONS_API_COUNT = 20;
+
+    public static final String ONE = "1";
+    public static final String TWO = "2";
+    public static final String THREE = "3";
+    public static final String PREP_STATEMENT = "=?";
 
     public static HashMap<String, Object> updateMapForAllWithValue
             (final String questionId,
